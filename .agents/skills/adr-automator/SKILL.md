@@ -1,37 +1,37 @@
-Skill: Architectural Decision Record (ADR) Automator
+---
+name: adr-automator
+description: |
+  Formaliza e regista mudanças estruturais ou de biblioteca significativas na arquitetura do sistema, garantindo que o "porquê" (a memória arquitetural) destas decisões seja preservado.
+---
 
-1. Descrição
+# Architectural Decision Record (ADR) Automator
 
-Formaliza mudanças significativas na arquitetura do sistema, garantindo que o "porquê" das decisões seja preservado.
+## Gatilhos de Ativação (Triggers)
+- Mudança de bibliotecas conectadas à infraestrutura core (ex: Mudar o framework de log, framework de DB).
+- Refactoring complexo e alteração visível do padrão de projeto (ex: mudar de Repositories diretos para MediatR / CQRS).
+- Introdução de novos serviços do qual o sistema ganha forte dependência.
 
-2. Trigger
+## Workflow
+1. Criar novo arquivo dentro de `docs/adr/`, com a estrutura sequencial `NNN-titulo.md`.
+2. Seguir a formatação oficial de ADR (Abaixo).
+3. Confirmar Status (`Proposed`) até validação humana alterar para `Accepted`.
 
-Mudança de bibliotecas core.
+## Template Base
 
-Alteração de padrões de projeto (ex: mudar de Repositories para MediatR).
-
-Introdução de novas tecnologias ou serviços externos.
-
-3. Workflow
-
-Criar arquivo em docs/adr/NNN-titulo.md.
-
-Seguir o status: Proposed -> Accepted (após validação humana).
-
-4. Template ADR
-
+```markdown
 # ADR [Número]: [Título da Decisão]
 
 **Data:** YYYY-MM-DD
 **Status:** Proposed | Accepted | Deprecated
-**Participantes:** [Nome do Agente/Usuário]
+**Contexto de Decisão:** [Nome do Agente/Usuário]
 
 ### Contexto e Problema
-[Descrever o cenário que motivou a mudança]
+[Descrever o motivo e contexto para o qual uma ação foi necessária]
 
-### Decisão Proposta
-[Detalhar a solução técnica escolhida]
+### Decisão Técnica Sugerida
+[Detalhar a solução escolhida e como será aplicada nas camadas]
 
 ### Consequências
-- **Positivas:** [Benefícios]
-- **Negativas:** [Dívida técnica ou limitações]
+- **Positivas:** [Ganhos de longo prazo ou performance]
+- **Negativas:** [Dívida técnica acumulada ou limite adicionado]
+```

@@ -1,27 +1,29 @@
-🧠 AI Agents Orchestrator (Main)
+# 🧠 AI Agents Orchestrator (Main)
 
-Este arquivo define o catálogo de skills disponíveis para os agentes de IA neste repositório. Cada skill é auto-contida e pode evoluir conforme as necessidades específicas do projeto.
+Este arquivo define o catálogo de skills disponíveis para os agentes de IA neste repositório. Cada skill é auto-contida e evolui de acordo com as restrições que for aprendendo do projeto específico.
 
-🛠️ Skills de Ciclo de Vida (SDLC)
+> **Instrução Crítica para o Agente**: Sempre consulte este arquivo antes de iniciar qualquer tarefa para identificar qual skill deve ser carregada no escopo. Se este projeto acabou de ser criado e o usuário pedir para instalar os agentes, **leia imediatamente o `skills/project-bootstrap/SKILL.md`**.
 
-Feature Initialization: Cuida do setup de novas features, criação de branches e decomposição de tasks.
+---
 
-Feature Completion: Executa testes, gera builds, atualiza changelog e versionamento, e faz o push final.
+## 🚀 Bootstrap & Setup
 
-🏛️ Skills de Governança e Arquitetura
+- **Project Bootstrap**: Analisa o código do repositório destino e formata / altera todas as regras listadas abaixo e seus arquivos correspondentes para a linguagem e framework utilizados localmente. (Roda no setup inicial)
+- **Compound Engineering**: Coleta e injeta arquitetura e knowledge entre sessões (modificando `guidelines.md` e `architecture.md`).
 
-ADR Automator: Formaliza decisões técnicas através de Architectural Decision Records.
+## 🛠️ Skills de Ciclo de Vida (SDLC)
 
-Architecture Consistency Checker: Garante que o código respeite padrões como Clean Architecture em C#, Dart e JS.
+- **Feature Initialization (`start-feature`)**: Cuida do setup de novas features, criação de branches e decomposição de tasks em `.agents/docs/tasks/`.
+- **Feature Completion (`finish-feature`)**: Executa testes locais, gera builds, atualiza changelog e versionamento, e faz o push final.
 
-Onboarding & Scaffolding: Padroniza a criação de novas entidades e boilerplate de código.
+## 🏛️ Skills de Governança e Arquitetura
 
-🛡️ Skills de Manutenção e Qualidade
+- **ADR Automator (`adr-automator`)**: Formaliza decisões técnicas através de *Architectural Decision Records*.
+- **Architecture Consistency Checker (`architecture-checker`)**: Garante que o código respeite os padrões definidos nas diretrizes arquiteturais locais.
+- **Onboarding & Scaffolding (`scaffolding`)**: Padroniza a criação de novas entidades e boilerplate de código adaptados ao framework alvo.
 
-Documentation Updater: Mantém o README e docs técnicos sincronizados com as alterações de código.
+## 🛡️ Skills de Manutenção e Qualidade
 
-Dependency Guard: Monitora vulnerabilidades e gerencia atualizações de pacotes.
-
-Bug Triage & RCA: Analisa logs de erro e automatiza a criação de tasks de correção.
-
-Instrução para o Agente: Sempre consulte este arquivo antes de iniciar uma tarefa para identificar qual skill deve ser carregada no contexto.
+- **Documentation Updater (`documentation-updater`)**: Mantém o README e docs técnicos sincronizados sempre que variáveis, fluxos ou diagramas mudam.
+- **Dependency Guard (`dependency-guard`)**: Monitora vulnerabilidades ou avisa as melhores práticas de update de bibliotecas.
+- **Bug Triage & RCA (`bug-triage`)**: Analisa logs de erro, localiza provável stacktrace defeituoso e automatiza a criação de tasks de correção.

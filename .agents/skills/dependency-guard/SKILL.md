@@ -1,19 +1,18 @@
-Skill: Dependency Guard & Security
+---
+name: dependency-guard
+description: |
+  Monitora a saúde das dependências do projeto, verifica compatibilidade semântica e sugere ou aplica atualizações para precaver riscos de segurança (CVEs) e bugs de build.
+---
 
-1. Descrição
+# Dependency Guard & Security
 
-Monitora a saúde das dependências do projeto e sugere atualizações.
+## Gatilhos de Ativação (Triggers)
+- Quando for relatado problema de compilação ou conflito com bibliotecas de terceiros.
+- Comandos do usuário: "Examine as dependências" ou "Temos alguma lib vulnerável?".
 
-2. Comandos de Auditoria
-
-JS: npm audit ou yarn audit
-
-C#: dotnet list package --vulnerable
-
-Dart: dart pub outdated
-
-3. Workflow
-
-Se encontrar vulnerabilidades críticas, criar automaticamente uma task de fix/security-patch.
-
-Sugerir atualizações de minor versions para manter o projeto atualizado.
+## Workflow Automático
+1. Detectar o package manager nativo do repositório (e.g., `npm`, `yarn`, `dotnet`, `pub`).
+2. Executar comandos de auditoria correspondentes (`npm audit`, `dotnet list package --vulnerable`, `dart pub outdated`, etc).
+3. Analisar saída técnica.
+4. Se encontrar bugs críticos, criar tarefas ativas no escopo de `/tasks` de formato `fix/security-patch`.
+5. Sugerir atualizações de minor versions, documentando o delta do refactor para manter a compilação estável.

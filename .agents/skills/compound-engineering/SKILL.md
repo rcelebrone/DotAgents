@@ -14,11 +14,11 @@ Ative este fluxo de trabalho imediatamente quando:
 2. Identifique: arquivos modificados, novos padrões de código, bibliotecas adicionadas e erros/correções iteradas durante a sessão.
 
 # Execution Steps & File Mutators
-Com base na análise, edite os seguintes arquivos (crie-os se não existirem) mantendo a formatação Markdown e adicionando as novas informações de forma cumulativa, sem destruir o histórico essencial:
+Com base na análise, edite os seguintes arquivos nativos da configuração do Agente (na raiz `.agents/`) mantendo a formatação Markdown e adicionando as novas informações de forma cumulativa, sem destruir o histórico:
 
 1. **`architecture.md`**
    - Extraia e adicione as **Architectural & Technical Decisions**.
-   - Atualize diagramas textuais ou descrições de fluxo de dados se houveram mudanças estruturais.
+   - Atualize diagramas textuais ou descrições de fluxo de dados se houveram mudanças.
    - Atualize o **Memory State** global da aplicação.
 
 2. **`guidelines.md`**
@@ -26,14 +26,9 @@ Com base na análise, edite os seguintes arquivos (crie-os se não existirem) ma
    - Documente pacotes que apresentaram problemas, padrões que devem ser evitados (anti-patterns locais) e regras estritas de implementação descobertas nesta iteração.
 
 3. **`agents.md`**
-   - Gere e atualize o **Next-Iteration Context Block**.
-   - Este arquivo deve conter o prompt de contexto resumido que as IAs devem ler antes de iniciar a próxima feature. Ele deve refletir o estado exato da aplicação pós-merge.
-
-4. **`theme.md` (ou arquivos de UI/UX)**
-   - Se a iteração envolveu front-end, atualize as regras de componentes, paletas de cores, espaçamentos ou padrões de design system estabelecidos.
+   - Se o core mudar bruscamente, adapte as meta-instruções (normalmente mantidas).
 
 # Output Rule
-Não gere texto explicativo ou conversacional. Execute as edições nos arquivos especificados e retorne apenas um log técnico de execução no seguinte formato:
-- `[Update]` architecture.md: [Resumo em 1 linha da edição]
-- `[Create]` guidelines.md: [Resumo em 1 linha da edição]
-- `[Skip]` theme.md: Nenhuma alteração de UI detectada.
+Não gere texto explicativo ou conversacional. Execute as edições nos arquivos especificados silenciosamente e retorne apenas o log em formato console:
+- `[Update]` architecture.md: [Resumo]
+- `[Create]` guidelines.md: [Resumo]

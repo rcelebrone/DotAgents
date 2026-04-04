@@ -1,19 +1,21 @@
-Skill: Architecture Consistency Checker
+---
+name: architecture-checker
+description: |
+  Analisa de forma estática as dependências do código escrito para garantir consistência com as camadas e convenções definidas na base (Clean/Onion Architecture).
+---
 
-1. Descrição
+# Architecture Consistency Checker
 
-Valida se o novo código respeita as camadas definidas no projeto (Clean Architecture / Onion Architecture).
+## Gatilhos de Ativação (Triggers)
+- Quando uma tarefa de nível Feature for concluída ou prestes a entrar em testes.
+- Quando invocado manualmente para auditar a estrutura de pastas.
 
-2. Regras por Stack
+## Regras Abstratas Básicas
+- Camadas de **Domínio / Core** não podem ter importações de bibliotecas focadas em View/Infra/Database.
+- Camadas de **Application** não devem depender do fluxo web direto (como requisições e cookies injetados cruamente).
+- *Nota: Regras exatas devem ser populadas pelo `project-bootstrap` com base na semântica da stack atual do projeto.*
 
-C# / .NET: Domínio não deve referenciar Infra; Camada de Application não deve conhecer UI.
-
-Dart / Flutter: Camada de Data não deve vazar para a UI; Respeitar uso de BLoC/Cubit ou Riverpod.
-
-JS / TS: Evitar dependências circulares; Garantir separação de controllers e services.
-
-3. Workflow
-
-Executar análise estática de dependências antes de marcar uma task como concluída.
-
-Reportar se houver "vazamento" de lógica de banco de dados para a camada de visualização.
+## Workflow
+1. Execute análise estática sobre os grafos de importação ou referências de pacotes dos módulos modificados.
+2. Identifique se existe "vazamento" de infraestrutura para locais indesejados.
+3. Se o fluxo encontrar erro de acoplamento, gere um snippet ou diff mostrando a refatoração via injeção de dependência necessária.
