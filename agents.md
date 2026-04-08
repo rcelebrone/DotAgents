@@ -1,29 +1,13 @@
-# 🧠 AI Multi-Agent Orchestrator (Root)
+# 🧠 Central de Roteamento Multi-Agente (Registry)
 
-Este arquivo define o catálogo de agentes e skills disponíveis na raiz deste framework.
+Este projeto utiliza uma arquitetura de delegação em cascata. O modelo de inteligência que interage com o usuário DEVE ler os perfis abaixo na pasta `agents/` e instanciar (via sub-prompts ou chamadas de ferramenta) o agente correto para a tarefa.
 
-## 🎭 Squad Profiles & Tiers
+## 👥 A Squad (Localizados em `agents/`)
+- 👑 **Tech Lead** (`agents/techlead.md`): O Orquestrador. Ponto de entrada do usuário.
+- 📐 **Architect** (`agents/architect.md`): Focado em integridade e estado de memória (`architecture.md`).
+- 💻 **Dev Team** (`agents/dev-team.md`): A força motriz de escrita de código.
+- 🐛 **QA Specialist** (`agents/qa-specialist.md`): Validação estrita e auditoria de logs.
+- ⚙️ **Ops** (`agents/ops.md`): Fechamento de pacotes, dependências e deploy (`delivery.md`).
 
-| Agente | Tier | Responsabilidade Principal | Skills Ativas |
-| :--- | :--- | :--- | :--- |
-| **Orchestrator** | Reasoning (Ultra) | Gestão de Estado, Decomposição de Tasks, Orquestração | All |
-| **Specialist** | Balanced (Pro) | Implementação Técnica, Refatoração e Codificação | feature-flow, delivery, quality |
-| **Guardian** | Speed (Flash) | Triagem de Bugs, Auditoria e Sincronização de Docs | triage, ops, docs |
-
-## 🛠️ Catálogo de Skills (Caminhos Locais)
-
-### 🚀 Core
-- **Project Bootstrap**: `skills/core/bootstrap.md` (Especialização da stack local)
-- **Compound Engineering**: `skills/core/compound.md` (Gestão de Memória e Aprendizado)
-
-### 🏗️ SDLC (Ciclo de Vida)
-- **Feature Flow**: `skills/sdlc/feature-flow.md` (Início, Branching e Scaffolding)
-- **Delivery**: `skills/sdlc/delivery.md` (Testes, Build e Finalização)
-
-### 🛡️ Quality & Governance
-- **Architecture Guard**: `skills/quality/guard.md` (Consistência e ADRs)
-- **Bug Triage**: `skills/quality/triage.md` (Análise de Causa Raiz - RCA)
-
-## 🔄 Fluxo de Comunicação
-1. O Agente consulta este arquivo para identificar a skill necessária.
-2. Se o projeto for novo, o Agente deve ler imediatamente `skills/core/bootstrap.md`.
+## 🔄 Topologia de Comunicação (Exemplo de Fluxo)
+`User` ➔ `TechLead` (Planeja e divide) ➔ `DevTeam` (Codifica) ➔ `QASpecialist` (Testa) ➔ `Ops` (Versiona) ➔ `TechLead` (Informa o User).
