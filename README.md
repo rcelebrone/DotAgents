@@ -18,9 +18,9 @@ O framework opera diretamente na raiz do diretório, eliminando a necessidade de
 
 Para transformar qualquer repositório em um ambiente de desenvolvimento assistido por IA:
 
-1.  **Instalação**: Copie todo o conteúdo deste framework (pastas `skills/` e arquivos `.md` da raiz) para a raiz do seu projeto destino (ou em uma pasta dedicada como `.agents/`).
+1.  **Instalação**: Copie todo o conteúdo deste framework (pastas `skills/` e arquivos `.md` da raiz) para uma pasta `.agents/`.
 2.  **Inicialização**: Na sua IDE, envie o seguinte prompt inicial para o agente de IA:
-    > "Por favor, execute o **project-bootstrap** (`skills/core/bootstrap.md`) para ajustar as skills para este projeto."
+    > "Execute o **project-bootstrap** (`.agents/skills/core/bootstrap.md`) para ajustar as skills para este projeto."
 3.  **Adaptação**: O agente analisará automaticamente sua base de código (linguagens, frameworks e arquitetura) e especializará as habilidades para sua stack específica.
 
 ## 🛠️ Ciclo de Trabalho Autônomo
