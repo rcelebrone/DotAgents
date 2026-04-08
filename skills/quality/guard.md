@@ -1,7 +1,7 @@
 # Skill: Quality & Architecture Guard
 
 ## 🏛 ADR Automator
-- Formaliza decisões técnicas em `docs/adr/NNN-titulo.md`.
+- Formaliza decisões técnicas em `.agents/docs/adr/NNN-titulo.md`.
 - Status: Proposed -> Accepted -> Deprecated.
 
 ## 🛡 Consistency Checker
