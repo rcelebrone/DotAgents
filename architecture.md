@@ -1,9 +1,12 @@
-# Architecture Memory State
+# Architecture Memory State (Root)
 
-> **Nota:** Este é um arquivo de estado arquitetural consolidado. Mantenha as decisões arquiteturais globais, fluxos de dados e padrões de dependências aqui.
+> **Nota:** Este arquivo reside na raiz e mantém as decisões arquiteturais globais e fluxos de dados.
 
 ## Stack Identificada
-*(Sendo substituído pós bootstrap...)*
+*(Este campo será preenchido dinamicamente pela skill `skills/core/bootstrap.md` pós-execução)*
 
-## Diagramas Genéricos ou Contexto
-*(A serem preenchidos pela engenharia contínua e pelo automator)*
+## Decisões Técnicas Acumuladas
+- [Aguardando primeira execução do bootstrap...]
+
+## Memory State Global
+- [Estado atual da aplicação e integrações detectadas]
