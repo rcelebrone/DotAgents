@@ -5,6 +5,7 @@ Este repositório é um template de referência para instalar uma squad completa
 ## 🏗️ A Squad
 
 O framework abandona o conceito de um único assistente genérico e instaura uma equipe especializada (`agents/`):
+
 * 🎯 **Product Owner**: Interface com o usuário. Refina regras de negócio e define os Critérios de Aceite (DoD).
 * 👑 **Tech Lead**: Orquestrador Técnico. Transforma os requisitos do PO em tarefas arquiteturais e gerencia o time.
 * 📐 **Architect**: Cuida da integridade do sistema e mantém a memória viva (`rules/architecture.md`).
@@ -16,9 +17,9 @@ O framework abandona o conceito de um único assistente genérico e instaura uma
 
 Para instalar este framework no seu projeto e garantir a orquestração perfeita:
 
-1. **Injeção**: Copie todos os arquivos e pastas deste repositório (`agents/`, `skills/`, `agents.md`, etc.) para a raiz do seu projeto destino.
+1. **Injeção**: Faça o clone deste repositório no seu projeto destino e renomeie a pasta para `.agents`.
 2. **Avaliação do LLM (Setup Inicial)**: Na sua IDE ou CLI de Agente, envie o seguinte comando inicial:
-   > "Por favor, atue como o **Tech Lead** (`agents/techlead.md`). Analise os modelos de linguagem disponíveis no nosso ambiente (ex: Claude 3.5 Sonnet, GPT-4o, Opus). Aloque os modelos com maior capacidade de *Reasoning* para o **Product Owner**, para você e para o **Architect**. Aloque modelos mais rápidos (*Speed/Balanced*) para o **Dev Team**, **QA** e **Ops**. Em seguida, execute a skill `skills/core/bootstrap.md` para ajustar todo o framework à linguagem de programação deste repositório."
+   > "Por favor, atue como o **Tech Lead** (`.agents/agents/techlead.md`). Analise os modelos de linguagem disponíveis no nosso ambiente (ex: Claude 3.5 Sonnet, GPT-4o, Opus). Aloque os modelos com maior capacidade de *Reasoning* para o **Product Owner**, para você e para o **Architect**. Aloque modelos mais rápidos (*Speed/Balanced*) para o **Dev Team**, **QA** e **Ops**. Em seguida, execute a skill `.agents/skills/core/bootstrap.md` para ajustar todo o framework à linguagem de programação deste repositório."
 
 ## 🛠️ O Ciclo de Delegação Autônoma
 
