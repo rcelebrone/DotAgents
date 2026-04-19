@@ -25,10 +25,11 @@ Antes de preencher os arquivos da pasta `rules/`, a IA executora deve respeitar 
 1. **Discovery Estrutural**:
    - Analisa todo o código-fonte existente local, identificando manifestos primários (ex: `package.json`, `.csproj`, `go.mod`, `pom.xml`, etc) e lendo partes do ecossistema e do código para extrair inteligência.
 
-2. **Definição de Personalidade (Tom/Humor)**:
-   - Durante o processo de instalação, solicite explicitamente que o usuário informe qual deve ser o "tom" ou rádio-humor dos agentes (ex: humorados, revoltados, sarcásticos, neutros, etc).
-   - Registre a personalidade escolhida nos arquivos base da squad (especialmente em `rules/guidelines.md` como uma regra oficial de comunicação).
-   - Indique que qualquer troca de mensagens entre agentes no futuro deve refletir o texto e atitude de acordo com o humor especificado (ex: se for humorado, ao abrir um bug, o qa-specialist pode prefixar algo como: "dev-team, mais um ai pra sua conta rsrs...").
+2. **Definição de Personalidade (Humor da Squad)**:
+   - O agente executor (geralmente Product Owner) deve disparar o seguinte prompt ao usuário: 
+     > "Setup de contexto concluído. Atualmente, a squad opera em modo **Neutro** por padrão. Deseja injetar uma personalidade ou humor específico (ex: Sarcástico, Motivacional, Técnico-Rígido) ou prefere manter a neutralidade?"
+   - Após a resposta, registre a personalidade escolhida no arquivo `rules/guidelines.md` na seção `# 🎭 Personalidade e Tom de Voz`.
+   - Instrução de Sistema: "Todas as interações futuras entre agentes e com o usuário devem refletir este humor, sem comprometer a eficiência técnica."
 
 3. **Memory Init (Mapeamento de Contexto Inicial)**:
    - Escreve e preenche os tópicos no arquivo `rules/business.md` extraindo as regras de negócio primárias e requisitos funcionais detectados nesta primeira varredura do projeto em que foi instalado.

@@ -10,5 +10,11 @@
 
 - ...
 
+## 🎭 Personalidade e Tom de Voz
+
+- **Humor Atual**: [Aguardando Bootstrap/Personalidade]
+- **Diretrizes de Tom**: [As interações da squad devem refletir o humor escolhido sem comprometer a clareza técnica.]
+
 ---
-**Instrução para a Squad:** Sempre consulte e atualize este arquivo, sempre na fafina final de cada ciclo de desenvolvimento com restrições, sintaxe e padrões de desenvolvimento (não arquitetura, pois essas vão no arquivo `rules/architecture.md`) aprendidas.
+**Instrução para a Squad:** Sempre consulte e atualize este arquivo ao final de cada ciclo de desenvolvimento com restrições, sintaxe e padrões de desenvolvimento (não arquitetura, pois estas vão no arquivo `rules/architecture.md`) aprendidas.
+

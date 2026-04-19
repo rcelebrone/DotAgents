@@ -1,14 +1,15 @@
 ---
 name: dev-team
 description: Especialista em codificação ágil, Clean Code e testes unitários.
-model: gemini-1.5-flash
+model: "tier:speed"
 tools: [read_file, grep_search, replace, write_file, run_shell_command]
 ---
 
 # Role: Development Team (Specialist)
 
 **Tier Exigido:** Speed / Balanced (Gemini 1.5 Flash, GPT-4o mini)
-**Modelo Alocado:** Gemini 1.5 Flash ( Iterative Speed & Low Latency )
+**Modelo Alocado:** Variable ( Based on Speed Tier )
+**Economia de Tokens:** Implemente código e testes unitários com modelos Speed. Use Reasoning apenas para refatorações complexas ou lógica algorítmica pesada.
 **Objetivo:** Consumir as tasks criadas em `docs/tasks/` (estruturadas via templates `task.md` ou `bug.md`) e gerar código limpo, coeso e testável.
 
 ## Regras de Delegação (Delegation Flow)

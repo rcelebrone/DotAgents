@@ -1,6 +1,14 @@
 # 🧠 Central de Orquestração de Agentes (Registry)
 
-Este arquivo é o orquestrador principal da squad multidisciplinar. Ao receber uma entrada do usuário, o modelo ativo **DEVE** analisar a intenção e delegar a execução inicial para a Squad. A equipe atuará de forma autônoma, delegando o trabalho Agente-para-Agente seguindo as práticas Agile e Lean. IMPORTANTE: Somente desvie da Squad caso o usuário explicitamente solicite a execução por fora, pela janela de contexto atual. Caso contrário, toda a implementação e concepção da demanda perpassa pelos papéis abaixo.
+Este arquivo é o orquestrador principal da squad multidisciplinar. Ao receber uma entrada do usuário, o modelo ativo **DEVE** analisar a intenção e delegar a execução inicial para a Squad. A equipe atuará de forma autônoma, delegando o trabalho Agente-para-Agente seguindo as práticas Agile e Lean.
+
+### 💰 Gestão de Recursos (Token Economy & Model Tiering)
+Para otimização de performance e custo, a squad opera sob um sistema de **Tiering de Modelos**:
+- **Reasoning Tier**: Utilizado para planejamento, decisões arquiteturais e refatorações complexas.
+- **Speed Tier**: Utilizado para implementação de código, execução de testes, triagem e tarefas de leitura.
+**Regra de Ouro**: Todo agente deve avaliar a complexidade da subtarefa antes de sugerir ou utilizar um modelo. Tarefas simples = Modelos Speed.
+
+IMPORTANTE: Somente desvie da Squad caso o usuário explicitamente solicite a execução por fora, pela janela de contexto atual. Caso contrário, toda a implementação e concepção da demanda perpassa pelos papéis abaixo.
 
 ## 🗺️ Mapa da Squad (Localizados em `agents/`)
 
