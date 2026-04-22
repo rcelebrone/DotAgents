@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Squad Protocol & Orchestration
 
 O protocolo completo da squad — fluxo obrigatório, responsabilidades por agente, roteamento de demandas, template de tasks e registro de violações — está em:
