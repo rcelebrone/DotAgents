@@ -169,4 +169,6 @@ Em seguida digite `configure DotAgents` na ferramenta. O instalador detecta a pr
 
 ## 📄 Licença
 
-Veja [LICENSE](LICENSE).
+**Uso não comercial.** Este framework é livre para uso pessoal, acadêmico, educacional e em organizações sem fins lucrativos. **Comercialização — direta ou indireta — é estritamente proibida** sem licença prévia por escrito.
+
+Leia os termos completos em [`license.md`](license.md) antes de usar, modificar ou redistribuir. Para licenciamento comercial, contate o detentor do copyright indicado no arquivo.
