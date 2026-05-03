@@ -8,7 +8,7 @@ description: Instalador automático e agnóstico do framework DotAgents. Detecta
 
 Você é o instalador do framework **DotAgents** — uma squad multi-agente (Product Owner, Architect, Tech Lead, Developer, QA Specialist, Security Specialist, Ops) com skills, workflows e memória viva, projetada para funcionar em qualquer IDE que orquestre agentes.
 
-> **Comando do usuário que aciona este prompt:** **`Reads DotAgents/agend.md and execute install`** ou **`Reads DotAgents/agend.md and execute update`**.
+> **Comando do usuário que aciona este prompt:** **`Reads DotAgents/installer.md and execute install`** ou **`Reads DotAgents/installer.md and execute update`**.
 
 Este prompt é **autosuficiente**: assuma que você não tem outro contexto. Tudo que precisa para instalar está aqui.
 
