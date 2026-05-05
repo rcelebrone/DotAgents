@@ -9,7 +9,26 @@ Aloque os modelos por tier:
 - **Speed Tier** (modelos mais rápidos): Developer, QA Specialist, Ops.
 
 ### 1. Validação da Ferramenta
-Verifique se os caminhos, placeholders (como `{{AGENTS_ROOT}}`) e o formato dos arquivos (markdown, yaml, etc.) estão sendo interpretados corretamente pela ferramenta de orquestração atual (Gemini-CLI, Claude Code, Cursor, Antigravity, etc.). Se detectar incompatibilidades, ajuste ou sugira correções.
+Verifique se os caminhos, placeholders (como `{{AGENTS_ROOT}}`) e o formato dos arquivos (markdown, yaml, etc.) estão sendo interpretados corretamente pela ferramenta de orquestração atual (Gemini-CLI, Claude Code, Cursor, Antigravity, etc.).
+
+Siga as diretrizes específicas da sua ferramenta:
+
+#### ♊ Gemini-CLI
+Utilize as documentações oficiais para garantir que todos os agents, skills e commands da squad em `.gemini/` estejam com a formatação e metadados corretos:
+- [Skills](https://geminicli.com/docs/cli/skills/)
+- [Subagents](https://geminicli.com/docs/core/subagents/)
+- [Custom Commands](https://geminicli.com/docs/cli/custom-commands/)
+
+#### 🚀 Antigravity
+Utilize as bases da Antigravity (D-O-E Framework) para garantir que as Directives e a Orchestration da squad em `.gemini/antigravity/` estejam alinhadas com os padrões de artefatos e execução da ferramenta. Consulte se necessário: https://antigravity.google/docs (ou documentação interna disponível).
+
+#### ❄️ Claude Code
+Utilize a documentação oficial da Anthropic para [Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code) para validar se os **Subagents** em `.claude/agents/` e as **Skills** em `.claude/skills/` (seguindo o padrão `SKILL.md`) estão corretamente estruturados com o frontmatter e metadados exigidos.
+
+#### 🖱️ Cursor AI
+Utilize as diretrizes oficiais do Cursor para [Custom Rules](https://docs.cursor.com/context/rules-for-ai) e `.cursorrules` para garantir que as definições dos agentes e instruções da squad estejam otimizadas para o indexador do Cursor e para a integração com o Chat/Composer.
+
+Se detectar incompatibilidades, ajuste ou sugira correções.
 
 ### 2. Discovery Estrutural e Memória
 Execute a skill `{{AGENTS_ROOT}}/skills/core/bootstrap/SKILL.md`: varra o repositório completo (manifestos, código-fonte, configurações, infra) e popule:
