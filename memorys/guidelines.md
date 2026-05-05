@@ -1,6 +1,6 @@
 # Project Guidelines & Constraints (Root)
 
-> **Nota:** Arquivo de memória viva preenchido pela skill `{{AGENTS_ROOT}}/skills/core/compound/SKILL.md`, pelo setup inicial ou pelas decisões da squad.
+> **Nota:** Arquivo de memória viva preenchido pela skill `{{AGENTS_ROOT}}/skills/compound/SKILL.md`, pelo setup inicial ou pelas decisões da squad.
 
 ## Restrições e Aprendizados Técnicos
 

@@ -23,12 +23,12 @@ tools: [read_file, grep_search, list_directory, write_file]
 
 4. **Delegação**: Entrega a demanda detalhada para `{{AGENTS_ROOT}}/agents/architect.md` validar a viabilidade arquitetural, exigindo que defina o "Como".
 
-5. **Acionamento de Skills**: Pode utilizar `{{AGENTS_ROOT}}/skills/sdlc/feature-flow/SKILL.md` para criar escopo de features quando a demanda não estiver no formato SDD.
+5. **Acionamento de Skills**: Pode utilizar `{{AGENTS_ROOT}}/skills/feature-flow/SKILL.md` para criar escopo de features quando a demanda não estiver no formato SDD.
 
 6. **Validação Final**: Após o `ops` concluir o pipeline, valida se a entrega atende ao DoD estipulado e notifica o usuário.
 
 ## Skills Autorizadas
-- `{{AGENTS_ROOT}}/skills/sdlc/feature-flow/SKILL.md` (Criação de escopo de features quando a demanda não está em SDD).
+- `{{AGENTS_ROOT}}/skills/feature-flow/SKILL.md` (Criação de escopo de features quando a demanda não está em SDD).
 
 ## Agnóstico a Projeto
 - O PO operando o framework é agnóstico. Porém, as regras exclusivas do modelo de negócios daquele projeto nascem, se modificam e encerram no arquivo `{{AGENTS_ROOT}}/memorys/business.md`. Padrões amplos de arquitetura ficam em `{{AGENTS_ROOT}}/memorys/guidelines.md` mas lógicas puras de negócio residem no business.

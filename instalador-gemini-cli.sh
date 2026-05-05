@@ -33,6 +33,8 @@ copy_and_replace() {
     cp "$src" "$dest"
     # Use different separator for sed to avoid conflict with paths
     sed -i "s|{{AGENTS_ROOT}}|$AGENTS_ROOT|g" "$dest"
+    # Remove Antigravity specific trigger (flexible regex)
+    sed -i "/^[[:space:]]*trigger:[[:space:]]*always_on/d" "$dest"
 }
 
 # 1. Install Agents
@@ -52,6 +54,7 @@ if [ -d "$SKILLS_SRC" ]; then
     echo "📦 Installing Skills..."
     cp -r "$SKILLS_SRC"/* "$GEMINI_DIR/skills/"
     find "$GEMINI_DIR/skills/" -type f -name "*.md" -exec sed -i "s|{{AGENTS_ROOT}}|$AGENTS_ROOT|g" {} +
+    find "$GEMINI_DIR/skills/" -type f -name "*.md" -exec sed -i "/^[[:space:]]*trigger:[[:space:]]*always_on/d" {} +
     echo "  ✅ Installed Skills"
 fi
 
@@ -72,7 +75,23 @@ if [ -d "$MEMORYS_SRC" ]; then
     echo "📦 Installing Memorys..."
     cp -r "$MEMORYS_SRC"/* "$GEMINI_DIR/memorys/"
     find "$GEMINI_DIR/memorys/" -type f -name "*.md" -exec sed -i "s|{{AGENTS_ROOT}}|$AGENTS_ROOT|g" {} +
+    find "$GEMINI_DIR/memorys/" -type f -name "*.md" -exec sed -i "/^[[:space:]]*trigger:[[:space:]]*always_on/d" {} +
     echo "  ✅ Installed Memorys"
+fi
+
+# 5. Set up GEMINI.md (Main Orchestrator)
+if [ -f "$COMMANDS_SRC/orchestrator.md" ]; then
+    echo "🔗 Linking orchestrator to GEMINI.md..."
+    copy_and_replace "$COMMANDS_SRC/orchestrator.md" "GEMINI.md"
+    echo "  ✅ GEMINI.md created from orchestrator.md"
+fi
+
+# 6. Add DotAgents to .gitignore
+if [ -d "DotAgents" ]; then
+    if ! grep -q "^DotAgents/" .gitignore 2>/dev/null; then
+        echo -e "\n# DotAgents\nDotAgents/" >> .gitignore
+        echo "  ✅ Added DotAgents/ to .gitignore"
+    fi
 fi
 
 echo "-----------------------------------------------"

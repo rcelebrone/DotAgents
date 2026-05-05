@@ -68,6 +68,21 @@ if [ -d "$MEMORYS_SRC" ]; then
     echo "  ✅ Installed Memorys to $TARGET_DIR/memorys/"
 fi
 
+# 5. Set up AG.md (Main Orchestrator)
+if [ -f "$COMMANDS_SRC/orchestrator.md" ]; then
+    echo "🔗 Linking orchestrator to AG.md..."
+    copy_and_replace "$COMMANDS_SRC/orchestrator.md" "AG.md"
+    echo "  ✅ AG.md created from orchestrator.md"
+fi
+
+# 6. Add DotAgents to .gitignore
+if [ -d "DotAgents" ]; then
+    if ! grep -q "^DotAgents/" .gitignore 2>/dev/null; then
+        echo -e "\n# DotAgents\nDotAgents/" >> .gitignore
+        echo "  ✅ Added DotAgents/ to .gitignore"
+    fi
+fi
+
 echo "-----------------------------------------------"
 echo "✨ Installation complete!"
 echo "Your Antigravity squad is ready in $TARGET_DIR/"

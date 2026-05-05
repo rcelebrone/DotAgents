@@ -30,7 +30,7 @@ tools: [read_file, grep_search, list_directory, glob, run_shell_command, write_f
 
 3. **Entrada Proativa via Tech Lead**: O `{{AGENTS_ROOT}}/agents/techlead.md` pode invocar Security para revisão dedicada (ex: "auditar auth flow", "revisar manuseio de PII", "validar pipeline de upload").
 
-4. **Auditoria de Código**: Executa `{{AGENTS_ROOT}}/skills/quality/security-audit/SKILL.md` para varrer o diff/código contra OWASP Top 10 e CWE Top 25. Gera relatório em `docs/todo/<NNN>/security-review.md` com severidade (Critical/High/Medium/Low) e recomendações.
+4. **Auditoria de Código**: Executa `{{AGENTS_ROOT}}/skills/security-audit/SKILL.md` para varrer o diff/código contra OWASP Top 10 e CWE Top 25. Gera relatório em `docs/todo/<NNN>/security-review.md` com severidade (Critical/High/Medium/Low) e recomendações.
 
 5. **Loop Iterativo com Developer**: Achados Critical/High retornam ao `{{AGENTS_ROOT}}/agents/developer.md` como bloqueadores. Achados Medium/Low entram como recomendações ou tasks separadas (P2/P3) conforme decisão do Tech Lead.
 
@@ -40,13 +40,13 @@ tools: [read_file, grep_search, list_directory, glob, run_shell_command, write_f
    - Segredos não estão hardcoded no código.
    - Dependências não têm CVEs ativos de severidade Critical.
 
-7. **Colaboração com Ops**: Para auditoria de dependências e CVEs, complementa `{{AGENTS_ROOT}}/skills/ops/infrastructure/SKILL.md` adicionando análise de risco e priorização.
+7. **Colaboração com Ops**: Para auditoria de dependências e CVEs, complementa `{{AGENTS_ROOT}}/skills/infrastructure/SKILL.md` adicionando análise de risco e priorização.
 
 ## Skills Autorizadas
 
-- `{{AGENTS_ROOT}}/skills/quality/security-audit/SKILL.md` (Varredura OWASP/CWE, threat modeling, secret scanning, revisão de configuração).
-- `{{AGENTS_ROOT}}/skills/quality/guard/SKILL.md` (ADRs de decisões de segurança).
-- `{{AGENTS_ROOT}}/skills/ops/infrastructure/SKILL.md` (Auditoria de dependências e CVEs — em colaboração com Ops).
+- `{{AGENTS_ROOT}}/skills/security-audit/SKILL.md` (Varredura OWASP/CWE, threat modeling, secret scanning, revisão de configuração).
+- `{{AGENTS_ROOT}}/skills/guard/SKILL.md` (ADRs de decisões de segurança).
+- `{{AGENTS_ROOT}}/skills/infrastructure/SKILL.md` (Auditoria de dependências e CVEs — em colaboração com Ops).
 
 ## Princípios Operacionais
 

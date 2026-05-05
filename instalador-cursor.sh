@@ -41,7 +41,14 @@ globs: \"\"
 alwaysApply: $always_apply
 ---
 " > "$dest_file"
-    cat "$src_file" >> "$dest_file"
+    
+    # Append content skipping the original frontmatter if it exists
+    if head -n 1 "$src_file" | grep -q "^---"; then
+        # Skip everything between the first and second ---
+        sed '1 { /^---/ { :a N; /\n---/! ba; d } }' "$src_file" >> "$dest_file"
+    else
+        cat "$src_file" >> "$dest_file"
+    fi
     
     # Replace placeholder
     sed -i "s|{{AGENTS_ROOT}}|$AGENTS_ROOT|g" "$dest_file"
@@ -74,12 +81,23 @@ if [ -d "$SKILLS_SRC" ]; then
     echo "📦 Copying Skills..."
     cp -r "$SKILLS_SRC"/* "$TARGET_DIR/skills/"
     find "$TARGET_DIR/skills/" -type f -name "*.md" -exec sed -i "s|{{AGENTS_ROOT}}|$AGENTS_ROOT|g" {} +
+    find "$TARGET_DIR/skills/" -type f -name "*.md" -exec sed -i "/^[[:space:]]*trigger:[[:space:]]*always_on/d" {} +
 fi
 
 if [ -d "$MEMORYS_SRC" ]; then
     echo "📦 Copying Memorys..."
     cp -r "$MEMORYS_SRC"/* "$TARGET_DIR/memorys/"
     find "$TARGET_DIR/memorys/" -type f -name "*.md" -exec sed -i "s|{{AGENTS_ROOT}}|$AGENTS_ROOT|g" {} +
+    find "$TARGET_DIR/memorys/" -type f -name "*.md" -exec sed -i "/^[[:space:]]*trigger:[[:space:]]*always_on/d" {} +
+    echo "  ✅ Installed Memorys to $TARGET_DIR/memorys/"
+fi
+
+# 4. Add DotAgents to .gitignore
+if [ -d "DotAgents" ]; then
+    if ! grep -q "^DotAgents/" .gitignore 2>/dev/null; then
+        echo -e "\n# DotAgents\nDotAgents/" >> .gitignore
+        echo "  ✅ Added DotAgents/ to .gitignore"
+    fi
 fi
 
 echo "-----------------------------------------------"

@@ -45,9 +45,9 @@ Após a resposta, registrar em `{{AGENTS_ROOT}}/memorys/guidelines.md` na seçã
 
 ### 4. Skill Specialization (Calibração da Stack)
 Adaptar os comandos das skills sensíveis à stack para o ecossistema detectado:
-- `{{AGENTS_ROOT}}/skills/sdlc/delivery/SKILL.md`: comandos de build, lint, test, version bump (`npm`, `yarn`, `pnpm`, `pip`, `poetry`, `go`, `mvn`, `cargo`, `dotnet`, etc.).
-- `{{AGENTS_ROOT}}/skills/quality/security-audit/SKILL.md`: auditor de dependências (`npm audit`, `pip-audit`, `cargo audit`, `bundle audit`, etc.).
-- `{{AGENTS_ROOT}}/skills/ops/infrastructure/SKILL.md`: idem para `audit` e gestão de pacotes.
+- `{{AGENTS_ROOT}}/skills/delivery/SKILL.md`: comandos de build, lint, test, version bump (`npm`, `yarn`, `pnpm`, `pip`, `poetry`, `go`, `mvn`, `cargo`, `dotnet`, etc.).
+- `{{AGENTS_ROOT}}/skills/security-audit/SKILL.md`: auditor de dependências (`npm audit`, `pip-audit`, `cargo audit`, `bundle audit`, etc.).
+- `{{AGENTS_ROOT}}/skills/infrastructure/SKILL.md`: idem para `audit` e gestão de pacotes.
 
 > ATENÇÃO: a calibração ocorre por **registro nas memórias** ou por preferências locais — **não reescreva** os arquivos de skill (eles são agnósticos). Os comandos específicos da stack ficam em `{{AGENTS_ROOT}}/memorys/architecture.md`, e os agentes consultam de lá.
 

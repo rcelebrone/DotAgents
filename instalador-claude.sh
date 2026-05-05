@@ -32,6 +32,8 @@ copy_and_replace() {
     local dest=$2
     cp "$src" "$dest"
     sed -i "s|{{AGENTS_ROOT}}|$AGENTS_ROOT|g" "$dest"
+    # Remove Antigravity specific trigger (flexible regex)
+    sed -i "/^[[:space:]]*trigger:[[:space:]]*always_on/d" "$dest"
 }
 
 # 1. Install Agents
@@ -48,6 +50,7 @@ if [ -d "$SKILLS_SRC" ]; then
     echo "📦 Installing Skills..."
     cp -r "$SKILLS_SRC"/* "$TARGET_DIR/skills/"
     find "$TARGET_DIR/skills/" -type f -name "*.md" -exec sed -i "s|{{AGENTS_ROOT}}|$AGENTS_ROOT|g" {} +
+    find "$TARGET_DIR/skills/" -type f -name "*.md" -exec sed -i "/^[[:space:]]*trigger:[[:space:]]*always_on/d" {} +
     echo "  ✅ Installed Skills to $TARGET_DIR/skills/"
 fi
 
@@ -65,6 +68,7 @@ if [ -d "$MEMORYS_SRC" ]; then
     echo "📦 Installing Memorys..."
     cp -r "$MEMORYS_SRC"/* "$TARGET_DIR/memorys/"
     find "$TARGET_DIR/memorys/" -type f -name "*.md" -exec sed -i "s|{{AGENTS_ROOT}}|$AGENTS_ROOT|g" {} +
+    find "$TARGET_DIR/memorys/" -type f -name "*.md" -exec sed -i "/^[[:space:]]*trigger:[[:space:]]*always_on/d" {} +
     echo "  ✅ Installed Memorys to $TARGET_DIR/memorys/"
 fi
 
@@ -73,6 +77,14 @@ if [ -f "$COMMANDS_SRC/orchestrator.md" ]; then
     echo "🔗 Linking orchestrator to CLAUDE.md..."
     copy_and_replace "$COMMANDS_SRC/orchestrator.md" "CLAUDE.md"
     echo "  ✅ CLAUDE.md created from orchestrator.md"
+fi
+
+# 6. Add DotAgents to .gitignore
+if [ -d "DotAgents" ]; then
+    if ! grep -q "^DotAgents/" .gitignore 2>/dev/null; then
+        echo -e "\n# DotAgents\nDotAgents/" >> .gitignore
+        echo "  ✅ Added DotAgents/ to .gitignore"
+    fi
 fi
 
 echo "-----------------------------------------------"

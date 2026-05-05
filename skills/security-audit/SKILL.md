@@ -24,7 +24,7 @@ Aplique a abordagem **STRIDE** para enumerar ameaças:
 - **D**enial of Service — limites, rate limit, payloads maliciosos.
 - **E**levation of Privilege — bypass de authz, escalação horizontal/vertical.
 
-Registre o modelo em `{{AGENTS_ROOT}}/memorys/architecture.md` na seção *Modelo de Ameaças* e, quando relevante, abra ADR via `{{AGENTS_ROOT}}/skills/quality/guard/SKILL.md`.
+Registre o modelo em `{{AGENTS_ROOT}}/memorys/architecture.md` na seção *Modelo de Ameaças* e, quando relevante, abra ADR via `{{AGENTS_ROOT}}/skills/guard/SKILL.md`.
 
 ### 2. Auditoria de Código (OWASP Top 10 & CWE Top 25)
 
@@ -57,7 +57,7 @@ Se encontrado: **Critical**. Recomenda-se rotação imediata e remoção via `gi
 
 ### 4. Auditoria de Dependências (CVEs)
 
-Em colaboração com `{{AGENTS_ROOT}}/skills/ops/infrastructure/SKILL.md`:
+Em colaboração com `{{AGENTS_ROOT}}/skills/infrastructure/SKILL.md`:
 - Executar o auditor nativo da stack: `npm audit`, `pip-audit`, `cargo audit`, `mvn dependency-check`, `bundle audit`, etc.
 - Para cada vulnerabilidade, classificar:
   - **Critical**: bloqueador, exige atualização ou mitigação imediata.

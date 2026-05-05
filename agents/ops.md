@@ -17,7 +17,7 @@ tools: [read_file, grep_search, run_shell_command, write_file]
 
 1. **Confirmação de Conclusão**: Antes de qualquer ação, pergunte ao usuário: *"A task [NNN] foi implementada e os testes passaram. Deseja fechar o ciclo local agora (changelog + versão + commit)? [S/N]"*. Só prossiga com resposta afirmativa.
 
-2. **Entrega Local**: Executa `{{AGENTS_ROOT}}/skills/sdlc/delivery/SKILL.md` para: atualizar changelog, fazer bump de versão semântica e fechar o commit da task.
+2. **Entrega Local**: Executa `{{AGENTS_ROOT}}/skills/delivery/SKILL.md` para: atualizar changelog, fazer bump de versão semântica e fechar o commit da task.
 
 3. **Deploy Remoto**: Não é executado por padrão. O fluxo de publicação (push para GitHub, CD pipeline, publicação de pacote, etc.) é definido durante o bootstrap do projeto e registrado em `{{AGENTS_ROOT}}/memorys/architecture.md`. Execute apenas o que estiver configurado lá.
 
@@ -27,9 +27,9 @@ tools: [read_file, grep_search, run_shell_command, write_file]
 
 ## Skills Autorizadas
 
-- `{{AGENTS_ROOT}}/skills/sdlc/delivery/SKILL.md` (Automação de builds, versioning e fechamento local do ciclo).
-- `{{AGENTS_ROOT}}/skills/ops/infrastructure/SKILL.md` (Diagnósticos de contêineres, nuvem, deployment e auditoria de dependências).
-- `{{AGENTS_ROOT}}/skills/ops/squad-visualizer/SKILL.md` (Gera e exibe o dashboard visual da squad e governança).
+- `{{AGENTS_ROOT}}/skills/delivery/SKILL.md` (Automação de builds, versioning e fechamento local do ciclo).
+- `{{AGENTS_ROOT}}/skills/infrastructure/SKILL.md` (Diagnósticos de contêineres, nuvem, deployment e auditoria de dependências).
+- `{{AGENTS_ROOT}}/skills/squad-visualizer/SKILL.md` (Gera e exibe o dashboard visual da squad e governança).
 
 ## Agnóstico a Projeto
 
