@@ -8,35 +8,51 @@ A squad é regida por um **orquestrador central**, tem **personas** com responsa
 
 ## 🚀 Instalação
 
-Dentro do projeto onde você quer instalar a squad, clone este repositório como `DotAgents/`:
+Primeiro, clone este repositório como `DotAgents/` dentro do seu projeto:
 
 ```bash
 git clone https://github.com/rodrigo-celebrone/DotAgents.git DotAgents
 ```
 
-Em seguida, execute o script de instalação correspondente à sua ferramenta:
+Agora, siga as instruções de acordo com a ferramenta que você utiliza:
 
-### Gemini-CLI
+### ♊ Gemini-CLI
+#### 1. Execute o instalador
 ```bash
 ./DotAgents/instalador-gemini-cli.sh
 ```
+#### 2. 🤖 Prompt para o LLM
+> "Você agora está equipado com a squad **DotAgents**. Localize os arquivos de configuração em `.gemini/` e execute o workflow de inicialização descrito em `commands/bootstrap.md`. Assuma as personas de **Tech Lead**, **Architect** e **Product Owner** para analisar o projeto e preencher os arquivos em `memorys/` com a stack técnica, regras de negócio e guidelines detectados."
 
-### Antigravity
+---
+
+### 🚀 Antigravity
+#### 1. Execute o instalador
 ```bash
 ./DotAgents/instalador-antigravity.sh
 ```
+#### 2. 🤖 Prompt para o LLM
+> "Você agora está equipado com a squad **DotAgents**. Localize os arquivos de configuração em `.gemini/` e execute o workflow de inicialização descrito em `commands/bootstrap.md`. Assuma as personas de **Tech Lead**, **Architect** e **Product Owner** para analisar o projeto e preencher os arquivos em `memorys/` com a stack técnica, regras de negócio e guidelines detectados."
 
-### Claude Code
+---
+
+### ❄️ Claude Code
+#### 1. Execute o instalador
 ```bash
 ./DotAgents/instalador-claude.sh
 ```
+#### 2. 🤖 Prompt para o LLM
+> "Você agora está equipado com a squad **DotAgents**. Localize os arquivos de configuração em `.claude/` e execute o workflow de inicialização descrito em `commands/bootstrap.md`. Assuma as personas de **Tech Lead**, **Architect** e **Product Owner** para analisar o projeto e preencher os arquivos em `memorys/` com a stack técnica, regras de negócio e guidelines detectados."
 
-### Cursor AI
+---
+
+### 🖱️ Cursor AI
+#### 1. Execute o instalador
 ```bash
 ./DotAgents/instalador-cursor.sh
 ```
-
-Cada script copiará os agentes, skills e comandos para as pastas esperadas por cada ferramenta (`.gemini/`, `{{AGENTS_ROOT}}/`, `.claude/` ou `.cursor/`), tornando-os disponíveis no seu fluxo de trabalho.
+#### 2. 🤖 Prompt para o LLM
+> "Você agora está equipado com a squad **DotAgents**. Localize os arquivos de configuração em `.cursor/` e execute o workflow de inicialização descrito em `commands/bootstrap.md`. Assuma as personas de **Tech Lead**, **Architect** e **Product Owner** para analisar o projeto e preencher os arquivos em `memorys/` com a stack técnica, regras de negócio e guidelines detectados."
 
 ---
 

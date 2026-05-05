@@ -8,6 +8,10 @@ Aloque os modelos por tier:
 - **Reasoning Tier** (modelos mais capazes): Product Owner, Architect, Tech Lead, **Security Specialist**.
 - **Speed Tier** (modelos mais rápidos): Developer, QA Specialist, Ops.
 
+### 1. Validação da Ferramenta
+Verifique se os caminhos, placeholders (como `{{AGENTS_ROOT}}`) e o formato dos arquivos (markdown, yaml, etc.) estão sendo interpretados corretamente pela ferramenta de orquestração atual (Gemini-CLI, Claude Code, Cursor, Antigravity, etc.). Se detectar incompatibilidades, ajuste ou sugira correções.
+
+### 2. Discovery Estrutural e Memória
 Execute a skill `{{AGENTS_ROOT}}/skills/core/bootstrap/SKILL.md`: varra o repositório completo (manifestos, código-fonte, configurações, infra) e popule:
 - `{{AGENTS_ROOT}}/memorys/business.md` — regras de negócio, terminologia de domínio, fluxos de permissão.
 - `{{AGENTS_ROOT}}/memorys/architecture.md` — stack, NFRs, arquitetura macro, modelo de ameaças, controles de segurança ativos.
