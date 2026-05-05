@@ -21,6 +21,9 @@ Agora, siga as instruções de acordo com a ferramenta que você utiliza:
 ```bash
 ./DotAgents/instalador-gemini-cli.sh
 ```
+```bash
+gemini
+```
 #### 2. 🤖 Prompt para o LLM
 > "Siga as instruções do `commands/bootstrap.md` para instalar a squad no gemini-cli"
 
@@ -40,6 +43,9 @@ Agora, siga as instruções de acordo com a ferramenta que você utiliza:
 #### 1. Execute o instalador
 ```bash
 ./DotAgents/instalador-claude.sh
+```
+```bash
+claude
 ```
 #### 2. 🤖 Prompt para o LLM
 > "Siga as instruções do `commands/bootstrap.md` para instalar a squad no claude-code"
