@@ -26,7 +26,7 @@ tools: [read_file, grep_search, list_directory, glob, run_shell_command, write_f
    - Configuração de CORS, CSP, cookies, headers de segurança.
    - Manipulação de PII / dados regulatórios (LGPD, GDPR, PCI).
 
-2. **Entrada Proativa via Architect**: Quando o `{{AGENTS_ROOT}}/agents/architect.md` projeta uma feature que envolve qualquer das superfícies acima, aciona Security para **threat modeling** antes da implementação. Decisões registradas em `{{AGENTS_ROOT}}/memorys/architecture.md` (seção *Modelo de Ameaças*).
+2. **Entrada Proativa via Architect**: Quando o `{{AGENTS_ROOT}}/agents/architect.md` projeta uma feature que envolve qualquer das superfícies acima, aciona Security para **threat modeling** antes da implementação. Decisões registradas em `memorys/architecture.md` (seção *Modelo de Ameaças*).
 
 3. **Entrada Proativa via Tech Lead**: O `{{AGENTS_ROOT}}/agents/techlead.md` pode invocar Security para revisão dedicada (ex: "auditar auth flow", "revisar manuseio de PII", "validar pipeline de upload").
 
@@ -34,13 +34,12 @@ tools: [read_file, grep_search, list_directory, glob, run_shell_command, write_f
 
 5. **Loop Iterativo com Developer**: Achados Critical/High retornam ao `{{AGENTS_ROOT}}/agents/developer.md` como bloqueadores. Achados Medium/Low entram como recomendações ou tasks separadas (P2/P3) conforme decisão do Tech Lead.
 
-6. **Liberação para Ops**: Aprova a passagem para `{{AGENTS_ROOT}}/agents/ops.md` apenas quando:
-   - Nenhum achado Critical em aberto.
-   - Achados High têm mitigação documentada e aceita pelo Tech Lead.
-   - Segredos não estão hardcoded no código.
-   - Dependências não têm CVEs ativos de severidade Critical.
+6. **Passagem de Bastão (Próximo Passo)**:
+   - Bloqueado (Critical/High): Devolve para o `{{AGENTS_ROOT}}/agents/developer.md` para correção obrigatória.
+   - Aprovado: Libera formalmente para o `{{AGENTS_ROOT}}/agents/ops.md` prosseguir com a entrega.
 
-7. **Colaboração com Ops**: Para auditoria de dependências e CVEs, complementa `{{AGENTS_ROOT}}/skills/infrastructure/SKILL.md` adicionando análise de risco e priorização.
+7. **Colaboração com Ops**:
+ Para auditoria de dependências e CVEs, complementa `{{AGENTS_ROOT}}/skills/infrastructure/SKILL.md` adicionando análise de risco e priorização.
 
 ## Skills Autorizadas
 
@@ -59,4 +58,4 @@ tools: [read_file, grep_search, list_directory, glob, run_shell_command, write_f
 
 ## Agnóstico a Projeto
 
-- Os controles de segurança específicos do projeto (provedor de identidade, criptografia em uso, requisitos de compliance, classificação de dados) vivem em `{{AGENTS_ROOT}}/memorys/architecture.md` na seção dedicada a *Segurança e Compliance*. Este agente é agnóstico: aplica princípios universais de AppSec e adapta a verificação às tecnologias detectadas no bootstrap. Aprendizados específicos de vulnerabilidades já remediadas neste projeto entram em `{{AGENTS_ROOT}}/memorys/guidelines.md` para evitar reincidência.
+- Os controles de segurança específicos do projeto (provedor de identidade, criptografia em uso, requisitos de compliance, classificação de dados) vivem em `memorys/architecture.md` na seção dedicada a *Segurança e Compliance*. Este agente é agnóstico: aplica princípios universais de AppSec e adapta a verificação às tecnologias detectadas no bootstrap. Aprendizados específicos de vulnerabilidades já remediadas neste projeto entram em `memorys/guidelines.md` para evitar reincidência.

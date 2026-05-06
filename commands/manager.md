@@ -1,10 +1,10 @@
 ---
 trigger: always_on
-name: squad-orchestrator
+name: squad-manager
 description: Protocolo central que rege o trabalho da squad multi-agente DotAgents. Sempre ativo.
 ---
 
-# 🧠 Orquestrador Central da Squad DotAgents
+# 🧠 Manager Central da Squad DotAgents
 
 Este arquivo é o **protocolo absoluto** que rege a squad multi-agente instalada neste repositório. Toda solicitação do usuário (feature, bug, refactor, dúvida, deploy, security) é roteada através dele.
 
@@ -18,13 +18,13 @@ A squad vive em `{{AGENTS_ROOT}}/` (após instalação). As referências abaixo 
 
 | Recurso | Caminho |
 |---|---|
-| **Orquestrador (este arquivo)** | `{{AGENTS_ROOT}}/commands/orchestrator.md` |
+| **Manager (este arquivo)** | `{{AGENTS_ROOT}}/commands/manager.md` |
 | Personas (Agentes) | `{{AGENTS_ROOT}}/agents/<persona>.md` |
 | **Skills (Habilidades)** | `{{AGENTS_ROOT}}/skills/<skill>/SKILL.md` |
 | **Workflows (Atalhos de entrada)** | `{{AGENTS_ROOT}}/commands/<workflow>.md` |
-| **Memória de Negócio** | `{{AGENTS_ROOT}}/memorys/business.md` |
-| **Memória de Arquitetura** | `{{AGENTS_ROOT}}/memorys/architecture.md` |
-| **Memória de Guidelines** | `{{AGENTS_ROOT}}/memorys/guidelines.md` |
+| **Memória de Negócio** | `memorys/business.md` |
+| **Memória de Arquitetura** | `memorys/architecture.md` |
+| **Memória de Guidelines** | `memorys/guidelines.md` |
 | **Tasks em andamento** | `docs/todo/<NNN-nome-kebab>/tasks.md` |
 | **Tasks concluídas** | `docs/done/<NNN-nome-kebab>/` |
 | **Templates de task/bug** | `{{AGENTS_ROOT}}/` |
@@ -59,7 +59,7 @@ Para otimizar performance e custo, a squad opera sob **Tiering de Modelos**:
 ```
 📋 Product Owner
       │
-      │  Detecta SDD pronto? → fast-track. Caso contrário, refina e atualiza {{AGENTS_ROOT}}/memorys/business.md
+      │  Detecta SDD pronto? → fast-track. Caso contrário, refina e atualiza memorys/business.md
       ▼
 🏛️ Architect ─── (toca superfície sensível? → aciona 🔒 Security para threat modeling)
       │
@@ -71,7 +71,7 @@ Para otimizar performance e custo, a squad opera sob **Tiering de Modelos**:
       ▼
 💻 Developer
       │
-      │  Lê {{AGENTS_ROOT}}/memorys/guidelines.md + task, implementa, entrega ao QA
+      │  Lê memorys/guidelines.md + task, implementa, entrega ao QA
       ▼
 🧪 QA Specialist
       │
@@ -84,6 +84,11 @@ Para otimizar performance e custo, a squad opera sob **Tiering de Modelos**:
 🚀 Ops
       │
       └─ Confirma com usuário, fecha ciclo: changelog + versão + commit (deploy se configurado)
+         │
+         ▼
+👑 Tech Lead (Obrigatório)
+      │
+      └─ Executa {{AGENTS_ROOT}}/skills/compound/SKILL.md para consolidar aprendizados
 ```
 
 ---
@@ -93,18 +98,18 @@ Para otimizar performance e custo, a squad opera sob **Tiering de Modelos**:
 ### 📋 Product Owner — `{{AGENTS_ROOT}}/agents/product-owner.md`
 - **Trigger**: qualquer nova solicitação do usuário (feature, ajuste, bug, refactor).
 - **Ações obrigatórias**:
-  1. **Detectar SDD**: se a demanda já contém escopo, DoD e guia de implementação completos → validar, consolidar domínio em `{{AGENTS_ROOT}}/memorys/business.md` e delegar direto ao **Architect** (fast-track).
-  2. **Refinamento** (se necessário): elaborar "O quê" e "Por quê", ler `{{AGENTS_ROOT}}/memorys/business.md`, definir Critérios de Aceite (DoD).
-  3. Atualizar `{{AGENTS_ROOT}}/memorys/business.md` com novas regras consolidadas.
+  1. **Detectar SDD**: se a demanda já contém escopo, DoD e guia de implementação completos → validar, consolidar domínio em `memorys/business.md` e delegar direto ao **Architect** (fast-track).
+  2. **Refinamento** (se necessário): elaborar "O quê" e "Por quê", ler `memorys/business.md`, definir Critérios de Aceite (DoD).
+  3. Atualizar `memorys/business.md` com novas regras consolidadas.
   4. Delegar ao **Architect** para validar viabilidade.
 - **Skill autorizada**: `{{AGENTS_ROOT}}/skills/feature-flow/SKILL.md`.
 
 ### 🏛️ Architect — `{{AGENTS_ROOT}}/agents/architect.md`
 - **Trigger**: chamado pelo Product Owner ou Tech Lead.
 - **Ações obrigatórias**:
-  1. Ler `{{AGENTS_ROOT}}/memorys/guidelines.md` e `{{AGENTS_ROOT}}/memorys/architecture.md`.
+  1. Ler `memorys/guidelines.md` e `memorys/architecture.md`.
   2. **Fast-track**: se a demanda não exige novas decisões arquiteturais → liberar imediatamente para o **Tech Lead** sem criar ADRs desnecessários.
-  3. **Avaliação de impacto** (se necessário): validar manutenibilidade, escalabilidade e — em colaboração com **Security** — riscos de segurança quando a feature toca superfícies sensíveis (auth, dados, integrações externas, upload, etc.). Registrar decisões em `{{AGENTS_ROOT}}/memorys/guidelines.md` e atualizar `{{AGENTS_ROOT}}/memorys/architecture.md` se houver mudança estrutural real.
+  3. **Avaliação de impacto** (se necessário): validar manutenibilidade, escalabilidade e — em colaboração com **Security** — riscos de segurança quando a feature toca superfícies sensíveis (auth, dados, integrações externas, upload, etc.). Registrar decisões em `memorys/guidelines.md` e atualizar `memorys/architecture.md` se houver mudança estrutural real.
   4. Liberar para o **Tech Lead** criar as tasks.
 - **Skills autorizadas**: `{{AGENTS_ROOT}}/skills/guard/SKILL.md` (ADRs), `{{AGENTS_ROOT}}/skills/refactor/SKILL.md` (refatorações).
 
@@ -114,14 +119,17 @@ Para otimizar performance e custo, a squad opera sob **Tiering de Modelos**:
   1. **Fast-track**: se tasks já existem em `docs/todo/` com escopo completo → delegar direto ao **Developer**.
   2. **Criação de tasks** (se necessário): criar em `docs/todo/<NNN-nome-kebab>/tasks.md` seguindo o Spec Kit (`{{AGENTS_ROOT}}/task.md` ou `{{AGENTS_ROOT}}/bug.md`). Tasks devem ser granulares e priorizadas (P1/P2/P3).
   3. Delegar execução para o **Developer**.
-  4. Garantir que QA, Security (quando aplicável) e Ops fechem o ciclo. Ao final, executar `{{AGENTS_ROOT}}/skills/compound/SKILL.md`.
+  4. **Sincronização de Memória (Obrigatória)**: Executar `{{AGENTS_ROOT}}/skills/compound/SKILL.md` sempre que:
+      - O **Ops** concluir o ciclo (local ou remoto).
+      - O usuário confirmar a conclusão do pedido.
+      - Houver envio para GitHub/Produção.
 - **Skills autorizadas**: `{{AGENTS_ROOT}}/skills/feature-flow/SKILL.md`, `{{AGENTS_ROOT}}/skills/triage/SKILL.md`, `{{AGENTS_ROOT}}/skills/compound/SKILL.md`.
 
 ### 💻 Developer — `{{AGENTS_ROOT}}/agents/developer.md`
 - **Trigger**: ordem do Tech Lead.
 - **Ações obrigatórias**:
-  1. Ler o arquivo de task em `docs/todo/` **E** o `{{AGENTS_ROOT}}/memorys/guidelines.md` antes de qualquer código.
-  2. Implementar seguindo os padrões definidos em `{{AGENTS_ROOT}}/memorys/guidelines.md`.
+  1. Ler o arquivo de task em `docs/todo/` **E** o `memorys/guidelines.md` antes de qualquer código.
+  2. Implementar seguindo os padrões definidos em `memorys/guidelines.md`.
   3. Aplicar boas práticas de segurança preventivas: validação em bordas, sanitização de saída, parametrização de queries, ausência de segredos hardcoded.
   4. Entregar ao **QA Specialist**.
   5. Pode executar `{{AGENTS_ROOT}}/skills/task-tracker/SKILL.md` para verificar e arquivar tasks concluídas.
@@ -131,7 +139,7 @@ Para otimizar performance e custo, a squad opera sob **Tiering de Modelos**:
 - **Trigger**: entrega do Developer.
 - **Ações obrigatórias**:
   1. Auditar código contra os critérios de aceite da task.
-  2. Verificar conformidade com `{{AGENTS_ROOT}}/memorys/guidelines.md`.
+  2. Verificar conformidade com `memorys/guidelines.md`.
   3. Retornar ao **Developer** se houver falhas funcionais (loop iterativo).
   4. **Acionar Security** quando o código tocar superfícies sensíveis (auth, authz, segredos, entrada do usuário, integração externa, upload, persistência de PII).
   5. Marcar tasks como `[x]` concluídas quando aprovado funcionalmente.
@@ -150,7 +158,7 @@ Para otimizar performance e custo, a squad opera sob **Tiering de Modelos**:
   4. Gerar relatório `docs/todo/<NNN>/security-review.md` com severidade priorizada (Critical/High/Medium/Low).
   5. Loop com **Developer** para mitigar Critical/High antes da liberação.
   6. Aprovar a passagem para **Ops** apenas com Critical/High mitigados ou formalmente aceitos pelo Tech Lead.
-  7. Persistir aprendizados em `{{AGENTS_ROOT}}/memorys/guidelines.md` (antipadrões) e `{{AGENTS_ROOT}}/memorys/architecture.md` (modelo de ameaças, controles ativos).
+  7. Persistir aprendizados em `memorys/guidelines.md` (antipadrões) e `memorys/architecture.md` (modelo de ameaças, controles ativos).
 - **Skills autorizadas**: `{{AGENTS_ROOT}}/skills/security-audit/SKILL.md`, `{{AGENTS_ROOT}}/skills/guard/SKILL.md` (ADRs), `{{AGENTS_ROOT}}/skills/infrastructure/SKILL.md` (em colaboração com Ops).
 
 ### 🚀 Ops — `{{AGENTS_ROOT}}/agents/ops.md`
@@ -158,7 +166,7 @@ Para otimizar performance e custo, a squad opera sob **Tiering de Modelos**:
 - **Ações obrigatórias**:
   1. **Confirmar com o usuário**: *"A task foi implementada e os testes passaram. Deseja fechar o ciclo local agora (changelog + versão + commit)? [S/N]"* — só prosseguir com resposta afirmativa.
   2. Executar `{{AGENTS_ROOT}}/skills/delivery/SKILL.md` para changelog, bump de versão e commit local.
-  3. **Deploy remoto**: executar apenas o que estiver configurado em `{{AGENTS_ROOT}}/memorys/architecture.md`. Sem configuração → encerrar no ciclo local.
+  3. **Deploy remoto**: executar apenas o que estiver configurado em `memorys/architecture.md`. Sem configuração → encerrar no ciclo local.
 - **Skills autorizadas**: `{{AGENTS_ROOT}}/skills/delivery/SKILL.md`, `{{AGENTS_ROOT}}/skills/infrastructure/SKILL.md`, `{{AGENTS_ROOT}}/skills/squad-visualizer/SKILL.md`.
 
 ---
@@ -180,7 +188,7 @@ Para otimizar performance e custo, a squad opera sob **Tiering de Modelos**:
 
 ### 3. Dúvida Técnica, Design ou Refatoração (`Usuário → Architect`)
 1. **Architect** avalia impactos de manutenibilidade, escalabilidade e — quando aplicável — segurança (em colaboração com Security).
-2. Atualiza decisões em `{{AGENTS_ROOT}}/memorys/guidelines.md` e/ou `{{AGENTS_ROOT}}/memorys/architecture.md`.
+2. Atualiza decisões em `memorys/guidelines.md` e/ou `memorys/architecture.md`.
 3. Delega plano ao **Tech Lead**.
 
 ### 4. Revisão de Segurança (`Usuário → Security` ou `Usuário → Tech Lead → Security`)
@@ -196,7 +204,7 @@ Para otimizar performance e custo, a squad opera sob **Tiering de Modelos**:
 
 ## 💬 Comunicação Inter-Agente
 
-A squad opera com o tom configurado em `{{AGENTS_ROOT}}/memorys/guidelines.md` (seção *Personalidade e Tom de Voz*). Tons disponíveis: **Neutro, Sarcástico, Hostil, Cordial, Amigável, ou Outro definido pelo usuário**.
+A squad opera com o tom configurado em `memorys/guidelines.md` (seção *Personalidade e Tom de Voz*). Tons disponíveis: **Neutro, Sarcástico, Hostil, Cordial, Amigável, ou Outro definido pelo usuário**.
 
 | De → Para | Exemplo (tom Sarcástico) |
 |---|---|
@@ -257,8 +265,8 @@ docs/todo/<NNN-nome-kebab>/tasks.md
 ## 🧭 Agnosticismo e Memória Viva
 
 - **Personas e Skills são agnósticas**: nenhum arquivo em `{{AGENTS_ROOT}}/agents/` ou `{{AGENTS_ROOT}}/skills/` deve conter regra específica de um produto, linguagem ou framework.
-- **Regras de Domínio**: vivem em `{{AGENTS_ROOT}}/memorys/business.md`.
-- **Diretrizes técnicas (NFRs)**: vivem em `{{AGENTS_ROOT}}/memorys/guidelines.md` e `{{AGENTS_ROOT}}/memorys/architecture.md`. Todos os agentes leem antes de codificar.
+- **Regras de Domínio**: vivem em `memorys/business.md`.
+- **Diretrizes técnicas (NFRs)**: vivem em `memorys/guidelines.md` e `memorys/architecture.md`. Todos os agentes leem antes de codificar.
 - **Memória NÃO é agnóstica**: começa em branco em projetos novos. A squad tem a responsabilidade de alimentá-la conforme avança.
 
 ---

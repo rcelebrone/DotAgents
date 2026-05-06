@@ -1,7 +1,8 @@
 # Architecture Memory State (Root)
 
 > **Nota:** Este arquivo mantém obrigatoriamente as decisões arquiteturais globais, banco de dados, infraestrutura e os **Requisitos Não Funcionais**.
-> *Fronteira:* NÃO COLOQUE regras sistêmicas de código, sintaxe ou restrições de formatação aqui (isso vai no `{{AGENTS_ROOT}}/memorys/guidelines.md`) NEM regras de domínio ou fluxo de usuário/produto aqui (isso vai no `{{AGENTS_ROOT}}/memorys/business.md`).
+> *Fronteira:* NÃO COLOQUE regras sistêmicas de código, sintaxe ou restrições de formatação aqui (isso vai no `memorys/guidelines.md`) NEM regras de domínio ou fluxo de usuário/produto aqui (isso vai no `memorys/business.md`).
+> **Fragmentação:** Memórias específicas de uma implementação técnica (ex: "Configuração do Redis Cluster", "Migração de Schema X") que não sejam decisões globais devem ser fragmentadas em arquivos específicos dentro de `memorys/implementations/` (ex: `memorys/implementations/redis-setup.md`) para manter este arquivo conciso.
 
 ## Requisitos Não Funcionais, Stack e Infra (O que sustenta o app)
 

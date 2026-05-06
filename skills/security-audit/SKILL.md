@@ -5,11 +5,11 @@ description: Auditoria de segurança aplicada (AppSec). Varre código, dependên
 
 # Skill: Security Audit (Shift-Left AppSec)
 
-Esta skill é acionada pelo `{{AGENTS_ROOT}}/agents/security.md` (e ocasionalmente pelo `architect` para threat modeling). Aplica boas práticas universais de AppSec adaptadas à stack detectada no bootstrap (`{{AGENTS_ROOT}}/memorys/architecture.md`).
+Esta skill é acionada pelo `{{AGENTS_ROOT}}/agents/security.md` (e ocasionalmente pelo `architect` para threat modeling). Aplica boas práticas universais de AppSec adaptadas à stack detectada no bootstrap (`memorys/architecture.md`).
 
 ## Pré-requisitos
 
-- Antes de auditar, ler `{{AGENTS_ROOT}}/memorys/architecture.md` (stack, fluxos de dados, classificação de dados) e `{{AGENTS_ROOT}}/memorys/guidelines.md` (vulnerabilidades já remediadas — não revisitar a fundo o que já foi corrigido).
+- Antes de auditar, ler `memorys/architecture.md` (stack, fluxos de dados, classificação de dados) e `memorys/guidelines.md` (vulnerabilidades já remediadas — não revisitar a fundo o que já foi corrigido).
 - Identificar o escopo: PR completo, módulo específico ou superfície sensível (auth, upload, integração externa, etc.).
 
 ## Workflow de Execução
@@ -24,7 +24,7 @@ Aplique a abordagem **STRIDE** para enumerar ameaças:
 - **D**enial of Service — limites, rate limit, payloads maliciosos.
 - **E**levation of Privilege — bypass de authz, escalação horizontal/vertical.
 
-Registre o modelo em `{{AGENTS_ROOT}}/memorys/architecture.md` na seção *Modelo de Ameaças* e, quando relevante, abra ADR via `{{AGENTS_ROOT}}/skills/guard/SKILL.md`.
+Registre o modelo em `memorys/architecture.md` na seção *Modelo de Ameaças* e, quando relevante, abra ADR via `{{AGENTS_ROOT}}/skills/guard/SKILL.md`.
 
 ### 2. Auditoria de Código (OWASP Top 10 & CWE Top 25)
 
@@ -116,6 +116,6 @@ Gere `docs/todo/<NNN>/security-review.md` com a estrutura:
 ### 8. Atualização de Memória
 
 Após o ciclo:
-- Vulnerabilidades corrigidas com aprendizado relevante → entrada em `{{AGENTS_ROOT}}/memorys/guidelines.md` (seção *Antipadrões e Aprendizados*).
-- Decisões arquiteturais de segurança → `{{AGENTS_ROOT}}/memorys/architecture.md`.
-- Controles ativos no projeto (ex: bcrypt rounds, política de senha, provider de identidade) → `{{AGENTS_ROOT}}/memorys/architecture.md`.
+- Vulnerabilidades corrigidas com aprendizado relevante → entrada em `memorys/guidelines.md` (seção *Antipadrões e Aprendizados*).
+- Decisões arquiteturais de segurança → `memorys/architecture.md`.
+- Controles ativos no projeto (ex: bcrypt rounds, política de senha, provider de identidade) → `memorys/architecture.md`.

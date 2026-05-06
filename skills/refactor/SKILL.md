@@ -9,7 +9,7 @@ Esta skill é focada em aplicar técnicas de refatoração seguras para diminuir
 
 ## Pré-requisitos
 - O código atual DEVE ter cobertura de testes ou se comportar de maneira validável antes da refatoração.
-- As diretrizes base devem ser lidas em `{{AGENTS_ROOT}}/memorys/guidelines.md`.
+- As diretrizes base devem ser lidas em `memorys/guidelines.md`.
 
 ## Passos de Execução
 1. **Entendimento da Base**: Avalie o arquivo ou componente alvo, listando as responsabilidades (Single Responsibility Principle) que ele fere atualmente.

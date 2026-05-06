@@ -24,7 +24,6 @@ echo "-----------------------------------------------"
 mkdir -p "$TARGET_DIR/agents"
 mkdir -p "$TARGET_DIR/skills"
 mkdir -p "$TARGET_DIR/commands"
-mkdir -p "$TARGET_DIR/memorys"
 
 # Function to copy and replace placeholder
 copy_and_replace() {
@@ -63,20 +62,23 @@ if [ -d "$COMMANDS_SRC" ]; then
     echo "  ✅ Installed Commands to $TARGET_DIR/commands/"
 fi
 
-# 4. Install Memorys
+# 4. Install Memorys (Shared at project root)
 if [ -d "$MEMORYS_SRC" ]; then
-    echo "📦 Installing Memorys..."
-    cp -r "$MEMORYS_SRC"/* "$TARGET_DIR/memorys/"
-    find "$TARGET_DIR/memorys/" -type f -name "*.md" -exec sed -i "s|{{AGENTS_ROOT}}|$AGENTS_ROOT|g" {} +
-    find "$TARGET_DIR/memorys/" -type f -name "*.md" -exec sed -i "/^[[:space:]]*trigger:[[:space:]]*always_on/d" {} +
-    echo "  ✅ Installed Memorys to $TARGET_DIR/memorys/"
+    if [ ! -d "memorys" ]; then
+        echo "📦 Installing Memorys to project root..."
+        mkdir -p "memorys/implementations"
+        cp -r "$MEMORYS_SRC"/* "memorys/"
+        echo "  ✅ Installed Memorys at project root"
+    else
+        echo "ℹ️ Memorys directory already exists at root. Skipping initial copy."
+    fi
 fi
 
-# 5. Set up CLAUDE.md (Main Orchestrator)
-if [ -f "$COMMANDS_SRC/orchestrator.md" ]; then
-    echo "🔗 Linking orchestrator to CLAUDE.md..."
-    copy_and_replace "$COMMANDS_SRC/orchestrator.md" "CLAUDE.md"
-    echo "  ✅ CLAUDE.md created from orchestrator.md"
+# 5. Set up CLAUDE.md (Main Manager)
+if [ -f "$COMMANDS_SRC/manager.md" ]; then
+    echo "🔗 Linking manager to CLAUDE.md..."
+    copy_and_replace "$COMMANDS_SRC/manager.md" "CLAUDE.md"
+    echo "  ✅ CLAUDE.md created from manager.md"
 fi
 
 # 6. Add DotAgents to .gitignore

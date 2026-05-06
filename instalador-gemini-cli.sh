@@ -24,7 +24,6 @@ echo "-----------------------------------------------"
 mkdir -p "$GEMINI_DIR/agents"
 mkdir -p "$GEMINI_DIR/skills"
 mkdir -p "$GEMINI_DIR/commands"
-mkdir -p "$GEMINI_DIR/memorys"
 
 # Function to copy and replace placeholder
 copy_and_replace() {
@@ -70,20 +69,23 @@ if [ -d "$COMMANDS_SRC" ]; then
     done
 fi
 
-# 4. Install Memorys
+# 4. Install Memorys (Shared at project root)
 if [ -d "$MEMORYS_SRC" ]; then
-    echo "📦 Installing Memorys..."
-    cp -r "$MEMORYS_SRC"/* "$GEMINI_DIR/memorys/"
-    find "$GEMINI_DIR/memorys/" -type f -name "*.md" -exec sed -i "s|{{AGENTS_ROOT}}|$AGENTS_ROOT|g" {} +
-    find "$GEMINI_DIR/memorys/" -type f -name "*.md" -exec sed -i "/^[[:space:]]*trigger:[[:space:]]*always_on/d" {} +
-    echo "  ✅ Installed Memorys"
+    if [ ! -d "memorys" ]; then
+        echo "📦 Installing Memorys to project root..."
+        mkdir -p "memorys/implementations"
+        cp -r "$MEMORYS_SRC"/* "memorys/"
+        echo "  ✅ Installed Memorys at project root"
+    else
+        echo "ℹ️ Memorys directory already exists at root. Skipping initial copy."
+    fi
 fi
 
-# 5. Set up GEMINI.md (Main Orchestrator)
-if [ -f "$COMMANDS_SRC/orchestrator.md" ]; then
-    echo "🔗 Linking orchestrator to GEMINI.md..."
-    copy_and_replace "$COMMANDS_SRC/orchestrator.md" "GEMINI.md"
-    echo "  ✅ GEMINI.md created from orchestrator.md"
+# 5. Set up GEMINI.md (Main Manager)
+if [ -f "$COMMANDS_SRC/manager.md" ]; then
+    echo "🔗 Linking manager to GEMINI.md..."
+    copy_and_replace "$COMMANDS_SRC/manager.md" "GEMINI.md"
+    echo "  ✅ GEMINI.md created from manager.md"
 fi
 
 # 6. Add DotAgents to .gitignore

@@ -2,7 +2,7 @@
 description: Deploy, release ou gestão de dependências — aciona o Ops para entrega
 ---
 
-Leia `{{AGENTS_ROOT}}/commands/orchestrator.md` para entender o protocolo da squad.
+Leia `{{AGENTS_ROOT}}/commands/manager.md` para entender o protocolo da squad.
 
 Atue como o **Ops** (`{{AGENTS_ROOT}}/agents/ops.md`).
 

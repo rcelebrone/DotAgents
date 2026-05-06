@@ -60,19 +60,23 @@ if [ -d "$COMMANDS_SRC" ]; then
     echo "  ✅ Installed Commands to $TARGET_DIR/commands/"
 fi
 
-# 4. Install Memorys
+# 4. Install Memorys (Shared at project root)
 if [ -d "$MEMORYS_SRC" ]; then
-    echo "📦 Installing Memorys..."
-    cp -r "$MEMORYS_SRC"/* "$TARGET_DIR/memorys/"
-    find "$TARGET_DIR/memorys/" -type f -name "*.md" -exec sed -i "s|{{AGENTS_ROOT}}|$AGENTS_ROOT|g" {} +
-    echo "  ✅ Installed Memorys to $TARGET_DIR/memorys/"
+    if [ ! -d "memorys" ]; then
+        echo "📦 Installing Memorys to project root..."
+        mkdir -p "memorys/implementations"
+        cp -r "$MEMORYS_SRC"/* "memorys/"
+        echo "  ✅ Installed Memorys at project root"
+    else
+        echo "ℹ️ Memorys directory already exists at root. Skipping initial copy."
+    fi
 fi
 
-# 5. Set up AG.md (Main Orchestrator)
-if [ -f "$COMMANDS_SRC/orchestrator.md" ]; then
-    echo "🔗 Linking orchestrator to AG.md..."
-    copy_and_replace "$COMMANDS_SRC/orchestrator.md" "AG.md"
-    echo "  ✅ AG.md created from orchestrator.md"
+# 5. Set up AG.md (Main Manager)
+if [ -f "$COMMANDS_SRC/manager.md" ]; then
+    echo "🔗 Linking manager to AG.md..."
+    copy_and_replace "$COMMANDS_SRC/manager.md" "AG.md"
+    echo "  ✅ AG.md created from manager.md"
 fi
 
 # 6. Add DotAgents to .gitignore

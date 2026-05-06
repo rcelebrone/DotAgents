@@ -1,8 +1,8 @@
-# DotAgents — Multi-Agent Orchestration Boilerplate
+# DotAgents — Multi-Agent Management Boilerplate
 
-Template agnóstico para instalar uma squad multi-agente (PO, Architect, Tech Lead, Developer, QA, Security, Ops) em qualquer projeto que use ferramentas de orquestração de agentes.
+Template agnóstico para instalar uma squad multi-agente (PO, Architect, Tech Lead, Developer, QA, Security, Ops) em qualquer projeto que use ferramentas de gerenciamento de agentes.
 
-A squad é regida por um **orquestrador central**, tem **personas** com responsabilidades claras, **skills** reutilizáveis e uma **memória viva** específica do projeto.
+A squad é regida por um **manager central**, tem **personas** com responsabilidades claras, **skills** reutilizáveis e uma **memória viva** específica do projeto.
 
 ---
 
@@ -80,7 +80,7 @@ claude
 
 - `agents/`: Definições das personas.
 - `skills/`: Habilidades especializadas.
-- `commands/`: Workflows e orquestração.
+- `commands/`: Workflows e gerenciamento.
 - `memorys/`: Memória viva (Business, Architecture, Guidelines).
 
 ---

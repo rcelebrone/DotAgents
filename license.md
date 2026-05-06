@@ -23,7 +23,7 @@ São permitidos **sem necessidade de autorização adicional**, inclusive em con
 
 - **Uso pessoal** em projetos privados ou abertos.
 - **Uso acadêmico, de pesquisa e educacional**, com ou sem fins lucrativos.
-- **Uso interno por empresas com fins lucrativos** como ferramenta de produtividade no ciclo de desenvolvimento de software (orquestração de agentes na sua IDE/CLI, automação de processos internos, padronização da squad, etc.).
+- **Uso interno por empresas com fins lucrativos** como ferramenta de produtividade no ciclo de desenvolvimento de software (gerenciamento de agentes na sua IDE/CLI, automação de processos internos, padronização da squad, etc.).
 - **Uso para construir produtos comerciais de qualquer natureza** cujo objeto principal seja **diferente** do Framework — por exemplo: e-commerce, SaaS de qualquer domínio, aplicativos móveis, plataformas B2B/B2C, sistemas administrativos, automações operacionais, jogos, ferramentas de produtividade, etc. Nesses casos o Framework atua como ferramenta de produção; o que é vendido é o produto final, não o Framework.
 - **Uso em entregas para clientes** por consultorias, agências, fábricas de software e profissionais autônomos — desde que o Framework seja a ferramenta de produção e **não** o item da entrega comercial.
 - **Fork, modificação e redistribuição** mantendo esta licença e os créditos originais, desde que o derivativo respeite as restrições da Seção 3.
@@ -36,11 +36,11 @@ São permitidos **sem necessidade de autorização adicional**, inclusive em con
 É **proibido** comercializar a proposta do Framework. Especificamente, é vedado:
 
 1. **Vender, licenciar, sublicenciar, alugar ou cobrar** pelo Framework, integral ou parcialmente, em qualquer formato, físico ou digital.
-2. **Oferecer o Framework — ou qualquer derivativo essencialmente equivalente — como produto comercial**, incluindo, sem limitação: SaaS, PaaS, plataforma gerenciada, marketplace de IA, plugin pago, biblioteca/SDK comercial, ou serviço pago de orquestração de agentes.
+2. **Oferecer o Framework — ou qualquer derivativo essencialmente equivalente — como produto comercial**, incluindo, sem limitação: SaaS, PaaS, plataforma gerenciada, marketplace de IA, plugin pago, biblioteca/SDK comercial, ou serviço pago de gerenciamento de agentes.
 3. **Repackagear, renomear, rebrand ou reembalar** o Framework como produto próprio ou de terceiros — com ou sem modificações cosméticas — para venda ou licenciamento.
-4. **Usar o Framework como base, núcleo ou IP** de uma oferta cuja proposta de valor seja "uma squad de agentes de IA", "framework multi-agente", "orquestrador de agentes" ou descrição funcionalmente equivalente — independentemente de o software final ser ou não distribuído com o código-fonte do Framework.
+4. **Usar o Framework como base, núcleo ou IP** de uma oferta cuja proposta de valor seja "uma squad de agentes de IA", "framework multi-agente", "manager de agentes" ou descrição funcionalmente equivalente — independentemente de o software final ser ou não distribuído com o código-fonte do Framework.
 5. **Vender consultoria, treinamento, mentoria ou serviço de implementação** cuja entrega principal seja a configuração, instalação, customização ou ensino do próprio Framework.
-6. **Treinar, ajustar (fine-tune) ou destilar** modelos de IA cujo produto comercial replique a proposta de orquestração multi-agente deste Framework.
+6. **Treinar, ajustar (fine-tune) ou destilar** modelos de IA cujo produto comercial replique a proposta de gerenciamento multi-agente deste Framework.
 7. **Incorporar o Framework em ofertas comerciais** onde ele seja a contribuição central de valor (ainda que mascarado por wrappers, plugins ou integrações), em vez de uma ferramenta auxiliar.
 
 ### Teste de bolso para distinguir "ferramenta" de "produto"
@@ -49,7 +49,7 @@ Pergunte-se:
 
 - *"O cliente está pagando pelo que eu construí com o Framework, ou está pagando pelo Framework em si (mesmo que indiretamente)?"*
   - Pelo que você construiu → **permitido**.
-  - Pelo Framework, sua configuração, sua orquestração ou sua proposta → **proibido**.
+  - Pelo Framework, sua configuração, sua gerenciamento ou sua proposta → **proibido**.
 - *"Se eu tirar o Framework da minha oferta, ela ainda faz sentido como produto?"*
   - Sim → **permitido** (Framework é ferramenta).
   - Não → **proibido** (Framework é o produto).
@@ -82,7 +82,7 @@ Qualquer violação da Seção 3 desta licença **encerra automaticamente** o di
 
 ## 7. Licenciamento para Comercializar o Framework
 
-Caso você deseje comercializar o Framework — vender como produto, oferecer como SaaS, usar como base de uma oferta de orquestração multi-agente, ou qualquer outro uso vedado pela Seção 3 — é obrigatório negociar previamente uma licença separada com o titular dos direitos autorais. Solicitações devem ser enviadas por escrito ao detentor do copyright identificado no topo deste documento.
+Caso você deseje comercializar o Framework — vender como produto, oferecer como SaaS, usar como base de uma oferta de gerenciamento multi-agente, ou qualquer outro uso vedado pela Seção 3 — é obrigatório negociar previamente uma licença separada com o titular dos direitos autorais. Solicitações devem ser enviadas por escrito ao detentor do copyright identificado no topo deste documento.
 
 A ausência de resposta a uma solicitação **não** constitui concessão tácita de licença.
 

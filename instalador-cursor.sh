@@ -71,12 +71,12 @@ if [ -d "$COMMANDS_SRC" ]; then
     for f in "$COMMANDS_SRC"/*.md; do
         name=$(basename "$f" .md)
         is_orch="false"
-        [ "$name" == "orchestrator" ] && is_orch="true"
+        [ "$name" == "manager" ] && is_orch="true"
         install_as_mdc "$f" "$RULES_DIR" "$is_orch" "Workflow for $name"
     done
 fi
 
-# 3. Install Skills & Memorys (as reference files)
+# 3. Install Skills & Memorys (Shared at project root)
 if [ -d "$SKILLS_SRC" ]; then
     echo "📦 Copying Skills..."
     cp -r "$SKILLS_SRC"/* "$TARGET_DIR/skills/"
@@ -85,11 +85,14 @@ if [ -d "$SKILLS_SRC" ]; then
 fi
 
 if [ -d "$MEMORYS_SRC" ]; then
-    echo "📦 Copying Memorys..."
-    cp -r "$MEMORYS_SRC"/* "$TARGET_DIR/memorys/"
-    find "$TARGET_DIR/memorys/" -type f -name "*.md" -exec sed -i "s|{{AGENTS_ROOT}}|$AGENTS_ROOT|g" {} +
-    find "$TARGET_DIR/memorys/" -type f -name "*.md" -exec sed -i "/^[[:space:]]*trigger:[[:space:]]*always_on/d" {} +
-    echo "  ✅ Installed Memorys to $TARGET_DIR/memorys/"
+    if [ ! -d "memorys" ]; then
+        echo "📦 Installing Memorys to project root..."
+        mkdir -p "memorys/implementations"
+        cp -r "$MEMORYS_SRC"/* "memorys/"
+        echo "  ✅ Installed Memorys at project root"
+    else
+        echo "ℹ️ Memorys directory already exists at root. Skipping initial copy."
+    fi
 fi
 
 # 4. Add DotAgents to .gitignore
@@ -104,3 +107,4 @@ echo "-----------------------------------------------"
 echo "✨ Installation complete!"
 echo "Your Cursor AI squad is ready in $TARGET_DIR/"
 echo "-----------------------------------------------"
+---------------"
