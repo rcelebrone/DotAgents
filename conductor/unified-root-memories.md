@@ -14,7 +14,7 @@ Replace all occurrences of `{{AGENTS_ROOT}}/memorys/` with `memorys/` in the fol
 This ensures that when agents or skills are running, they look for the memory files at the project root regardless of which tool is being used.
 
 ### 2. Update Installer Scripts
-Modify `instalador-gemini-cli.sh`, `instalador-claude.sh`, `instalador-cursor.sh`, and `instalador-antigravity.sh`:
+Modify `instalador-gemini-cli.sh`, `instalador-claude.sh`, `instalador-cursor.sh`, `instalador-antigravity.sh`, and `instalador-antigravity-cli.sh`:
 - **Location Change**: Change the installation target for memories from `$TARGET_DIR/memorys/` to `./memorys/` (relative to where the script is run, typically the project root).
 - **Protection Logic**: Add a check to only copy files to `memorys/` if they don't already exist, or simply ensure the directory is created at the root.
 - **Cleanup**: Remove the creation of tool-specific memory directories (e.g., `$GEMINI_DIR/memorys`).
