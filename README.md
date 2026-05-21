@@ -24,7 +24,7 @@ Agora, siga as instruções de acordo com a ferramenta que você utiliza:
 ```bash
 gemini
 ```
-#### 2. 🤖 Prompt para o LLM
+##### 2. 🤖 Prompt para o LLM
 > "Siga as instruções do `commands/bootstrap.md` para instalar a squad no gemini-cli"
 
 ---
@@ -34,8 +34,21 @@ gemini
 ```bash
 ./DotAgents/instalador-antigravity.sh
 ```
-#### 2. 🤖 Prompt para o LLM
+##### 2. 🤖 Prompt para o LLM
 > "Siga as instruções do `commands/bootstrap.md` para instalar a squad no antigravity"
+
+---
+
+### 💻 Antigravity CLI
+#### 1. Execute o instalador
+```bash
+./DotAgents/instalador-antigravity-cli.sh
+```
+```bash
+agy
+```
+##### 2. 🤖 Prompt para o LLM
+> "Siga as instruções do `commands/bootstrap.md` para instalar a squad no antigravity cli"
 
 ---
 
@@ -47,7 +60,7 @@ gemini
 ```bash
 claude
 ```
-#### 2. 🤖 Prompt para o LLM
+##### 2. 🤖 Prompt para o LLM
 > "Siga as instruções do `commands/bootstrap.md` para instalar a squad no claude-code"
 
 ---
@@ -57,7 +70,7 @@ claude
 ```bash
 ./DotAgents/instalador-cursor.sh
 ```
-#### 2. 🤖 Prompt para o LLM
+##### 2. 🤖 Prompt para o LLM
 > "Siga as instruções do `commands/bootstrap.md` para instalar a squad no cursor"
 
 ---
