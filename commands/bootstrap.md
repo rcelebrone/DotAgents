@@ -28,6 +28,14 @@ Utilize as bases da Antigravity (D-O-E Framework) para garantir que as Directive
 **Ajuste de Agents**: Garanta que o atributo `trigger: always_on` esteja presente no frontmatter de todos os agents e do manager.
 **Manager**: Garanta que o arquivo `AG.md` na raiz do projeto aponte para o manager da squad.
 
+### 3. Atualização: `commands/bootstrap.md`
+Adicione a documentação e validação de contexto na seção de instaladores (logo abaixo de `#### 🚀 Antigravity`):
+
+#### 💻 Antigravity CLI
+Utilize a documentação de projetos da Antigravity (https://antigravity.google/docs/projects) para garantir que as regras da squad em `.agents/` estejam validadas no contexto do projeto (Workspace Scope).
+**Ajuste de Agents**: O Antigravity CLI e o Antigravity 2.0 compartilham o mesmo Agent Harness. Portanto, garanta que o atributo `trigger: always_on` esteja presente e inalterado no frontmatter de todos os agents e do manager.
+**Manager**: Garanta que o arquivo `AGY.md` na raiz do projeto aponte corretamente para o manager da squad.
+
 #### ❄️ Claude Code
 Utilize a documentação oficial da Anthropic para [Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code) para validar se los **Subagents** em `.claude/agents/` e as **Skills** em `.claude/skills/` (seguindo o padrão `SKILL.md`) estão corretamente estruturados com o frontmatter e metadados exigidos.
 **Ajuste de Agents**: Remova atributos não suportados como `trigger: always_on` dos agents e do manager (`CLAUDE.md`).
