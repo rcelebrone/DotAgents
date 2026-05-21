@@ -82,6 +82,17 @@ Update the installation scripts to create symbolic links for their main orchestr
    fi
    ```
 
+5. **Modify `instalador-antigravity-cli.sh`**:
+   Ensure it follows the same symlink pattern for `AGY.md`:
+   ```bash
+   # 5. Set up AGY.md (Main Manager)
+   if [ -f "$TARGET_DIR/commands/manager.md" ]; then
+       echo "🔗 Linking manager to AGY.md..."
+       ln -sf "$TARGET_DIR/commands/manager.md" "AGY.md"
+       echo "  ✅ AGY.md linked to $TARGET_DIR/commands/manager.md"
+   fi
+   ```
+
 ## Verification & Testing
 - Run `./instalador-gemini-cli.sh` and verify that `GEMINI.md` is correctly symlinked to `.gemini/commands/manager.md`.
 - Run `./instalador-claude.sh` and verify that `CLAUDE.md` is correctly symlinked to `.claude/commands/manager.md`.
