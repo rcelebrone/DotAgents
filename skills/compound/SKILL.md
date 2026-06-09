@@ -1,9 +1,9 @@
 ---
 name: compound
-description: Especialista em manutenção de contexto e memória técnica. Atualiza arquivos de arquitetura e guias do projeto após merges e mudanças significativas. Use para "atualizar memória", "analisar diff" ou sincronizar o contexto do projeto.
+description: Especialista em manutenção de contexto e memórias. Atualiza arquivos de arquitetura, regras de negócio e guias do projeto após conclusão de implementações ou pré commit. Use para "atualizar memória", "analisar diff", "guardar aprendizados" ou sincronizar o contexto do projeto.
 ---
 
-## Ações Pós-Merge
+## Ações Pré-Commit
 
 1. **Context Gathering**: Analisa o `git diff` e aprendizados da sessão.
 2. **State Update**:
