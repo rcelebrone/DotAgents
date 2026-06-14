@@ -1,59 +1,36 @@
 ---
-description: Setup e calibração da squad — instala os componentes, configura a ferramenta de gerenciamento, varre o repositório e popula as memórias.
+name: bootstrap
+description: Executa a calibração inicial da squad no repositório. Varre o código estrutural e popula as memórias raiz.
 ---
 
-Leia `{{AGENTS_ROOT}}/commands/manager.md` para entender o protocolo da squad antes de prosseguir.
+# Workflow: Bootstrap
 
-Aloque os modelos por tier:
-- **Reasoning Tier** (modelos mais capazes): Product Owner, Architect, Tech Lead, **Security Specialist**.
-- **Speed Tier** (modelos mais rápidos): Developer, QA Specialist, Ops.
+**DIRETRIZ DE EXECUÇÃO:** Não infira configurações. Execute rigorosamente a sequência de passos abaixo.
 
-### 1. Instalação e Configuração da Ferramenta
-Este workflow é responsável por garantir que todos os agents, skills e commands da squad estejam corretamente instalados e configurados de acordo com a ferramenta de gerenciamento detectada (Gemini-CLI, Claude Code, Cursor, Antigravity, etc.).
+## 1. Verificação de Integridade (Ambiente)
+Verifique o sistema de arquivos para identificar o ambiente de execução atual. A instalação só é válida se UMA das três condições abaixo for verdadeira:
 
-**O frontmatter dos agents deve ser saneado para conter apenas o que a ferramenta suporta.**
+- **Antigravity (IDE/CLI):** Confirme a existência do arquivo `AGENTS.md` na raiz e do diretório `.agents/`.
+- **Claude Code:** Confirme a existência do arquivo `CLAUDE.md` na raiz e do diretório `.claude/`.
+- **Cursor AI:** Confirme a existência do arquivo `CURSOR.md` na raiz e do diretório `.cursor/rules/`.
 
-Siga as diretrizes específicas da sua ferramenta:
+Se nenhuma condição for atendida, aborte o processo imediatamente e informe: *"Falha de integridade: Ecossistema de agentes não detectado na raiz do projeto. Reinstale via install.sh."*
 
-#### ♊ Gemini-CLI
-Utilize as documentações oficiais para garantir que todos os agents, skills e commands da squad em `.gemini/` estejam com a formatação e metadados corretos:
-- [Skills](https://geminicli.com/docs/cli/skills/)
-- [Subagents](https://geminicli.com/docs/core/subagents/)
-- [Custom Commands](https://geminicli.com/docs/cli/custom-commands/)
-**Ajuste de Agents**: Remova o atributo `trigger: always_on` do frontmatter dos agents e do manager em `{{AGENTS_ROOT}}/`, pois ele é exclusivo do Antigravity.
-**Manager**: Garanta que o arquivo `GEMINI.md` na raiz do projeto aponte para o manager da squad.
+## 2. Varredura Estrutural (Discovery)
+Execute a leitura profunda do projeto utilizando a ferramenta/skill correspondente definida em `{{AGENTS_ROOT}}/skills/bootstrap/SKILL.md`.
+Analise manifestos de dependências (ex: `package.json`, `pyproject.toml`, `go.mod`), arquivos de configuração de CI/CD e a estrutura de pastas do código-fonte.
 
-#### 🚀 Antigravity
-Utilize as bases da Antigravity (D-O-E Framework) para garantir que as Directives e a Management da squad em `.agents/` estejam alinhadas com os padrões de artefatos e execução da ferramenta. Consulte se necessário: https://antigravity.google/docs (ou documentação interna disponível).
-**Ajuste de Agents**: Garanta que o atributo `trigger: always_on` esteja presente no frontmatter de todos os agents e do manager.
-**Manager**: Garanta que o arquivo `AG.md` na raiz do projeto aponte para o manager da squad.
+## 3. População de Memória (Escrita)
+Com base nos dados coletados no Passo 2, você DEVE escrever e popular os arquivos localizados no diretório raiz `memorys/`:
 
-### 3. Atualização: `commands/bootstrap.md`
-Adicione a documentação e validação de contexto na seção de instaladores (logo abaixo de `#### 🚀 Antigravity`):
+- **`memorys/business.md`**: Escreva o propósito do projeto, as regras de negócio identificadas e o glossário do domínio.
+- **`memorys/architecture.md`**: Documente a stack tecnológica exata (Linguagem, Framework, Banco de Dados, CI/CD), a arquitetura macro e o modelo de infraestrutura detectado.
+- **`memorys/guidelines.md`**: Registre padrões de linting, convenções de código detectadas e defina explicitamente o **Tom de Voz da Squad** (Ex: Neutro, Técnico-Rígido, Cordial). Se o usuário não especificou, adote "Técnico-Rígido".
 
-#### 💻 Antigravity CLI
-Utilize a documentação de projetos da Antigravity (https://antigravity.google/docs/projects) para garantir que as regras da squad em `.agents/` estejam validadas no contexto do projeto (Workspace Scope).
-**Ajuste de Agents**: O Antigravity CLI e o Antigravity 2.0 compartilham o mesmo Agent Harness. Portanto, garanta que o atributo `trigger: always_on` esteja presente e inalterado no frontmatter de todos os agents e do manager.
-**Manager**: Garanta que o arquivo `AGY.md` na raiz do projeto aponte corretamente para o manager da squad.
+## 4. Confirmação Final
+Não gere textos longos de introdução. Ao terminar as escritas, apresente OBRIGATORIAMENTE o seguinte sumário final:
 
-#### ❄️ Claude Code
-Utilize a documentação oficial da Anthropic para [Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code) para validar se los **Subagents** em `.claude/agents/` e as **Skills** em `.claude/skills/` (seguindo o padrão `SKILL.md`) estão corretamente estruturados com o frontmatter e metadados exigidos.
-**Ajuste de Agents**: Remova atributos não suportados como `trigger: always_on` dos agents e do manager (`CLAUDE.md`).
-**Manager**: Garanta que o arquivo `CLAUDE.md` na raiz do projeto aponte para o manager da squad.
-
-#### 🖱️ Cursor AI
-Utilize as diretrizes oficiais do Cursor para [Custom Rules](https://docs.cursor.com/context/rules-for-ai) e `.cursorrules` para garantir que as definições dos agentes e instruções da squad estejam otimizadas para o indexador do Cursor e para a integração com o Chat/Composer.
-**Ajuste de Agents**: Como os arquivos são convertidos para `.mdc`, garanta que o frontmatter final siga o esquema XML/YAML do Cursor, removendo o `trigger` legado.
-
-Se detectar incompatibilidades durante a instalação, ajuste ou sugira correções imediatas.
-
-### 2. Discovery Estrutural e Memória (Varredura Robusta)
-Após a configuração da ferramenta, este workflow deve garantir uma varredura completa do repositório para popular as memórias. Execute a skill `{{AGENTS_ROOT}}/skills/bootstrap/SKILL.md`: varra o repositório completo (manifestos, código-fonte, configurações, infra) e popule:
-- `memorys/business.md` — regras de negócio, terminologia de domínio, fluxos de permissão.
-- `memorys/architecture.md` — stack, NFRs, arquitetura macro, modelo de ameaças, controles de segurança ativos.
-- `memorys/guidelines.md` — padrões de código, lint, antipadrões, vulnerabilidades remediadas, **tom da squad**.
-
-Ao finalizar, confirme ao usuário:
-1. Stacks detectadas (linguagem, framework, banco, CI/CD).
-2. Personalidade escolhida pela squad.
-3. Setup concluído — pronto para receber a primeira demanda.
+**[BOOTSTRAP CONCLUÍDO]**
+- **Stack:** [Lista de tecnologias principais encontradas]
+- **Tom da Squad:** [Tom configurado em guidelines.md]
+- **Status:** Pronta para receber tarefas.
