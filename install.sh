@@ -15,10 +15,21 @@ echo "1) Antigravity (IDE e CLI)"
 echo "2) Claude Code"
 echo "3) Cursor AI"
 echo ""
-read -p "Digite a opção [1-3]: " OPTION
+
+if [ "$1" == "--antigravity" ] || [ "$1" == "1" ]; then
+    OPTION=1
+elif [ "$1" == "--claude" ] || [ "$1" == "2" ]; then
+    OPTION=2
+elif [ "$1" == "--cursor" ] || [ "$1" == "3" ]; then
+    OPTION=3
+else
+    read -p "Digite a opção [1-3]: " OPTION
+fi
 
 # Diretório onde o instalador e os arquivos base estão (pasta DotAgents clonada)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Repositório de destino onde o projeto foi clonado (pai do SCRIPT_DIR)
+DEST_DIR="$(dirname "$SCRIPT_DIR")"
 AGENTS_SRC="$SCRIPT_DIR/agents"
 SKILLS_SRC="$SCRIPT_DIR/skills"
 COMMANDS_SRC="$SCRIPT_DIR/commands"
@@ -27,14 +38,14 @@ MEMORYS_SRC="$SCRIPT_DIR/memorys"
 # Função para instalar a memória viva na raiz do projeto
 install_memorys() {
     if [ -d "$MEMORYS_SRC" ]; then
-        if [ ! -d "memorys" ]; then
+        if [ ! -d "$DEST_DIR/memorys" ]; then
             echo "📦 Instalando Memorys na raiz do projeto..."
-            mkdir -p "memorys/implementations"
-            cp -r "$MEMORYS_SRC"/* "memorys/"
+            mkdir -p "$DEST_DIR/memorys/implementations"
+            cp -r "$MEMORYS_SRC"/* "$DEST_DIR/memorys/"
             echo "  ✅ Diretório 'memorys/' criado na raiz."
         else
             echo "ℹ️ Diretório 'memorys/' já existe na raiz. Apenas garantindo arquivos base se ausentes."
-            cp -rn "$MEMORYS_SRC"/* "memorys/" 2>/dev/null || true
+            cp -rn "$MEMORYS_SRC"/* "$DEST_DIR/memorys/" 2>/dev/null || true
         fi
     fi
 }
@@ -42,22 +53,22 @@ install_memorys() {
 # Configuração de Variáveis por Ferramenta
 case $OPTION in
     1)
-        TARGET_DIR=".agents"
+        TARGET_DIR="$DEST_DIR/.agents"
         AGENTS_ROOT=".agents"
-        MANAGER_FILE="AGENTS.md" # Padrão oficial do Antigravity CLI e IDE
+        MANAGER_FILE="$DEST_DIR/AGENTS.md" # Padrão oficial do Antigravity CLI e IDE
         TOOL_NAME="Antigravity"
         ;;
     2)
-        TARGET_DIR=".claude"
+        TARGET_DIR="$DEST_DIR/.claude"
         AGENTS_ROOT=".claude"
-        MANAGER_FILE="CLAUDE.md"
+        MANAGER_FILE="$DEST_DIR/CLAUDE.md"
         TOOL_NAME="Claude Code"
         ;;
     3)
-        TARGET_DIR=".cursor"
+        TARGET_DIR="$DEST_DIR/.cursor"
         RULES_DIR="$TARGET_DIR/rules"
         AGENTS_ROOT=".cursor"
-        MANAGER_FILE="CURSOR.md"
+        MANAGER_FILE="$DEST_DIR/CURSOR.md"
         TOOL_NAME="Cursor AI"
         ;;
     *)
@@ -136,8 +147,8 @@ if [ "$OPTION" -eq 3 ]; then
     install_memorys
 
     if [ -f "$RULES_DIR/manager.mdc" ]; then
-        echo "🔗 Criando link simbólico para $MANAGER_FILE..."
-        ln -sf "$RULES_DIR/manager.mdc" "$MANAGER_FILE"
+        echo "🔗 Criando link simbólico para $(basename "$MANAGER_FILE")..."
+        (cd "$DEST_DIR" && ln -sf "$AGENTS_ROOT/rules/manager.mdc" "$(basename "$MANAGER_FILE")")
     fi
 
 # =====================================================================
@@ -190,8 +201,8 @@ else
     install_memorys
 
     if [ -f "$TARGET_DIR/commands/manager.md" ]; then
-        echo "🔗 Criando link simbólico para $MANAGER_FILE..."
-        ln -sf "$TARGET_DIR/commands/manager.md" "$MANAGER_FILE"
+        echo "🔗 Criando link simbólico para $(basename "$MANAGER_FILE")..."
+        (cd "$DEST_DIR" && ln -sf "$AGENTS_ROOT/commands/manager.md" "$(basename "$MANAGER_FILE")")
     fi
 fi
 
@@ -200,9 +211,12 @@ fi
 # =====================================================================
 echo "-----------------------------------------------------------------"
 echo "🧹 Limpando arquivos residuais de instalação..."
-cd "$SCRIPT_DIR/.." || exit
-rm -rf "$SCRIPT_DIR"
-echo "  ✅ Pasta 'DotAgents/' e instaladores removidos com sucesso."
+if [ -n "$SCRIPT_DIR" ] && [ "$SCRIPT_DIR" != "/" ] && [ "$SCRIPT_DIR" != "$DEST_DIR" ]; then
+    rm -rf "$SCRIPT_DIR"
+    echo "  ✅ Pasta 'DotAgents/' e instaladores removidos com sucesso."
+else
+    echo "  ⚠️ Ignorando remoção da pasta base por precaução de segurança (não é subdiretório)."
+fi
 
 echo "-----------------------------------------------------------------"
 echo "✨ Instalação Concluída!"
@@ -210,5 +224,5 @@ echo "Sua squad DotAgents está operante para $TOOL_NAME."
 if [ "$OPTION" -eq 1 ]; then
     echo "Abra o aplicativo Desktop ou digite 'agy' no terminal para começar!"
 fi
-echo "Dica: Peça para a IA executar as instruções do 'commands/bootstrap.md'."
+echo "Dica: Peça para a IA executar as instruções do 'commands/dot-agent-bootstrap.md'."
 echo "-----------------------------------------------------------------"

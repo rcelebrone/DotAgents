@@ -171,9 +171,12 @@ Para otimizar performance e custo, a squad opera sob **Tiering de Modelos**:
 
 ---
 
-## 🔀 Fluxos por Tipo de Demanda
+## 🔀 Workflows / Interface do Plugin (Fluxos por Tipo de Demanda)
+
+A squad atua como um plugin de ciclo completo de desenvolvimento. Abaixo estão os comandos que o usuário (ou automação) utiliza para iniciar a squad.
 
 ### 1. Feature Request (`Usuário → Product Owner`)
+> **Ponto de entrada (Comando):** `{{AGENTS_ROOT}}/commands/dot-agent-new-feature.md`
 1. **PO** refina a necessidade de negócio, define DoD. Pode usar `{{AGENTS_ROOT}}/skills/feature-flow/SKILL.md`. Se a task chegar com requisitos prontos, valida e repassa.
 2. **PO** delega ao **Architect** especificando o "O Quê".
 3. **Architect** avalia impacto. Se a feature toca superfície sensível, aciona **Security** para threat modeling antes de liberar.
@@ -181,24 +184,31 @@ Para otimizar performance e custo, a squad opera sob **Tiering de Modelos**:
 5. **Developer** implementa → **QA** valida → (**Security** se aplicável) → **Ops** fecha ciclo.
 
 ### 2. Bug ou Anomalia (`Usuário → Tech Lead`)
+> **Ponto de entrada (Comando):** `{{AGENTS_ROOT}}/commands/dot-agent-fix-bug.md`
 1. **Tech Lead** executa `{{AGENTS_ROOT}}/skills/triage/SKILL.md` para isolar o problema.
 2. Repassa diagnóstico ao **PO** validar adaptações de negócio (se aplicável).
 3. **Tech Lead** usa `{{AGENTS_ROOT}}/skills/feature-flow/SKILL.md` para criar a demanda em `docs/todo/<NNN-nome-kebab>/` (template `bug.md`) e delega ao **Developer**.
 4. Fluxo contínuo: **Developer** → **QA** → (**Security** se o bug tocar superfície sensível) → **Ops**.
 
 ### 3. Dúvida Técnica, Design ou Refatoração (`Usuário → Architect`)
+> **Ponto de entrada (Comando):** `{{AGENTS_ROOT}}/commands/dot-agent-architecture-review.md`
 1. **Architect** avalia impactos de manutenibilidade, escalabilidade e — quando aplicável — segurança (em colaboração com Security).
 2. Atualiza decisões em `memorys/guidelines.md` e/ou `memorys/architecture.md`.
 3. Delega plano ao **Tech Lead**.
 
 ### 4. Revisão de Segurança (`Usuário → Security` ou `Usuário → Tech Lead → Security`)
+> **Ponto de entrada:** Acionamento dinâmico no chat da ferramenta apontando para a persona `{{AGENTS_ROOT}}/agents/security.md` ou chamado do QA.
 1. **Security** executa `{{AGENTS_ROOT}}/skills/security-audit/SKILL.md` no escopo solicitado (PR, módulo ou feature inteira).
 2. Gera relatório priorizado e abre tasks de mitigação em `docs/todo/` via Tech Lead.
 3. Achados Critical/High bloqueiam release até mitigação.
 
 ### 5. Deploy, Dependências e CI/CD (`Usuário → Ops`)
+> **Ponto de entrada (Comando):** `{{AGENTS_ROOT}}/commands/dot-agent-deploy.md`
 1. **Ops** analisa logs de pipeline, atualizações de dependências e automação de builds usando `{{AGENTS_ROOT}}/skills/infrastructure/SKILL.md` e `{{AGENTS_ROOT}}/skills/delivery/SKILL.md`.
 2. CVEs detectados são repassados ao **Security** para classificação e priorização de mitigação.
+
+### 6. Fluxo Genérico (Demandas não mapeadas)
+> **Regra de Fallback (Manager):** Se o usuário solicitar algo que não se enquadre de forma óbvia em Feature, Bug, Arquitetura, Deploy ou Segurança (não acionando os comandos descritos acima), a demanda cai diretamente para o **Manager** (este próprio documento). O Manager analisará o contexto, deduzirá a Persona ideal para a tarefa e delegará a ela a responsabilidade de iniciar a triagem. Não execute ações genéricas antes de delegar para o especialista da Squad.
 
 ---
 

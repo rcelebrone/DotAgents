@@ -12,11 +12,17 @@ Primeiro, clone este repositório para dentro do seu projeto:
 git clone [https://github.com/rodrigo-celebrone/DotAgents.git](https://github.com/rodrigo-celebrone/DotAgents.git) DotAgents
 ```
 
-Agora, basta rodar o instalador unificado interativo. Ele irá identificar e estruturar os arquivos de acordo com a ferramenta que você escolher (Antigravity, Claude Code, Cursor) e, ao final, excluirá a pasta de instalação automaticamente para manter seu repositório limpo.
+Agora, basta rodar o instalador unificado. Ele irá identificar e estruturar os arquivos de acordo com a ferramenta que você escolher e, ao final, excluirá a pasta de instalação automaticamente.
 
-```
+Você pode rodá-lo no modo interativo:
+```bash
 chmod +x DotAgents/install.sh
 ./DotAgents/install.sh
+```
+
+Ou, para automações (CI/CD ou executado por IAs), passe o argumento da sua ferramenta:
+```bash
+./DotAgents/install.sh --antigravity  # opções: --antigravity, --claude ou --cursor
 ```
 
 ---
@@ -25,7 +31,7 @@ chmod +x DotAgents/install.sh
 
 Independente da ferramenta (Terminal ou IDE), a primeira ação sempre deve ser iniciar o reconhecimento do projeto pela Squad.
 
-> 🤖 Prompt para a sua IA (Copie e cole): "Siga rigorosamente as instruções do workflow de inicialização localizado em commands/bootstrap.md para calibrar a squad neste repositório."
+> 🤖 Prompt para a sua IA (Copie e cole): "Siga rigorosamente as instruções do workflow de inicialização localizado em commands/dot-agent-bootstrap.md para calibrar a squad neste repositório."
 
 ---
 
