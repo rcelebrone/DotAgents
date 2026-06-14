@@ -2,76 +2,30 @@
 
 Template agnóstico para instalar uma squad multi-agente (PO, Architect, Tech Lead, Developer, QA, Security, Ops) em qualquer projeto que use ferramentas de gerenciamento de agentes.
 
-A squad é regida por um **manager central**, tem **personas** com responsabilidades claras, **skills** reutilizáveis e uma **memória viva** específica do projeto.
-
----
+A squad é regida por um manager central, tem personas com responsabilidades claras, skills reutilizáveis e uma memória viva específica do projeto.
 
 ## 🚀 Instalação
 
-Primeiro, clone este repositório como `DotAgents/` dentro do seu projeto:
+Primeiro, clone este repositório para dentro do seu projeto:
 
-```bash
-git clone https://github.com/rodrigo-celebrone/DotAgents.git DotAgents
+```
+git clone [https://github.com/rodrigo-celebrone/DotAgents.git](https://github.com/rodrigo-celebrone/DotAgents.git) DotAgents
 ```
 
-Agora, siga as instruções de acordo com a ferramenta que você utiliza:
+Agora, basta rodar o instalador unificado interativo. Ele irá identificar e estruturar os arquivos de acordo com a ferramenta que você escolher (Antigravity, Claude Code, Cursor) e, ao final, excluirá a pasta de instalação automaticamente para manter seu repositório limpo.
 
-### ♊ Gemini-CLI
-#### 1. Execute o instalador
-```bash
-./DotAgents/instalador-gemini-cli.sh
 ```
-```bash
-gemini
+chmod +x DotAgents/install.sh
+./DotAgents/install.sh
 ```
-##### 2. 🤖 Prompt para o LLM
-> "Siga as instruções do `commands/bootstrap.md` para instalar a squad no gemini-cli"
 
 ---
 
-### 🚀 Antigravity
-#### 1. Execute o instalador
-```bash
-./DotAgents/instalador-antigravity.sh
-```
-##### 2. 🤖 Prompt para o LLM
-> "Siga as instruções do `commands/bootstrap.md` para instalar a squad no antigravity"
+## Após a instalação: O Bootstrap
 
----
+Independente da ferramenta (Terminal ou IDE), a primeira ação sempre deve ser iniciar o reconhecimento do projeto pela Squad.
 
-### 💻 Antigravity CLI
-#### 1. Execute o instalador
-```bash
-./DotAgents/instalador-antigravity-cli.sh
-```
-```bash
-agy
-```
-##### 2. 🤖 Prompt para o LLM
-> "Siga as instruções do `commands/bootstrap.md` para instalar a squad no antigravity cli"
-
----
-
-### ❄️ Claude Code
-#### 1. Execute o instalador
-```bash
-./DotAgents/instalador-claude.sh
-```
-```bash
-claude
-```
-##### 2. 🤖 Prompt para o LLM
-> "Siga as instruções do `commands/bootstrap.md` para instalar a squad no claude-code"
-
----
-
-### 🖱️ Cursor AI
-#### 1. Execute o instalador
-```bash
-./DotAgents/instalador-cursor.sh
-```
-##### 2. 🤖 Prompt para o LLM
-> "Siga as instruções do `commands/bootstrap.md` para instalar a squad no cursor"
+> 🤖 Prompt para a sua IA (Copie e cole): "Siga rigorosamente as instruções do workflow de inicialização localizado em commands/bootstrap.md para calibrar a squad neste repositório."
 
 ---
 
@@ -87,26 +41,17 @@ claude
 | 🔒 **Security Specialist** | Threat modeling, AppSec audit. |
 | 🚀 **Ops** | Ciclo de entrega local, deploy. |
 
----
-
-## 🤖 Worker Autônomo (Exclusivo Gemini CLI)
-
-O DotAgents inclui um recurso de **Agent Worker** (localizado em `.worker/`) que permite transformar seu repositório em um ambiente de desenvolvimento autônomo. 
-
-**Nota:** Este recurso é projetado especificamente para uso com o **Gemini CLI**. Usuários do Cursor, Antigravity ou Claude Code não conseguirão utilizar este worker, pois ele depende da interface de linha de comando do Gemini para a execução das tarefas.
-
-O worker monitora Issues com a label `ai-task` e utiliza o Gemini CLI para implementar soluções, abrir Pull Requests e fechar as Issues automaticamente.
-
-Para saber como configurar e utilizar o worker em seus projetos, consulte o [Guia do Worker](.worker/README.md).
 
 ---
 
-## 📁 Estrutura
+## 📁 Estrutura da Squad Pós-Instalação
 
-- `agents/`: Definições das personas.
-- `skills/`: Habilidades especializadas.
-- `commands/`: Workflows e gerenciamento.
-- `memorys/`: Memória viva (Business, Architecture, Guidelines).
+Após rodar o instalador e ele se autodestruir, os artefatos estarão injetados de forma invisível no diretório padrão da sua ferramenta (ex: .agents/, .claude/, etc) com a seguinte estrutura lógica:
+
+- agents/: Definições das personas.
+- skills/: Habilidades especializadas executáveis.
+- commands/: Workflows e roteamento de tarefas (Manager).
+- memorys/: (Visível na raiz do seu projeto) Memória viva contínua (Business, Architecture, Guidelines).
 
 ---
 
