@@ -11,8 +11,12 @@ description: Executa a calibração inicial da squad no repositório. Varre o c�
 Verifique o sistema de arquivos para identificar o ambiente de execução atual. A instalação só é válida se UMA das três condições abaixo for verdadeira. **NÃO tente adivinhar** a configuração do ambiente, aplique RIGOROSAMENTE as regras documentadas para a ferramenta detectada:
 
 - **Antigravity (IDE/CLI):**
-  - Confirme a existência do arquivo `AGENTS.md` na raiz e do diretório `.agents/`.
-  - **Regra Explícita de Agentes (Plugins):** No Antigravity, os agentes DEVEM ser detectáveis através de um arquivo manifesto. Portanto, você deve iterar sobre todos os arquivos `.md` presentes em `.agents/agents/` e criar a estrutura correta: mova cada arquivo `.md` para um subdiretório respectivo (ex: `.agents/agents/{agent_name}/`) e crie um arquivo `agent.json` correspondente que aponte para as definições de persona. O `agent.json` DEVE conter as chaves obrigatórias da API do Antigravity (`"name"`, `"description"`, `"system_prompt"`) onde o `system_prompt` contém as instruções do `.md`.
+  - Informe de forma explícita que o arquivo `AGENTS.md` **DEVE** existir na raiz do projeto. Se não existir, ele deve ser criado.
+  - O arquivo `AGENTS.md` deve seguir as instruções de configuração de ambiente descritas em:
+    - https://antigravity.google/docs/cli-subagents
+    - https://antigravity.google/docs/cli-permissions
+    - https://antigravity.google/docs/cli-sandbox
+  - **Regra Explícita de Orquestração:** Isso é para garantir que o arquivo `commands/manager.md` e os agentes em `agents/` sejam usados e responsáveis por orquestrar cada solicitação interceptada pelo `AGENTS.md`. (Fluxo: o `AGENTS.md` recebe o user input > chama o `manager.md` para definir como seguir e qual agente usar > o agente escolhido executa o processo de acordo com as regras dele).
 
 - **Claude Code:**
   - Confirme a existência do arquivo `CLAUDE.md` na raiz e do diretório `.claude/`.
