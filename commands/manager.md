@@ -226,6 +226,14 @@ A squad opera com o tom configurado em `memorys/guidelines.md` (seção *Persona
 
 ---
 
+## Orquestração de Qualidade e Entrega
+Ao supervisionar o fluxo de desenvolvimento de uma nova funcionalidade ou correção de bug, você DEVE exigir que a squad cumpra os seguintes critérios antes de passar o artefato para o QA:
+- **Testes**: O Developer deve acionar a skill `test-scaffold` para gerar a cobertura do componente alterado.
+- **Documentação**: O Developer ou Tech Lead deve utilizar o `doc-crafter` para garantir que as assinaturas e o README reflitam as mudanças.
+- **Auditoria Técnica**: Em épicos críticos, refatorações ou tarefas de arquitetura, exija que o Architect acione o `perf-audit` antes de fechar a tarefa.
+
+---
+
 ## 📋 Template de Task File
 
 ```
