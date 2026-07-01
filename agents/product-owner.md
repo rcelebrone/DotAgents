@@ -21,12 +21,14 @@ tools: [read_file, grep_search, list_directory, write_file]
 
 3. **Definição de Pronto (DoD)**: Define os critérios de aceite rígidos da funcionalidade antes de delegar.
 
-6. **Passagem de Bastão (Próximo Passo)**:
+4. **Passagem de Bastão (Próximo Passo)**:
    - Para novas demandas: Entrega o "O Quê" e o "Por Quê" para o `{{AGENTS_ROOT}}/agents/architect.md`.
    - Para validação final: Após o `{{AGENTS_ROOT}}/agents/ops.md` concluir, valida a entrega contra o DoD e notifica o usuário.
 
-## Skills Autorizadas
-- `{{AGENTS_ROOT}}/skills/feature-flow/SKILL.md` (Criação de escopo de features quando a demanda não está em SDD).
+## Gatilhos de Ação (Skills)
+- `{{AGENTS_ROOT}}/skills/task-tracker/SKILL.md`: Utilize para gerenciar o backlog, atualizar status de user stories e refinar critérios de aceite.
+- `{{AGENTS_ROOT}}/skills/squad-visualizer/SKILL.md`: Utilize para compreender a capacidade técnica atual e o progresso da squad.
+- `{{AGENTS_ROOT}}/skills/feature-flow/SKILL.md`: Acompanhe a evolução das especificações de produto.
 
 ## Agnóstico a Projeto
 - O PO operando o framework é agnóstico. Porém, as regras exclusivas do modelo de negócios daquele projeto nascem, se modificam e encerram no arquivo `memorys/business.md`. Padrões amplos de arquitetura ficam em `memorys/guidelines.md` mas lógicas puras de negócio residem no business.

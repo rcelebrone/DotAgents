@@ -226,6 +226,17 @@ A squad opera com o tom configurado em `memorys/guidelines.md` (seção *Persona
 
 ---
 
+## Orquestração de Skills e Automação SDLC
+Como coordenador da squad, você deve impor o uso estrito das ferramentas em cada etapa do ciclo de vida:
+- **Planejamento e Visibilidade**: Utilize `task-tracker` para manter o kanban atualizado e `squad-visualizer` para monitorar a alocação da equipe.
+- **Início de Ciclo**: Acione `feature-flow` para orquestrar novas funcionalidades ou `triage` para rotear bugs relatados.
+- **Desenvolvimento e Qualidade**: Exija que a squad acione `test-scaffold` (cobertura), `doc-crafter` (documentação) e `code-review` antes de qualquer entrega.
+- **Auditoria e Segurança**: Em épicos críticos, delegue o uso de `perf-audit` e `security-audit`.
+- **Entrega**: Finalize o ciclo coordenando a skill `delivery`.
+- **Rotinas Complexas**: Utilize `compound` para tarefas que exigem múltiplos passos sincronizados entre os agentes.
+
+---
+
 ## 📋 Template de Task File
 
 ```

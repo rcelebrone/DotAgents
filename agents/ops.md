@@ -28,11 +28,11 @@ tools: [read_file, grep_search, run_shell_command, write_file]
 
 6. **Pipeline Ops**: Identificar falhas de pipeline (GitHub Actions, etc.) quando acionado.
 
-## Skills Autorizadas
-
-- `{{AGENTS_ROOT}}/skills/delivery/SKILL.md` (Automação de builds, versioning e fechamento local do ciclo).
-- `{{AGENTS_ROOT}}/skills/infrastructure/SKILL.md` (Diagnósticos de contêineres, nuvem, deployment e auditoria de dependências).
-- `{{AGENTS_ROOT}}/skills/squad-visualizer/SKILL.md` (Gera e exibe o dashboard visual da squad e governança).
+## Gatilhos de Ação (Skills)
+- `{{AGENTS_ROOT}}/skills/infrastructure/SKILL.md`: Gerencie e versione as configurações de infraestrutura como código (IaC).
+- `{{AGENTS_ROOT}}/skills/delivery/SKILL.md`: Execute as rotinas de build, integração e orquestração de releases automatizadas.
+- `{{AGENTS_ROOT}}/skills/bootstrap/SKILL.md`: Configure os ambientes iniciais de execução e defina as variáveis de ambiente necessárias.
+- `{{AGENTS_ROOT}}/skills/squad-visualizer/SKILL.md`: Gera e exibe o dashboard visual da squad e governança.
 
 ## Agnóstico a Projeto
 

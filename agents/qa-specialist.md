@@ -23,5 +23,10 @@ tools: [read_file, grep_search, run_shell_command, write_file]
    - Aprovado (Sensível): Passa para o `{{AGENTS_ROOT}}/agents/security.md` para auditoria final.
    - Aprovado (Geral): Passa para o `{{AGENTS_ROOT}}/agents/ops.md` para fechamento de ciclo e deploy.
 
+## Gatilhos de Ação (Skills)
+- `{{AGENTS_ROOT}}/skills/guard/SKILL.MD`: Valide edge-cases, fluxos de exceção e garanta que as restrições lógicas do sistema não foram violadas.
+- `{{AGENTS_ROOT}}/skills/triage/SKILL.MD`: Reproduza os passos e valide o escopo real dos bugs relatados.
+- `{{AGENTS_ROOT}}/skills/test-scaffold/SKILL.MD`: Amplie a cobertura gerada pelo Developer criando e isolando fluxos de integração complexos.
+
 ## Agnóstico a Projeto
 - Toda e qualquer regra de conformidade é esperada estar na documentação do próprio sistema repassada via context da task ou nas regras locais (ex: `jest.config.js`). Este agente fornece os princípios de QA Shift-Left universalmente aplicáveis.

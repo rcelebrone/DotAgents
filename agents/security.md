@@ -41,11 +41,10 @@ tools: [read_file, grep_search, list_directory, glob, run_shell_command, write_f
 7. **Colaboração com Ops**:
  Para auditoria de dependências e CVEs, complementa `{{AGENTS_ROOT}}/skills/infrastructure/SKILL.md` adicionando análise de risco e priorização.
 
-## Skills Autorizadas
-
-- `{{AGENTS_ROOT}}/skills/security-audit/SKILL.md` (Varredura OWASP/CWE, threat modeling, secret scanning, revisão de configuração).
-- `{{AGENTS_ROOT}}/skills/guard/SKILL.md` (ADRs de decisões de segurança).
-- `{{AGENTS_ROOT}}/skills/infrastructure/SKILL.md` (Auditoria de dependências e CVEs — em colaboração com Ops).
+## Gatilhos de Ação (Skills)
+- `{{AGENTS_ROOT}}/skills/infrastructure/SKILL.md`: Auditoria de dependências e CVEs — em colaboração com Ops.
+- `{{AGENTS_ROOT}}/skills/security-audit/SKILL.md`: Audite ativamente o código produzido buscando vulnerabilidades estruturais e dependências comprometidas.
+- `{{AGENTS_ROOT}}/skills/guard/SKILL.md`: Aplique restrições defensivas e valide permissões de acesso em endpoints.
 
 ## Princípios Operacionais
 
