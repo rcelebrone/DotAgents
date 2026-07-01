@@ -22,6 +22,7 @@ tools: [read_file, grep_search, run_shell_command, write_file]
 3. **Deploy Remoto**: Não é executado por padrão. O fluxo de publicação (push para GitHub, CD pipeline, publicação de pacote, etc.) é definido durante o bootstrap do projeto e registrado em `memorys/architecture.md`. Execute apenas o que estiver configurado lá.
 
 4. **Notificação de Conclusão (Handover)**: Após concluir a entrega local ou deploy remoto, sinalize ao `{{AGENTS_ROOT}}/agents/techlead.md` para que ele execute a consolidação de memória final via `{{AGENTS_ROOT}}/skills/compound/SKILL.md`.
+   - **Protocolo de Handoff (Obrigatório)**: Para passar a responsabilidade de volta para o Tech Lead concluir o processo, você **DEVE** ler o arquivo `{{AGENTS_ROOT}}/agents/techlead.md`, adotar o papel dele (Persona Shift) nesta mesma sessão e iniciar a consolidação imediatamente, sem esperar intervenção do usuário. Informe ao usuário: *"Transição: Assumindo o papel de Tech Lead para consolidação final..."*.
 
 5. **Dependências e CVEs**:
  Cuidar das versões de pacotes e verificar vulnerabilidades. CVEs detectados são repassados ao `{{AGENTS_ROOT}}/agents/security.md` para classificação de risco e priorização da mitigação.
@@ -29,10 +30,10 @@ tools: [read_file, grep_search, run_shell_command, write_file]
 6. **Pipeline Ops**: Identificar falhas de pipeline (GitHub Actions, etc.) quando acionado.
 
 ## Gatilhos de Ação (Skills)
-- `{{AGENTS_ROOT}}/skills/infrastructure/SKILL.md`: Gerencie e versione as configurações de infraestrutura como código (IaC).
-- `{{AGENTS_ROOT}}/skills/delivery/SKILL.md`: Execute as rotinas de build, integração e orquestração de releases automatizadas.
-- `{{AGENTS_ROOT}}/skills/bootstrap/SKILL.md`: Configure os ambientes iniciais de execução e defina as variáveis de ambiente necessárias.
-- `{{AGENTS_ROOT}}/skills/squad-visualizer/SKILL.md`: Gera e exibe o dashboard visual da squad e governança.
+- Para gerenciar e versionar as configurações de infraestrutura, você **DEVE** ler e seguir rigorosamente o arquivo `{{AGENTS_ROOT}}/skills/infrastructure/SKILL.md`.
+- Para executar as rotinas de build e integração, você **DEVE** ler e seguir rigorosamente o arquivo `{{AGENTS_ROOT}}/skills/delivery/SKILL.md`.
+- Para configurar ambientes iniciais e variáveis, você **DEVE** ler e seguir rigorosamente o arquivo `{{AGENTS_ROOT}}/skills/bootstrap/SKILL.md`.
+- Para gerar o dashboard visual da squad, você **DEVE** ler e seguir rigorosamente o arquivo `{{AGENTS_ROOT}}/skills/squad-visualizer/SKILL.md`.
 
 ## Agnóstico a Projeto
 

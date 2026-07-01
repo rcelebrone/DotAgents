@@ -37,14 +37,15 @@ tools: [read_file, grep_search, list_directory, glob, run_shell_command, write_f
 6. **Passagem de Bastão (Próximo Passo)**:
    - Bloqueado (Critical/High): Devolve para o `{{AGENTS_ROOT}}/agents/developer.md` para correção obrigatória.
    - Aprovado: Libera formalmente para o `{{AGENTS_ROOT}}/agents/ops.md` prosseguir com a entrega.
+   - **Protocolo de Handoff (Obrigatório)**: Para passar a responsabilidade para a próxima etapa, você **DEVE** ler o arquivo do próximo agente (`{{AGENTS_ROOT}}/agents/<nome>.md`), adotar o papel dele (Persona Shift) nesta mesma sessão e iniciar a execução imediatamente, sem esperar intervenção do usuário. Informe ao usuário: *"Transição: Assumindo o papel de [Nome do Agente]..."*.
 
 7. **Colaboração com Ops**:
  Para auditoria de dependências e CVEs, complementa `{{AGENTS_ROOT}}/skills/infrastructure/SKILL.md` adicionando análise de risco e priorização.
 
 ## Gatilhos de Ação (Skills)
-- `{{AGENTS_ROOT}}/skills/infrastructure/SKILL.md`: Auditoria de dependências e CVEs — em colaboração com Ops.
-- `{{AGENTS_ROOT}}/skills/security-audit/SKILL.md`: Audite ativamente o código produzido buscando vulnerabilidades estruturais e dependências comprometidas.
-- `{{AGENTS_ROOT}}/skills/guard/SKILL.md`: Aplique restrições defensivas e valide permissões de acesso em endpoints.
+- Para auditoria de dependências e CVEs, você **DEVE** ler e seguir rigorosamente o arquivo `{{AGENTS_ROOT}}/skills/infrastructure/SKILL.md`.
+- Para auditar ativamente o código produzido buscando vulnerabilidades, você **DEVE** ler e seguir rigorosamente o arquivo `{{AGENTS_ROOT}}/skills/security-audit/SKILL.md`.
+- Para aplicar restrições defensivas e validar permissões, você **DEVE** ler e seguir rigorosamente o arquivo `{{AGENTS_ROOT}}/skills/guard/SKILL.md`.
 
 ## Princípios Operacionais
 

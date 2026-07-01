@@ -208,7 +208,7 @@ A squad atua como um plugin de ciclo completo de desenvolvimento. Abaixo estão 
 2. CVEs detectados são repassados ao **Security** para classificação e priorização de mitigação.
 
 ### 6. Fluxo Genérico (Demandas não mapeadas)
-> **Regra de Fallback (Manager):** Se o usuário solicitar algo que não se enquadre de forma óbvia em Feature, Bug, Arquitetura, Deploy ou Segurança (não acionando os comandos descritos acima), a demanda cai diretamente para o **Manager** (este próprio documento). O Manager analisará o contexto, deduzirá a Persona ideal para a tarefa e delegará a ela a responsabilidade de iniciar a triagem. Não execute ações genéricas antes de delegar para o especialista da Squad.
+> **Regra de Orquestração Ativa (Chain of Thought):** Se o usuário solicitar algo que não se enquadre de forma óbvia em Feature, Bug, Arquitetura, Deploy ou Segurança (não acionando os comandos descritos acima), a demanda cai diretamente para o **Manager** (este próprio documento). O Manager analisará o contexto, deduzirá a Persona ideal para a tarefa e delegará a ela a responsabilidade de iniciar a triagem. **Para delegar, o Manager DEVE ler o arquivo do agente escolhido (`{{AGENTS_ROOT}}/agents/<nome>.md`), adotar o seu papel (Persona Shift) e iniciar a execução das instruções do agente imediatamente na mesma sessão, informando ao usuário "Iniciando como [Persona]...". Não pare para pedir permissão.**
 
 ---
 

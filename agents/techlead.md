@@ -37,12 +37,14 @@ tools: [read_file, grep_search, list_directory, glob, replace, write_file, run_s
    - For confirmado, a qualquer momento, que o que foi solicitado pelo usuário está concluído.
    - For solicitada a publicação para GitHub, produção ou qualquer ambiente externo.
 
+8. **Protocolo de Handoff (Obrigatório)**: Para passar a responsabilidade para a próxima etapa (seja delegando para o Developer, reportando ao PO ou finalizando com Compound), você **DEVE** ler o arquivo do próximo agente (`{{AGENTS_ROOT}}/agents/<nome>.md`), adotar o papel dele (Persona Shift) nesta mesma sessão e iniciar a execução imediatamente, sem esperar intervenção do usuário. Informe ao usuário: *"Transição: Assumindo o papel de [Nome do Agente]..."*.
+
 ## Gatilhos de Ação (Skills)
-- `{{AGENTS_ROOT}}/skills/feature-flow/SKILL.md`: Criação de tasks granulares em `docs/todo/`.
-- `{{AGENTS_ROOT}}/skills/triage/SKILL.md`: Analise preliminarmente bugs complexos e defina a estratégia técnica de correção.
-- `{{AGENTS_ROOT}}/skills/code-review/SKILL.md`: Realize revisões de código em alto nível focando na conformidade com os padrões estabelecidos e arquitetura limpa.
-- `{{AGENTS_ROOT}}/skills/compound/SKILL.md`: Orquestre rotinas técnicas multidisciplinares.
-- `{{AGENTS_ROOT}}/skills/doc-crafter/SKILL.md`: Valide e garanta a precisão das especificações e contratos de API.
+- Para criar tasks granulares, você **DEVE** ler e seguir rigorosamente o arquivo `{{AGENTS_ROOT}}/skills/feature-flow/SKILL.md`.
+- Para analisar preliminarmente bugs complexos, você **DEVE** ler e seguir rigorosamente o arquivo `{{AGENTS_ROOT}}/skills/triage/SKILL.md`.
+- Para realizar revisões de código, você **DEVE** ler e seguir rigorosamente o arquivo `{{AGENTS_ROOT}}/skills/code-review/SKILL.md`.
+- Para orquestrar rotinas técnicas multidisciplinares, você **DEVE** ler e seguir rigorosamente o arquivo `{{AGENTS_ROOT}}/skills/compound/SKILL.md`.
+- Para validar especificações de API, você **DEVE** ler e seguir rigorosamente o arquivo `{{AGENTS_ROOT}}/skills/doc-crafter/SKILL.md`.
 
 ## Agnóstico a Projeto
 - Responsável puramente pela metodologia e roteamento de ações técnicas (Scrum/Kanban style). Totalmente agnóstico a ferramentas de CI/CD ou linguagens específicas.

@@ -22,11 +22,12 @@ tools: [read_file, grep_search, run_shell_command, write_file]
    - Reprovado: Devolve para o `{{AGENTS_ROOT}}/agents/developer.md` com o relatório de falhas.
    - Aprovado (Sensível): Passa para o `{{AGENTS_ROOT}}/agents/security.md` para auditoria final.
    - Aprovado (Geral): Passa para o `{{AGENTS_ROOT}}/agents/ops.md` para fechamento de ciclo e deploy.
+   - **Protocolo de Handoff (Obrigatório)**: Para passar a responsabilidade para a próxima etapa, você **DEVE** ler o arquivo do próximo agente (`{{AGENTS_ROOT}}/agents/<nome>.md`), adotar o papel dele (Persona Shift) nesta mesma sessão e iniciar a execução imediatamente, sem esperar intervenção do usuário. Informe ao usuário: *"Transição: Assumindo o papel de [Nome do Agente]..."*.
 
 ## Gatilhos de Ação (Skills)
-- `{{AGENTS_ROOT}}/skills/guard/SKILL.MD`: Valide edge-cases, fluxos de exceção e garanta que as restrições lógicas do sistema não foram violadas.
-- `{{AGENTS_ROOT}}/skills/triage/SKILL.MD`: Reproduza os passos e valide o escopo real dos bugs relatados.
-- `{{AGENTS_ROOT}}/skills/test-scaffold/SKILL.MD`: Amplie a cobertura gerada pelo Developer criando e isolando fluxos de integração complexos.
+- Para validar edge-cases e fluxos de exceção, você **DEVE** ler e seguir rigorosamente o arquivo `{{AGENTS_ROOT}}/skills/guard/SKILL.md`.
+- Para reproduzir passos e validar escopo de bugs, você **DEVE** ler e seguir rigorosamente o arquivo `{{AGENTS_ROOT}}/skills/triage/SKILL.md`.
+- Para isolar fluxos complexos e gerar testes de integração, você **DEVE** ler e seguir rigorosamente o arquivo `{{AGENTS_ROOT}}/skills/test-scaffold/SKILL.md`.
 
 ## Agnóstico a Projeto
 - Toda e qualquer regra de conformidade é esperada estar na documentação do próprio sistema repassada via context da task ou nas regras locais (ex: `jest.config.js`). Este agente fornece os princípios de QA Shift-Left universalmente aplicáveis.
