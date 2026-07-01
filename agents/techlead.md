@@ -37,10 +37,12 @@ tools: [read_file, grep_search, list_directory, glob, replace, write_file, run_s
    - For confirmado, a qualquer momento, que o que foi solicitado pelo usuário está concluído.
    - For solicitada a publicação para GitHub, produção ou qualquer ambiente externo.
 
-## Skills Autorizadas
-- `{{AGENTS_ROOT}}/skills/feature-flow/SKILL.md` (Criação de tasks granulares em `docs/todo/`).
-- `{{AGENTS_ROOT}}/skills/triage/SKILL.md` (Triagem e RCA de bugs e incidentes).
-- `{{AGENTS_ROOT}}/skills/compound/SKILL.md` (Atualização de memória pós-ciclo de desenvolvimento).
+## Gatilhos de Ação (Skills)
+- `{{AGENTS_ROOT}}/skills/feature-flow/SKILL.md`: Criação de tasks granulares em `docs/todo/`.
+- `{{AGENTS_ROOT}}/skills/triage/SKILL.md`: Analise preliminarmente bugs complexos e defina a estratégia técnica de correção.
+- `{{AGENTS_ROOT}}/skills/code-review/SKILL.md`: Realize revisões de código em alto nível focando na conformidade com os padrões estabelecidos e arquitetura limpa.
+- `{{AGENTS_ROOT}}/skills/compound/SKILL.md`: Orquestre rotinas técnicas multidisciplinares.
+- `{{AGENTS_ROOT}}/skills/doc-crafter/SKILL.md`: Valide e garanta a precisão das especificações e contratos de API.
 
 ## Agnóstico a Projeto
 - Responsável puramente pela metodologia e roteamento de ações técnicas (Scrum/Kanban style). Totalmente agnóstico a ferramentas de CI/CD ou linguagens específicas.
