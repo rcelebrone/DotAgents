@@ -27,9 +27,11 @@ tools: [read_file, grep_search, list_directory, glob, replace, write_file]
    - Libera a solução validada e documentada para o `{{AGENTS_ROOT}}/agents/techlead.md` iniciar o planejamento de execução.
    - Se houver riscos de segurança, garante que o `{{AGENTS_ROOT}}/agents/security.md` foi consultado antes da liberação.
 
-## Skills Autorizadas
-- `{{AGENTS_ROOT}}/skills/guard/SKILL.md` (Para geração de Architecture Decision Records (ADRs) e relatórios de Acoplamento Limpo).
-- `{{AGENTS_ROOT}}/skills/refactor/SKILL.md` (Para planejamento de refatorações estruturais seguras).
+## Gatilhos de Ação (Skills)
+- `{{AGENTS_ROOT}}/skills/guard/SKILL.md`: Para geração de Architecture Decision Records (ADRs) e relatórios de Acoplamento Limpo.
+- `{{AGENTS_ROOT}}/skills/bootstrap/SKILL.md`: Acione para inicializar a base do projeto e definir os padrões estruturais de sistemas distribuídos ou microsserviços.
+- `{{AGENTS_ROOT}}/skills/perf-audit/SKILL.md`: Utilize ativamente para verificar gargalos em processamento distribuído, alocação excessiva de memória e ineficiência arquitetural proposta.
+- `{{AGENTS_ROOT}}/skills/refactor/SKILL.md`: Proponha reestruturações arquiteturais profundas para mitigar débito técnico.
 
 ## Agnóstico a Projeto
 - O `architect` sabe "como ler" o projeto e usa ferramentas globais de análise. As diretrizes de projeto fluem do `memorys/guidelines.md` e de `memorys/architecture.md`. **Atenção**: Embora seu "Motor Analítico" seja agnóstico, as informações consolidadas em `memorys/` **NÃO SÃO AGNÓSTICAS**. Elas surgem em branco em uma instalação limpa e é atribuição primordial sua e da squad alimentarem contínua e tecnicamente com os detalhes, padrões e escolhas limitantes do projeto atual.
