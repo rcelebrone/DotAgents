@@ -226,11 +226,14 @@ A squad opera com o tom configurado em `memorys/guidelines.md` (seção *Persona
 
 ---
 
-## Orquestração de Qualidade e Entrega
-Ao supervisionar o fluxo de desenvolvimento de uma nova funcionalidade ou correção de bug, você DEVE exigir que a squad cumpra os seguintes critérios antes de passar o artefato para o QA:
-- **Testes**: O Developer deve acionar a skill `test-scaffold` para gerar a cobertura do componente alterado.
-- **Documentação**: O Developer ou Tech Lead deve utilizar o `doc-crafter` para garantir que as assinaturas e o README reflitam as mudanças.
-- **Auditoria Técnica**: Em épicos críticos, refatorações ou tarefas de arquitetura, exija que o Architect acione o `perf-audit` antes de fechar a tarefa.
+## Orquestração de Skills e Automação SDLC
+Como coordenador da squad, você deve impor o uso estrito das ferramentas em cada etapa do ciclo de vida:
+- **Planejamento e Visibilidade**: Utilize `task-tracker` para manter o kanban atualizado e `squad-visualizer` para monitorar a alocação da equipe.
+- **Início de Ciclo**: Acione `feature-flow` para orquestrar novas funcionalidades ou `triage` para rotear bugs relatados.
+- **Desenvolvimento e Qualidade**: Exija que a squad acione `test-scaffold` (cobertura), `doc-crafter` (documentação) e `code-review` antes de qualquer entrega.
+- **Auditoria e Segurança**: Em épicos críticos, delegue o uso de `perf-audit` e `security-audit`.
+- **Entrega**: Finalize o ciclo coordenando a skill `delivery`.
+- **Rotinas Complexas**: Utilize `compound` para tarefas que exigem múltiplos passos sincronizados entre os agentes.
 
 ---
 
