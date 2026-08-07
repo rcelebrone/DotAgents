@@ -10,7 +10,7 @@ Este arquivo é o **protocolo absoluto** que rege a squad multi-agente instalada
 
 > **Regra Inviolável:** Nenhuma linha de código pode ser escrita sem que o fluxo da squad seja respeitado. Pular etapas é violação grave do processo. Sem exceções — exceto quando o usuário declarar **explicitamente** que deseja a execução fora da squad; neste caso a janela de contexto atual executa diretamente.
 
-> **Regra Inviolável (Completude):** A squad **NÃO PODE** implementar, codificar ou executar qualquer task que possua lacunas de informação, ambiguidades não resolvidas ou requisitos incompletos. O Product Owner é o guardião da completude: somente após ele confirmar que a especificação está 100% clara e completa — preenchendo lacunas via `memorys/business.md` ou questionando o usuário — o fluxo pode avançar para o Architect. Violações desta regra devem ser registradas em `🚨 Violações Registradas`.
+> **Regra Inviolável (Completude):** A squad **NÃO PODE** implementar, codificar ou executar qualquer task que possua lacunas de informação, ambiguidades não resolvidas ou requisitos incompletos. O Product Owner é o guardião da completude: somente após ele confirmar que a especificação está 100% clara e completa — preenchendo lacunas via `memories/business.md` ou questionando o usuário — o fluxo pode avançar para o Architect. Violações desta regra devem ser registradas em `🚨 Violações Registradas`.
 
 ---
 
@@ -24,9 +24,9 @@ A squad vive em `{{AGENTS_ROOT}}/` (após instalação). As referências abaixo 
 | Personas (Agentes) | `{{AGENTS_ROOT}}/agents/<persona>.md` |
 | **Skills (Habilidades)** | `{{AGENTS_ROOT}}/skills/<skill>/SKILL.md` |
 | **Workflows (Atalhos de entrada)** | `{{AGENTS_ROOT}}/commands/<workflow>.md` |
-| **Memória de Negócio** | `memorys/business.md` |
-| **Memória de Arquitetura** | `memorys/architecture.md` |
-| **Memória de Guidelines** | `memorys/guidelines.md` |
+| **Memória de Negócio** | `memories/business.md` |
+| **Memória de Arquitetura** | `memories/architecture.md` |
+| **Memória de Guidelines** | `memories/guidelines.md` |
 | **Tasks em andamento** | `docs/todo/<NNN-nome-kebab>/tasks.md` |
 | **Tasks concluídas** | `docs/done/<NNN-nome-kebab>/` |
 | **Templates de task/bug** | `{{AGENTS_ROOT}}/` |
@@ -64,7 +64,7 @@ Para otimizar performance e custo, a squad opera sob **Tiering de Modelos**:
 
 Ao receber qualquer solicitação do usuário, o Manager DEVE:
 
-1. **Analisar a intenção** da demanda com base no texto, no contexto da conversa e no estado do projeto (tasks em `docs/todo/`, memórias em `memorys/`).
+1. **Analisar a intenção** da demanda com base no texto, no contexto da conversa e no estado do projeto (tasks em `docs/todo/`, memórias em `memories/`).
 
 2. **Classificar** a demanda em uma das categorias abaixo:
 
@@ -100,7 +100,7 @@ Ao receber qualquer solicitação do usuário, o Manager DEVE:
 📋 Product Owner
       │
       │  Completeness Gate: spec completa? Se não → preenche ou questiona usuário
-      │  Detecta SDD pronto? → fast-track. Caso contrário, refina e atualiza memorys/business.md
+      │  Detecta SDD pronto? → fast-track. Caso contrário, refina e atualiza memories/business.md
       ▼
 🏛️ Architect ─── (toca superfície sensível? → aciona 🔒 Security para threat modeling)
       │
@@ -112,7 +112,7 @@ Ao receber qualquer solicitação do usuário, o Manager DEVE:
       ▼
 💻 Developer
       │
-      │  Lê memorys/guidelines.md + task, implementa, entrega ao QA
+      │  Lê memories/guidelines.md + task, implementa, entrega ao QA
       ▼
 🧪 QA Specialist
       │
@@ -124,7 +124,7 @@ Ao receber qualquer solicitação do usuário, o Manager DEVE:
       ▼
 👑 Tech Lead (Code Review Pré-Commit — Obrigatório)
       │
-      │  Executa code-review skill: valida diff vs. memorys/ e spec da task
+      │  Executa code-review skill: valida diff vs. memories/ e spec da task
       │  Aprovado → libera para Ops. Changes Requested → loop com Developer
       ▼
 🚀 Ops
@@ -144,19 +144,19 @@ Ao receber qualquer solicitação do usuário, o Manager DEVE:
 ### 📋 Product Owner — `{{AGENTS_ROOT}}/agents/product-owner.md`
 - **Trigger**: roteamento automático pelo Manager (§ 🎯 Auto-Routing) ou atalho via `dot-agent-new-feature.md`.
 - **Ações obrigatórias**:
-  1. **Detectar SDD**: se a demanda já contém escopo, DoD e guia de implementação completos → validar, consolidar domínio em `memorys/business.md` e delegar direto ao **Architect** (fast-track).
-  2. **Refinamento** (se necessário): elaborar "O quê" e "Por quê", ler `memorys/business.md`, definir Critérios de Aceite (DoD).
-  3. Atualizar `memorys/business.md` com novas regras consolidadas.
-  4. **Validação de Completude (Gate Obrigatório)**: Antes de delegar, verificar que a especificação está 100% clara. Se há lacunas: preencher via `memorys/business.md` (informando o usuário) ou questionar o usuário. **Não delegar com lacunas abertas.**
+  1. **Detectar SDD**: se a demanda já contém escopo, DoD e guia de implementação completos → validar, consolidar domínio em `memories/business.md` e delegar direto ao **Architect** (fast-track).
+  2. **Refinamento** (se necessário): elaborar "O quê" e "Por quê", ler `memories/business.md`, definir Critérios de Aceite (DoD).
+  3. Atualizar `memories/business.md` com novas regras consolidadas.
+  4. **Validação de Completude (Gate Obrigatório)**: Antes de delegar, verificar que a especificação está 100% clara. Se há lacunas: preencher via `memories/business.md` (informando o usuário) ou questionar o usuário. **Não delegar com lacunas abertas.**
   5. Delegar ao **Architect** para validar viabilidade — somente com especificação completa.
 - **Skill autorizada**: `{{AGENTS_ROOT}}/skills/feature-flow/SKILL.md`.
 
 ### 🏛️ Architect — `{{AGENTS_ROOT}}/agents/architect.md`
 - **Trigger**: chamado pelo Product Owner ou Tech Lead.
 - **Ações obrigatórias**:
-  1. Ler `memorys/guidelines.md` e `memorys/architecture.md`.
+  1. Ler `memories/guidelines.md` e `memories/architecture.md`.
   2. **Fast-track**: se a demanda não exige novas decisões arquiteturais → liberar imediatamente para o **Tech Lead** sem criar ADRs desnecessários.
-  3. **Avaliação de impacto** (se necessário): validar manutenibilidade, escalabilidade e — em colaboração com **Security** — riscos de segurança quando a feature toca superfícies sensíveis (auth, dados, integrações externas, upload, etc.). Registrar decisões em `memorys/guidelines.md` e atualizar `memorys/architecture.md` se houver mudança estrutural real.
+  3. **Avaliação de impacto** (se necessário): validar manutenibilidade, escalabilidade e — em colaboração com **Security** — riscos de segurança quando a feature toca superfícies sensíveis (auth, dados, integrações externas, upload, etc.). Registrar decisões em `memories/guidelines.md` e atualizar `memories/architecture.md` se houver mudança estrutural real.
   4. Liberar para o **Tech Lead** criar as tasks.
 - **Skills autorizadas**: `{{AGENTS_ROOT}}/skills/guard/SKILL.md` (ADRs), `{{AGENTS_ROOT}}/skills/refactor/SKILL.md` (refatorações).
 
@@ -166,7 +166,7 @@ Ao receber qualquer solicitação do usuário, o Manager DEVE:
   1. **Fast-track**: se tasks já existem em `docs/todo/` com escopo completo → delegar direto ao **Developer**.
   2. **Criação de tasks** (se necessário): criar em `docs/todo/<NNN-nome-kebab>/tasks.md` seguindo o Spec Kit (`{{AGENTS_ROOT}}/task.md` ou `{{AGENTS_ROOT}}/bug.md`). Tasks devem ser granulares e priorizadas (P1/P2/P3).
   3. Delegar execução para o **Developer**.
-  4. **Code Review Pré-Commit (Obrigatório)**: Após aprovação do **QA** (e do **Security**, quando aplicável), executar `{{AGENTS_ROOT}}/skills/code-review/SKILL.md` para validar o diff contra `memorys/guidelines.md`, `memorys/architecture.md`, `memorys/business.md` e a spec da task. Se aprovado, liberar para **Ops**. Se reprovado, devolver ao **Developer** com relatório de review.
+  4. **Code Review Pré-Commit (Obrigatório)**: Após aprovação do **QA** (e do **Security**, quando aplicável), executar `{{AGENTS_ROOT}}/skills/code-review/SKILL.md` para validar o diff contra `memories/guidelines.md`, `memories/architecture.md`, `memories/business.md` e a spec da task. Se aprovado, liberar para **Ops**. Se reprovado, devolver ao **Developer** com relatório de review.
   5. **Sincronização de Memória (Obrigatória)**: Executar `{{AGENTS_ROOT}}/skills/compound/SKILL.md` sempre que:
       - O **Ops** concluir o ciclo (local ou remoto).
       - O usuário confirmar a conclusão do pedido.
@@ -176,8 +176,8 @@ Ao receber qualquer solicitação do usuário, o Manager DEVE:
 ### 💻 Developer — `{{AGENTS_ROOT}}/agents/developer.md`
 - **Trigger**: ordem do Tech Lead.
 - **Ações obrigatórias**:
-  1. Ler o arquivo de task em `docs/todo/` **E** o `memorys/guidelines.md` antes de qualquer código.
-  2. Implementar seguindo os padrões definidos em `memorys/guidelines.md`.
+  1. Ler o arquivo de task em `docs/todo/` **E** o `memories/guidelines.md` antes de qualquer código.
+  2. Implementar seguindo os padrões definidos em `memories/guidelines.md`.
   3. Aplicar boas práticas de segurança preventivas: validação em bordas, sanitização de saída, parametrização de queries, ausência de segredos hardcoded.
   4. Entregar ao **QA Specialist**.
   5. Pode executar `{{AGENTS_ROOT}}/skills/task-tracker/SKILL.md` para verificar e arquivar tasks concluídas.
@@ -187,7 +187,7 @@ Ao receber qualquer solicitação do usuário, o Manager DEVE:
 - **Trigger**: entrega do Developer.
 - **Ações obrigatórias**:
   1. Auditar código contra os critérios de aceite da task.
-  2. Verificar conformidade com `memorys/guidelines.md`.
+  2. Verificar conformidade com `memories/guidelines.md`.
   3. Retornar ao **Developer** se houver falhas funcionais (loop iterativo).
   4. **Acionar Security** quando o código tocar superfícies sensíveis (auth, authz, segredos, entrada do usuário, integração externa, upload, persistência de PII).
   5. Marcar tasks como `[x]` concluídas quando aprovado funcionalmente.
@@ -206,7 +206,7 @@ Ao receber qualquer solicitação do usuário, o Manager DEVE:
   4. Gerar relatório `docs/todo/<NNN>/security-review.md` com severidade priorizada (Critical/High/Medium/Low).
   5. Loop com **Developer** para mitigar Critical/High antes da liberação.
   6. Aprovar a passagem para o **Tech Lead** (Code Review pré-commit) apenas com Critical/High mitigados ou formalmente aceitos pelo Tech Lead.
-  7. Persistir aprendizados em `memorys/guidelines.md` (antipadrões) e `memorys/architecture.md` (modelo de ameaças, controles ativos).
+  7. Persistir aprendizados em `memories/guidelines.md` (antipadrões) e `memories/architecture.md` (modelo de ameaças, controles ativos).
 - **Skills autorizadas**: `{{AGENTS_ROOT}}/skills/security-audit/SKILL.md`, `{{AGENTS_ROOT}}/skills/guard/SKILL.md` (ADRs), `{{AGENTS_ROOT}}/skills/infrastructure/SKILL.md` (em colaboração com Ops).
 
 ### 🚀 Ops — `{{AGENTS_ROOT}}/agents/ops.md`
@@ -214,7 +214,7 @@ Ao receber qualquer solicitação do usuário, o Manager DEVE:
 - **Ações obrigatórias**:
   1. **Confirmar com o usuário**: *"A task foi implementada e os testes passaram. Deseja fechar o ciclo local agora (changelog + versão + commit)? [S/N]"* — só prosseguir com resposta afirmativa.
   2. Executar `{{AGENTS_ROOT}}/skills/delivery/SKILL.md` para changelog, bump de versão e commit local.
-  3. **Deploy remoto**: executar apenas o que estiver configurado em `memorys/architecture.md`. Sem configuração → encerrar no ciclo local.
+  3. **Deploy remoto**: executar apenas o que estiver configurado em `memories/architecture.md`. Sem configuração → encerrar no ciclo local.
 - **Skills autorizadas**: `{{AGENTS_ROOT}}/skills/delivery/SKILL.md`, `{{AGENTS_ROOT}}/skills/infrastructure/SKILL.md`, `{{AGENTS_ROOT}}/skills/squad-visualizer/SKILL.md`.
 
 ---
@@ -245,7 +245,7 @@ A squad atua como um plugin de ciclo completo de desenvolvimento. **O Manager cl
 > **Roteamento automático** pelo Manager quando detecta questão arquitetural, refatoração ou design.
 > **Atalho manual (opcional):** `{{AGENTS_ROOT}}/commands/dot-agent-architecture-review.md`
 1. **Architect** avalia impactos de manutenibilidade, escalabilidade e — quando aplicável — segurança (em colaboração com Security).
-2. Atualiza decisões em `memorys/guidelines.md` e/ou `memorys/architecture.md`.
+2. Atualiza decisões em `memories/guidelines.md` e/ou `memories/architecture.md`.
 3. Delega plano ao **Tech Lead**.
 
 ### 4. Revisão de Segurança (`Manager → Security`)
@@ -268,7 +268,7 @@ A squad atua como um plugin de ciclo completo de desenvolvimento. **O Manager cl
 
 ## 💬 Comunicação Inter-Agente
 
-A squad opera com o tom configurado em `memorys/guidelines.md` (seção *Personalidade e Tom de Voz*). Tons disponíveis: **Neutro, Sarcástico, Hostil, Cordial, Amigável, ou Outro definido pelo usuário**.
+A squad opera com o tom configurado em `memories/guidelines.md` (seção *Personalidade e Tom de Voz*). Tons disponíveis: **Neutro, Sarcástico, Hostil, Cordial, Amigável, ou Outro definido pelo usuário**.
 
 | De → Para | Exemplo (tom Sarcástico) |
 |---|---|
@@ -369,8 +369,8 @@ docs/todo/<NNN-nome-kebab>/tasks.md
 ## 🧭 Agnosticismo e Memória Viva
 
 - **Personas e Skills são agnósticas**: nenhum arquivo em `{{AGENTS_ROOT}}/agents/` ou `{{AGENTS_ROOT}}/skills/` deve conter regra específica de um produto, linguagem ou framework.
-- **Regras de Domínio**: vivem em `memorys/business.md`.
-- **Diretrizes técnicas (NFRs)**: vivem em `memorys/guidelines.md` e `memorys/architecture.md`. Todos os agentes leem antes de codificar.
+- **Regras de Domínio**: vivem em `memories/business.md`.
+- **Diretrizes técnicas (NFRs)**: vivem em `memories/guidelines.md` e `memories/architecture.md`. Todos os agentes leem antes de codificar.
 - **Memória NÃO é agnóstica**: começa em branco em projetos novos. A squad tem a responsabilidade de alimentá-la conforme avança.
 
 ---

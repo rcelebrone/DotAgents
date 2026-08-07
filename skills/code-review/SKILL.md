@@ -12,9 +12,9 @@ description: Revisão holística pré-commit (estilo PR Review). Valida o diff c
 ### 1. Coleta de Contexto
 - Ler a task/spec ativa em `docs/todo/<NNN-nome-kebab>/tasks.md` para entender o que foi especificado.
 - Ler as 3 memórias do projeto:
-  - `memorys/guidelines.md` — padrões técnicos, convenções, restrições de implementação.
-  - `memorys/architecture.md` — decisões arquiteturais, NFRs, stack definida.
-  - `memorys/business.md` — regras de negócio, requisitos funcionais, glossário de domínio.
+  - `memories/guidelines.md` — padrões técnicos, convenções, restrições de implementação.
+  - `memories/architecture.md` — decisões arquiteturais, NFRs, stack definida.
+  - `memories/business.md` — regras de negócio, requisitos funcionais, glossário de domínio.
 
 ### 2. Diff Analysis
 - Analisar as mudanças não commitadas (`git diff`) ou o diff da branch atual.
@@ -28,17 +28,17 @@ Para cada item do diff, validar:
 - Algum critério de aceite (DoD) ficou sem cobertura?
 - Há código que extrapola o escopo da task (scope creep)?
 
-#### 3b. Guidelines Compliance (memorys/guidelines.md ↔ Código)
+#### 3b. Guidelines Compliance (memories/guidelines.md ↔ Código)
 - Convenções de naming, estrutura de arquivos e padrões Clean Code respeitados?
 - Restrições técnicas documentadas foram seguidas?
 - Antipadrões registrados foram evitados?
 
-#### 3c. Architecture Compliance (memorys/architecture.md ↔ Código)
+#### 3c. Architecture Compliance (memories/architecture.md ↔ Código)
 - O código respeita as decisões arquiteturais registradas (stack, patterns, camadas)?
 - NFRs documentados foram considerados (performance, escalabilidade)?
 - Novas dependências ou integrações estão alinhadas com o ecossistema definido?
 
-#### 3d. Business Compliance (memorys/business.md ↔ Código)
+#### 3d. Business Compliance (memories/business.md ↔ Código)
 - Regras de negócio implementadas estão de acordo com o documentado?
 - Glossário de domínio está sendo respeitado (naming de entidades, variáveis de negócio)?
 - Permissões e fluxos de acesso seguem o modelo definido?
@@ -85,4 +85,4 @@ Gerar relatório estruturado com o seguinte formato:
 ## Restrições
 - **Não duplicar** validação funcional (é responsabilidade do QA) nem auditoria de segurança (é responsabilidade do Security).
 - **Foco na conformidade**: o review valida se o que foi feito está de acordo com o que foi especificado e documentado nas memórias.
-- Manter o tom configurado em `memorys/guidelines.md` (seção Personalidade e Tom de Voz).
+- Manter o tom configurado em `memories/guidelines.md` (seção Personalidade e Tom de Voz).

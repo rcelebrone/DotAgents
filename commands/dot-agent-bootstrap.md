@@ -1,5 +1,5 @@
 ---
-name: bootstrap
+name: dot-agent-bootstrap
 description: Executa a calibração inicial da squad no repositório. Varre o código estrutural e popula as memórias raiz.
 ---
 
@@ -29,15 +29,15 @@ Verifique o sistema de arquivos para identificar o ambiente de execução atual.
 Se nenhuma condição for atendida, aborte o processo imediatamente e informe: *"Falha de integridade: Ecossistema de agentes não detectado na raiz do projeto. Reinstale via install.sh."*
 
 ## 2. Varredura Estrutural (Discovery)
-Execute a leitura profunda do projeto utilizando a ferramenta/skill correspondente definida em `{{AGENTS_ROOT}}/skills/bootstrap/SKILL.md`.
+Execute a leitura profunda do projeto utilizando a ferramenta/skill correspondente definida em `{{AGENTS_ROOT}}/skills/squad-bootstrap/SKILL.md`.
 Analise manifestos de dependências (ex: `package.json`, `pyproject.toml`, `go.mod`), arquivos de configuração de CI/CD e a estrutura de pastas do código-fonte.
 
 ## 3. População de Memória (Escrita)
-Com base nos dados coletados no Passo 2, você DEVE escrever e popular os arquivos localizados no diretório raiz `memorys/`:
+Com base nos dados coletados no Passo 2, você DEVE escrever e popular os arquivos localizados no diretório raiz `memories/`:
 
-- **`memorys/business.md`**: Escreva o propósito do projeto, as regras de negócio identificadas e o glossário do domínio.
-- **`memorys/architecture.md`**: Documente a stack tecnológica exata (Linguagem, Framework, Banco de Dados, CI/CD), a arquitetura macro e o modelo de infraestrutura detectado.
-- **`memorys/guidelines.md`**: Registre padrões de linting, convenções de código detectadas e defina explicitamente o **Tom de Voz da Squad** (Ex: Neutro, Técnico-Rígido, Cordial). Se o usuário não especificou, adote "Técnico-Rígido".
+- **`memories/business.md`**: Escreva o propósito do projeto, as regras de negócio identificadas e o glossário do domínio.
+- **`memories/architecture.md`**: Documente a stack tecnológica exata (Linguagem, Framework, Banco de Dados, CI/CD), a arquitetura macro e o modelo de infraestrutura detectado.
+- **`memories/guidelines.md`**: Registre padrões de linting, convenções de código detectadas e defina explicitamente o **Tom de Voz da Squad** (Ex: Neutro, Técnico-Rígido, Cordial). Se o usuário não especificou, adote "Técnico-Rígido".
 
 ## 4. Confirmação Final
 Não gere textos longos de introdução. Ao terminar as escritas, apresente OBRIGATORIAMENTE o seguinte sumário final:

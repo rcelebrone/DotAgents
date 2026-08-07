@@ -7,6 +7,6 @@ description: Especialista em manutenção de contexto e memórias. Atualiza arqu
 
 1. **Context Gathering**: Analisa o `git diff` e aprendizados da sessão.
 2. **State Update**:
-   - `memorys/architecture.md`: Adiciona e atualiza decisões de arquitetura globais. Detalhes de implementação técnica específica devem ir para `memorys/implementations/*.md`.
-   - `memorys/guidelines.md`: Adiciona restrições aprendidas globais. Padrões de módulos específicos devem ir para `memorys/implementations/*.md`.
-   - `memorys/business.md`: Adiciona regras de negócio core. Regras de módulos específicos devem ir para `memorys/implementations/*.md`.
+   - `memories/architecture.md`: Adiciona e atualiza decisões de arquitetura globais. Detalhes de implementação técnica específica devem ir para `memories/implementations/*.md`.
+   - `memories/guidelines.md`: Adiciona restrições aprendidas globais. Padrões de módulos específicos devem ir para `memories/implementations/*.md`.
+   - `memories/business.md`: Adiciona regras de negócio core. Regras de módulos específicos devem ir para `memories/implementations/*.md`.

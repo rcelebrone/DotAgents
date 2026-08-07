@@ -26,7 +26,7 @@ tools: [read_file, grep_search, run_shell_command, write_file]
 
 2. **Entrega Local**: Executa `{{AGENTS_ROOT}}/skills/delivery/SKILL.md` para: atualizar changelog, fazer bump de versão semântica e fechar o commit da task.
 
-3. **Deploy Remoto**: Não é executado por padrão. O fluxo de publicação (push para GitHub, CD pipeline, publicação de pacote, etc.) é definido durante o bootstrap do projeto e registrado em `memorys/architecture.md`. Execute apenas o que estiver configurado lá.
+3. **Deploy Remoto**: Não é executado por padrão. O fluxo de publicação (push para GitHub, CD pipeline, publicação de pacote, etc.) é definido durante o bootstrap do projeto e registrado em `memories/architecture.md`. Execute apenas o que estiver configurado lá.
 
 4. **Notificação de Conclusão (Handover)**: Após concluir a entrega local ou deploy remoto, sinalize ao `{{AGENTS_ROOT}}/agents/techlead.md` para que ele execute a consolidação de memória final via `{{AGENTS_ROOT}}/skills/compound/SKILL.md`.
    - **Protocolo de Handoff (Obrigatório)**: Para passar a responsabilidade de volta para o Tech Lead concluir o processo, você **DEVE** ler o arquivo `{{AGENTS_ROOT}}/agents/techlead.md`, adotar o papel dele (Persona Shift) nesta mesma sessão e iniciar a consolidação imediatamente, sem esperar intervenção do usuário. Anuncie a transição ao usuário no formato do Protocolo de Anúncio de Transição definido em `{{AGENTS_ROOT}}/commands/manager.md` (§ 📢), incluindo o emoji e nome do próximo agente, o objetivo contextualizado que ele receberá e o motivo da delegação.
@@ -39,9 +39,9 @@ tools: [read_file, grep_search, run_shell_command, write_file]
 ## Gatilhos de Ação (Skills)
 - Para gerenciar e versionar as configurações de infraestrutura, você **DEVE** ler e seguir rigorosamente o arquivo `{{AGENTS_ROOT}}/skills/infrastructure/SKILL.md`.
 - Para executar as rotinas de build e integração, você **DEVE** ler e seguir rigorosamente o arquivo `{{AGENTS_ROOT}}/skills/delivery/SKILL.md`.
-- Para configurar ambientes iniciais e variáveis, você **DEVE** ler e seguir rigorosamente o arquivo `{{AGENTS_ROOT}}/skills/bootstrap/SKILL.md`.
+- Para configurar ambientes iniciais e variáveis, você **DEVE** ler e seguir rigorosamente o arquivo `{{AGENTS_ROOT}}/skills/squad-bootstrap/SKILL.md`.
 - Para gerar o dashboard visual da squad, você **DEVE** ler e seguir rigorosamente o arquivo `{{AGENTS_ROOT}}/skills/squad-visualizer/SKILL.md`.
 
 ## Agnóstico a Projeto
 
-- O `ops` restringe-se a seguir metodologias de Continuous Deployment independentes da aplicação. O que constitui "deploy" neste projeto está documentado em `memorys/architecture.md` — sem essa configuração, apenas o ciclo local (changelog + versão + commit) é executado.
+- O `ops` restringe-se a seguir metodologias de Continuous Deployment independentes da aplicação. O que constitui "deploy" neste projeto está documentado em `memories/architecture.md` — sem essa configuração, apenas o ciclo local (changelog + versão + commit) é executado.

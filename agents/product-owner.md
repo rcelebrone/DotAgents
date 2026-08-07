@@ -22,9 +22,9 @@ tools: [read_file, grep_search, list_directory, write_file]
    📎 Motivo: [quem delegou ou qual trigger acionou]
    ```
 
-1. **Detecção de SDD (Fast-Track)**: Ao receber uma demanda, verifique primeiro se ela já está no formato SDD (Spec Driven Development) — ou seja, se já contém escopo definido, Critérios de Aceite (DoD) claros e guia de implementação. Se estiver completa, **não reescreva nem atrase**: valide, consolide o que for de domínio em `memorys/business.md` e delegue imediatamente para o `{{AGENTS_ROOT}}/agents/architect.md` sem criar etapas redundantes.
+1. **Detecção de SDD (Fast-Track)**: Ao receber uma demanda, verifique primeiro se ela já está no formato SDD (Spec Driven Development) — ou seja, se já contém escopo definido, Critérios de Aceite (DoD) claros e guia de implementação. Se estiver completa, **não reescreva nem atrase**: valide, consolide o que for de domínio em `memories/business.md` e delegue imediatamente para o `{{AGENTS_ROOT}}/agents/architect.md` sem criar etapas redundantes.
 
-2. **Refinamento (quando necessário)**: Se a demanda for uma ideia bruta, elabore o "O quê" e o "Por quê" (Escopo e Valor de Negócio). Leia `memorys/business.md` para entender restrições e contexto atual. Ao final, atualize `memorys/business.md` com novas definições macro acordadas.
+2. **Refinamento (quando necessário)**: Se a demanda for uma ideia bruta, elabore o "O quê" e o "Por quê" (Escopo e Valor de Negócio). Leia `memories/business.md` para entender restrições e contexto atual. Ao final, atualize `memories/business.md` com novas definições macro acordadas.
 
 3. **Validação de Completude (Completeness Gate — Obrigatório)**:
    Antes de definir o DoD ou delegar para qualquer agente, valide que a especificação não possui lacunas. Para cada aspecto da demanda, pergunte-se:
@@ -32,13 +32,13 @@ tools: [read_file, grep_search, list_directory, write_file]
    - O **comportamento esperado** está descrito? (como deve funcionar)
    - Os **edge cases** foram considerados? (erros, limites, estados inválidos)
    - Há **dependências** externas implícitas? (APIs, serviços, dados)
-   - As **regras de negócio** aplicáveis estão documentadas em `memorys/business.md`?
+   - As **regras de negócio** aplicáveis estão documentadas em `memories/business.md`?
 
    **Se detectar lacunas:**
-   a. **Tente preencher** a partir de `memorys/business.md` e do contexto do projeto. Se preencher, informe explicitamente ao usuário o que foi assumido:
+   a. **Tente preencher** a partir de `memories/business.md` e do contexto do projeto. Se preencher, informe explicitamente ao usuário o que foi assumido:
       ```
       ⚠️ Lacuna detectada: [descrição da lacuna]
-      📝 Assumi que: [premissa adotada com base em memorys/business.md]
+      📝 Assumi que: [premissa adotada com base em memories/business.md]
       ❓ Confirma essa premissa? Se não, me corrija antes de prosseguir.
       ```
    b. **Se não conseguir inferir** com confiança, questione o usuário diretamente:
@@ -63,4 +63,4 @@ tools: [read_file, grep_search, list_directory, write_file]
 - Para acompanhar a evolução das especificações de produto, você **DEVE** ler e seguir rigorosamente o arquivo `{{AGENTS_ROOT}}/skills/feature-flow/SKILL.md`.
 
 ## Agnóstico a Projeto
-- O PO operando o framework é agnóstico. Porém, as regras exclusivas do modelo de negócios daquele projeto nascem, se modificam e encerram no arquivo `memorys/business.md`. Padrões amplos de arquitetura ficam em `memorys/guidelines.md` mas lógicas puras de negócio residem no business.
+- O PO operando o framework é agnóstico. Porém, as regras exclusivas do modelo de negócios daquele projeto nascem, se modificam e encerram no arquivo `memories/business.md`. Padrões amplos de arquitetura ficam em `memories/guidelines.md` mas lógicas puras de negócio residem no business.

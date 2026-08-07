@@ -57,7 +57,7 @@ Após rodar o instalador e ele se autodestruir, os artefatos estarão injetados 
 - agents/: Definições das personas.
 - skills/: Habilidades especializadas executáveis.
 - commands/: Workflows e roteamento de tarefas (Manager).
-- memorys/: (Visível na raiz do seu projeto) Memória viva contínua (Business, Architecture, Guidelines).
+- memories/: (Visível na raiz do seu projeto) Memória viva contínua (Business, Architecture, Guidelines).
 
 ---
 

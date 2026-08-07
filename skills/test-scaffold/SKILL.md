@@ -11,7 +11,7 @@ description: Gera estrutura completa de testes automatizados (unitários, integr
    - Caminhos Felizes (Happy Paths).
    - Limites (Boundary values / Edge cases).
    - Tratamento de Exceções (Falhas de rede, null pointers, retornos inválidos).
-4. **Criação de Artefatos**: Gera o arquivo de teste `*.spec.*` ou `*_test.*` no local adequado conforme o padrão do framework detectado em `memorys/architecture.md`.
+4. **Criação de Artefatos**: Gera o arquivo de teste `*.spec.*` ou `*_test.*` no local adequado conforme o padrão do framework detectado em `memories/architecture.md`.
 
 ## Restrições
 - Testes devem usar nomes descritivos.

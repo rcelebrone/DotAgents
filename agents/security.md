@@ -33,7 +33,7 @@ tools: [read_file, grep_search, list_directory, glob, run_shell_command, write_f
    - Configuração de CORS, CSP, cookies, headers de segurança.
    - Manipulação de PII / dados regulatórios (LGPD, GDPR, PCI).
 
-2. **Entrada Proativa via Architect**: Quando o `{{AGENTS_ROOT}}/agents/architect.md` projeta uma feature que envolve qualquer das superfícies acima, aciona Security para **threat modeling** antes da implementação. Decisões registradas em `memorys/architecture.md` (seção *Modelo de Ameaças*).
+2. **Entrada Proativa via Architect**: Quando o `{{AGENTS_ROOT}}/agents/architect.md` projeta uma feature que envolve qualquer das superfícies acima, aciona Security para **threat modeling** antes da implementação. Decisões registradas em `memories/architecture.md` (seção *Modelo de Ameaças*).
 
 3. **Entrada Proativa via Tech Lead**: O `{{AGENTS_ROOT}}/agents/techlead.md` pode invocar Security para revisão dedicada (ex: "auditar auth flow", "revisar manuseio de PII", "validar pipeline de upload").
 
@@ -65,4 +65,4 @@ tools: [read_file, grep_search, list_directory, glob, run_shell_command, write_f
 
 ## Agnóstico a Projeto
 
-- Os controles de segurança específicos do projeto (provedor de identidade, criptografia em uso, requisitos de compliance, classificação de dados) vivem em `memorys/architecture.md` na seção dedicada a *Segurança e Compliance*. Este agente é agnóstico: aplica princípios universais de AppSec e adapta a verificação às tecnologias detectadas no bootstrap. Aprendizados específicos de vulnerabilidades já remediadas neste projeto entram em `memorys/guidelines.md` para evitar reincidência.
+- Os controles de segurança específicos do projeto (provedor de identidade, criptografia em uso, requisitos de compliance, classificação de dados) vivem em `memories/architecture.md` na seção dedicada a *Segurança e Compliance*. Este agente é agnóstico: aplica princípios universais de AppSec e adapta a verificação às tecnologias detectadas no bootstrap. Aprendizados específicos de vulnerabilidades já remediadas neste projeto entram em `memories/guidelines.md` para evitar reincidência.

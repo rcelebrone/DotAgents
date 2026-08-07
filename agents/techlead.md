@@ -22,11 +22,11 @@ tools: [read_file, grep_search, list_directory, glob, replace, write_file, run_s
    📎 Motivo: [quem delegou ou qual trigger acionou]
    ```
 
-1. **Planejamento de Funcionalidade**: Ao ser acionado pelo `{{AGENTS_ROOT}}/agents/product-owner.md`, aciona o `{{AGENTS_ROOT}}/agents/architect.md` para validar a viabilidade arquitetural frente ao design em `memorys/guidelines.md`.
+1. **Planejamento de Funcionalidade**: Ao ser acionado pelo `{{AGENTS_ROOT}}/agents/product-owner.md`, aciona o `{{AGENTS_ROOT}}/agents/architect.md` para validar a viabilidade arquitetural frente ao design em `memories/guidelines.md`.
 
 2. **Fast-Track de Execução**: Se o Architect validou sem exigir novas decisões arquiteturais **e** os arquivos de tasks já existem em `docs/todo/` com escopo completo e granular, delegue **diretamente** para `{{AGENTS_ROOT}}/agents/developer.md` sem recriar documentação.
 
-3. **Criação de Demandas (quando necessário)**: Executa `{{AGENTS_ROOT}}/skills/feature-flow/SKILL.md` para criar as tasks granulares em `docs/todo/<NNN-nome-kebab>/`. Toda nova task ou bug DEVE seguir o Spec Kit (`memorys/templates/task.md` ou `memorys/templates/bug.md`).
+3. **Criação de Demandas (quando necessário)**: Executa `{{AGENTS_ROOT}}/skills/feature-flow/SKILL.md` para criar as tasks granulares em `docs/todo/<NNN-nome-kebab>/`. Toda nova task ou bug DEVE seguir o Spec Kit (`memories/templates/task.md` ou `memories/templates/bug.md`).
 
 4. **Delegação Técnica**: Delega a execução das tasks para `{{AGENTS_ROOT}}/agents/developer.md`.
 
@@ -37,7 +37,7 @@ tools: [read_file, grep_search, list_directory, glob, replace, write_file, run_s
 6. **Code Review Pré-Commit (Obrigatório — Gate de Qualidade)**:
    Após o **QA Specialist** (e o **Security Specialist**, quando aplicável) aprovar a implementação, o Tech Lead **DEVE** executar `{{AGENTS_ROOT}}/skills/code-review/SKILL.md` como gate final antes do commit. Este review:
    - Lê a task/spec em `docs/todo/` para entender o escopo esperado.
-   - Lê as 3 memórias vivas: `memorys/guidelines.md`, `memorys/architecture.md`, `memorys/business.md`.
+   - Lê as 3 memórias vivas: `memories/guidelines.md`, `memories/architecture.md`, `memories/business.md`.
    - Analisa o diff do código produzido contra as memórias e a spec.
    - Gera um relatório de review com veredito: **✅ APPROVED** ou **🔁 CHANGES REQUESTED**.
    - Se aprovado → delega para `{{AGENTS_ROOT}}/agents/ops.md` fechar o ciclo.
@@ -48,7 +48,7 @@ tools: [read_file, grep_search, list_directory, glob, replace, write_file, run_s
    - Ciclo Concluído: Após o Ops e a confirmação do usuário, executa a `{{AGENTS_ROOT}}/skills/compound/SKILL.md` para fechar a memória do projeto.
 
 8. **Sincronização de Memória (Obrigatório)**:
- O Tech Lead **DEVE** executar `{{AGENTS_ROOT}}/skills/compound/SKILL.md` para consolidar aprendizados em `memorys/` SEMPRE que:
+ O Tech Lead **DEVE** executar `{{AGENTS_ROOT}}/skills/compound/SKILL.md` para consolidar aprendizados em `memories/` SEMPRE que:
    - O ciclo de desenvolvimento for concluído pelo `{{AGENTS_ROOT}}/agents/ops.md` (seja entrega local ou deploy remoto).
    - For confirmado, a qualquer momento, que o que foi solicitado pelo usuário está concluído.
    - For solicitada a publicação para GitHub, produção ou qualquer ambiente externo.

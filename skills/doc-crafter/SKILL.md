@@ -16,4 +16,4 @@ Esta skill lê o código fonte, interpreta a lógica de negócio e gera artefato
 
 ## Restrições
 - Não documente getters/setters lógicos ou código autoexplicativo (evite poluição).
-- Consulte `memorys/guidelines.md` para verificar o padrão de documentação do projeto antes de escrever.
+- Consulte `memories/guidelines.md` para verificar o padrão de documentação do projeto antes de escrever.

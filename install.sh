@@ -33,19 +33,19 @@ DEST_DIR="$(dirname "$SCRIPT_DIR")"
 AGENTS_SRC="$SCRIPT_DIR/agents"
 SKILLS_SRC="$SCRIPT_DIR/skills"
 COMMANDS_SRC="$SCRIPT_DIR/commands"
-MEMORYS_SRC="$SCRIPT_DIR/memorys"
+MEMORIES_SRC="$SCRIPT_DIR/memories"
 
 # Função para instalar a memória viva na raiz do projeto
-install_memorys() {
-    if [ -d "$MEMORYS_SRC" ]; then
-        if [ ! -d "$DEST_DIR/memorys" ]; then
-            echo "📦 Instalando Memorys na raiz do projeto..."
-            mkdir -p "$DEST_DIR/memorys/implementations"
-            cp -r "$MEMORYS_SRC"/* "$DEST_DIR/memorys/"
-            echo "  ✅ Diretório 'memorys/' criado na raiz."
+install_memories() {
+    if [ -d "$MEMORIES_SRC" ]; then
+        if [ ! -d "$DEST_DIR/memories" ]; then
+            echo "📦 Instalando Memories na raiz do projeto..."
+            mkdir -p "$DEST_DIR/memories/implementations"
+            cp -r "$MEMORIES_SRC"/* "$DEST_DIR/memories/"
+            echo "  ✅ Diretório 'memories/' criado na raiz."
         else
-            echo "ℹ️ Diretório 'memorys/' já existe na raiz. Apenas garantindo arquivos base se ausentes."
-            cp -rn "$MEMORYS_SRC"/* "$DEST_DIR/memorys/" 2>/dev/null || true
+            echo "ℹ️ Diretório 'memories/' já existe na raiz. Apenas garantindo arquivos base se ausentes."
+            cp -rn "$MEMORIES_SRC"/* "$DEST_DIR/memories/" 2>/dev/null || true
         fi
     fi
 }
@@ -144,7 +144,7 @@ if [ "$OPTION" -eq 3 ]; then
         find "$TARGET_DIR/skills/" -type f -name "*.md.bak" -delete
     fi
 
-    install_memorys
+    install_memories
 
     if [ -f "$RULES_DIR/manager.mdc" ]; then
         echo "🔗 Criando link simbólico para $(basename "$MANAGER_FILE")..."
@@ -198,7 +198,7 @@ else
         done
     fi
 
-    install_memorys
+    install_memories
 
     if [ -f "$TARGET_DIR/commands/manager.md" ]; then
         echo "🔗 Criando link simbólico para $(basename "$MANAGER_FILE")..."

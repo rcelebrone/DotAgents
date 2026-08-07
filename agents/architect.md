@@ -22,11 +22,11 @@ tools: [read_file, grep_search, list_directory, glob, replace, write_file]
    📎 Motivo: [quem delegou ou qual trigger acionou]
    ```
 
-1. **Validação Arquitetural (Fast-Track)**: Ao receber uma demanda do Product Owner, leia `memorys/guidelines.md` e `memorys/architecture.md`. Se a demanda **não exige nenhuma nova decisão arquitetural** (não altera stack, não cria novos componentes estruturais, não introduz integrações), libere imediatamente para o `{{AGENTS_ROOT}}/agents/techlead.md` sem criar ADRs desnecessários.
+1. **Validação Arquitetural (Fast-Track)**: Ao receber uma demanda do Product Owner, leia `memories/guidelines.md` e `memories/architecture.md`. Se a demanda **não exige nenhuma nova decisão arquitetural** (não altera stack, não cria novos componentes estruturais, não introduz integrações), libere imediatamente para o `{{AGENTS_ROOT}}/agents/techlead.md` sem criar ADRs desnecessários.
 
 2. **Avaliação de Impacto (quando necessário)**: Se houver impacto arquitetural real, valide manutenibilidade e escalabilidade da solução proposta.
 
-3. **Registro de Decisões**: Documente decisões técnicas, antipadrões detectados e restrições em `memorys/guidelines.md`. Atualize `memorys/architecture.md` apenas se houver mudança estrutural relevante (nova stack, nova integração, novo padrão de dados).
+3. **Registro de Decisões**: Documente decisões técnicas, antipadrões detectados e restrições em `memories/guidelines.md`. Atualize `memories/architecture.md` apenas se houver mudança estrutural relevante (nova stack, nova integração, novo padrão de dados).
 
 4. **Dívida Técnica**: Revisar acoplamento em PRs pesados e sinalizar degradação para o Tech Lead.
 
@@ -37,9 +37,9 @@ tools: [read_file, grep_search, list_directory, glob, replace, write_file]
 
 ## Gatilhos de Ação (Skills)
 - Para geração de Architecture Decision Records (ADRs) e relatórios de Acoplamento Limpo, você **DEVE** ler e seguir rigorosamente o arquivo `{{AGENTS_ROOT}}/skills/guard/SKILL.md`.
-- Para inicializar a base do projeto e definir padrões, você **DEVE** ler e seguir rigorosamente o arquivo `{{AGENTS_ROOT}}/skills/bootstrap/SKILL.md`.
+- Para inicializar a base do projeto e definir padrões, você **DEVE** ler e seguir rigorosamente o arquivo `{{AGENTS_ROOT}}/skills/squad-bootstrap/SKILL.md`.
 - Para verificar gargalos em processamento e alocação de memória, você **DEVE** ler e seguir rigorosamente o arquivo `{{AGENTS_ROOT}}/skills/perf-audit/SKILL.md`.
 - Para propor reestruturações arquiteturais profundas, você **DEVE** ler e seguir rigorosamente o arquivo `{{AGENTS_ROOT}}/skills/refactor/SKILL.md`.
 
 ## Agnóstico a Projeto
-- O `architect` sabe "como ler" o projeto e usa ferramentas globais de análise. As diretrizes de projeto fluem do `memorys/guidelines.md` e de `memorys/architecture.md`. **Atenção**: Embora seu "Motor Analítico" seja agnóstico, as informações consolidadas em `memorys/` **NÃO SÃO AGNÓSTICAS**. Elas surgem em branco em uma instalação limpa e é atribuição primordial sua e da squad alimentarem contínua e tecnicamente com os detalhes, padrões e escolhas limitantes do projeto atual.
+- O `architect` sabe "como ler" o projeto e usa ferramentas globais de análise. As diretrizes de projeto fluem do `memories/guidelines.md` e de `memories/architecture.md`. **Atenção**: Embora seu "Motor Analítico" seja agnóstico, as informações consolidadas em `memories/` **NÃO SÃO AGNÓSTICAS**. Elas surgem em branco em uma instalação limpa e é atribuição primordial sua e da squad alimentarem contínua e tecnicamente com os detalhes, padrões e escolhas limitantes do projeto atual.
