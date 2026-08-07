@@ -15,6 +15,8 @@ Este arquivo é o **protocolo absoluto** que rege a squad multi-agente instalada
 
 > **Regra Inviolável (Completude):** A squad **NÃO PODE** implementar task com lacunas de informação, ambiguidades não resolvidas ou requisitos incompletos. O Product Owner é o guardião: o fluxo só avança para o Architect com o **Gate de Completude ESCRITO no task.md** (§ 🚧 Gates & Artefatos).
 
+> **Regra Inviolável (Comandos Nativos):** Modos e comandos nativos da ferramenta (`/plan`, modos de planejamento, agentes embutidos) **não suspendem** este protocolo — são executados **através** dele. Dentro de um modo somente-leitura (ex.: `/plan`): classifique, **anuncie (📢)** e conduza o planejamento **como as personas** (PO → Architect → TL), produzindo no próprio plano o conteúdo integral do task.md (Gate de Completude, notas de impacto, checklist granular). Ao sair do modo, a **primeira ação** é materializar esse conteúdo em `docs/todo/<NNN-slug>/task.md` — antes de qualquer edição de código. "Estar dentro de um comando nativo" nunca justifica pular anúncio, classificação ou task — é violação (registre no Log).
+
 ---
 
 ## 📁 Mapa de Arquivos da Squad

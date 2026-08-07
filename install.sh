@@ -6,7 +6,7 @@
 
 set -euo pipefail
 
-DOTAGENTS_VERSION="2.0.0"
+DOTAGENTS_VERSION="2.1.0"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 OPTION=""
@@ -198,6 +198,7 @@ alwaysApply: true
 Toda demanda neste repositório é regida pelo protocolo em `.cursor/commands/manager.md`.
 Antes de responder qualquer solicitação: leia esse arquivo e siga o roteamento do Manager (classificação, estados e gates por artefato).
 Personas: `.cursor/agents/` · Skills: `.cursor/skills/` · Comandos: `.cursor/commands/`.
+**Esta regra vale DENTRO de modos nativos (plan/agent):** execute a intenção do comando ATRAVÉS da squad — planejar = personas produzindo o conteúdo do task.md; ao sair do modo somente-leitura, materialize-o em docs/todo/ antes de editar código.
 Não implemente nada fora do fluxo da squad, salvo opt-out formal registrado (manager § Regra Inviolável Opt-out).
 EOF
   info "  ✅ Regra sempre-ativa: $AGENTS_ROOT/rules/dotagents-manager.mdc"
@@ -214,7 +215,8 @@ inject_root_block() {
     [ "$OPTION" -eq 2 ] && echo "@.claude/commands/manager.md"
     echo "## 🤖 DotAgents — Squad Multi-Agente ativa"
     echo "Toda demanda neste repositório é regida pelo protocolo da squad em \`$AGENTS_ROOT/commands/manager.md\`."
-    echo "Antes de responder qualquer solicitação: leia esse arquivo e siga o roteamento do Manager."
+    echo "Antes de responder qualquer solicitação: classifique, anuncie (📢) e garanta a task — na ordem do Manager."
+    echo "**Esta regra vale DENTRO de /plan e de qualquer modo/comando nativo da ferramenta:** execute a intenção do comando ATRAVÉS da squad — planejar = personas produzindo o conteúdo do task.md; ao sair do modo somente-leitura, a primeira ação é materializá-lo em docs/todo/."
     echo "Não implemente nada fora do fluxo da squad, salvo opt-out formal registrado (manager § Regra Inviolável Opt-out)."
     echo "<!-- dotagents:end -->"
   } > "$block"
@@ -225,17 +227,30 @@ inject_root_block() {
   fi
   if [ ! -f "$file" ]; then
     cat "$block" > "$file"
-  elif grep -q "dotagents:begin" "$file"; then
-    awk -v bf="$block" '
-      /<!-- dotagents:begin/ {skip=1; while ((getline l < bf) > 0) print l; close(bf); next}
-      /<!-- dotagents:end/   {skip=0; next}
-      !skip {print}
-    ' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
   else
-    { echo ""; cat "$block"; } >> "$file"
+    # strip do bloco antigo (se houver) + prepend do novo no TOPO do arquivo
+    local rest
+    rest="$(mktemp)"
+    if grep -q "dotagents:begin" "$file"; then
+      awk '
+        /<!-- dotagents:begin/ {skip=1; next}
+        /<!-- dotagents:end/   {skip=0; next}
+        !skip {print}
+      ' "$file" > "$rest"
+    else
+      cat "$file" > "$rest"
+    fi
+    # remove linhas em branco iniciais do restante (garante idempotência byte-idêntica)
+    sed '/./,$!d' "$rest" > "$rest.tmp" && mv "$rest.tmp" "$rest"
+    if [ -s "$rest" ]; then
+      { cat "$block"; echo ""; cat "$rest"; } > "$file.tmp" && mv "$file.tmp" "$file"
+    else
+      cat "$block" > "$file"
+    fi
+    rm -f "$rest"
   fi
   rm -f "$block"
-  info "  ✅ Bloco de roteamento gerido em $ROOT_FILE"
+  info "  ✅ Bloco de roteamento gerido no TOPO de $ROOT_FILE"
 }
 
 # ------------------------------------------------------------- hooks
@@ -243,113 +258,200 @@ inject_root_block() {
 print_claude_snippet() {
   cat <<EOF
   Adicione em $AGENTS_ROOT/settings.json:
-  {"hooks":{"PreToolUse":[{"matcher":"Edit|Write|MultiEdit|NotebookEdit","hooks":[{"type":"command","command":"$1","timeout":10}]}]}}
+  {"hooks":{"PreToolUse":[{"matcher":"Edit|Write|MultiEdit|NotebookEdit","hooks":[{"type":"command","command":"$1","timeout":10}]}],"UserPromptSubmit":[{"type":"command","command":"$2","timeout":5}]}}
+EOF
+}
+
+print_antigravity_snippet() {
+  cat <<EOF
+  Adicione em $AGENTS_ROOT/hooks.json (top-level é uma chave NOMEADA, não "hooks"):
+  {"dotagents":{"enabled":true,"PreToolUse":[{"matcher":"write_to_file|replace_file_content|multi_replace_file_content","hooks":[{"type":"command","command":"$1","timeout":10}]}],"PreInvocation":[{"type":"command","command":"$2","timeout":5}]}}
+EOF
+}
+
+print_cursor_snippet() {
+  cat <<EOF
+  Adicione em $AGENTS_ROOT/hooks.json:
+  {"version":1,"hooks":{"preToolUse":[{"command":"$1"}],"sessionStart":[{"command":"$2"}]}}
 EOF
 }
 
 merge_hooks_claude() {
-  local cmd="\$CLAUDE_PROJECT_DIR/$AGENTS_ROOT/hooks/dotagents-gate.sh claude"
+  local gate="\$CLAUDE_PROJECT_DIR/$AGENTS_ROOT/hooks/dotagents-gate.sh claude"
+  local remind="\$CLAUDE_PROJECT_DIR/$AGENTS_ROOT/hooks/dotagents-remind.sh claude"
   local settings="$TARGET_DIR/settings.json"
-  if [ -f "$settings" ] && grep -q "dotagents-gate" "$settings"; then
-    info "  ✅ Hook já registrado em $AGENTS_ROOT/settings.json"; return 0
+  if [ ! -f "$settings" ]; then
+    cat > "$settings" <<EOF
+{
+  "hooks": {
+    "PreToolUse": [
+      { "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "hooks": [ { "type": "command", "command": "$gate", "timeout": 10 } ] }
+    ],
+    "UserPromptSubmit": [
+      { "type": "command", "command": "$remind", "timeout": 5 }
+    ]
+  }
+}
+EOF
+    info "  ✅ Hooks registrados em $AGENTS_ROOT/settings.json (gate + remind)"
+    return 0
   fi
   if command -v python3 >/dev/null 2>&1; then
     local rc=0
-    python3 - "$settings" "$cmd" <<'PY' || rc=$?
-import json, sys, os
-path, cmd = sys.argv[1], sys.argv[2]
-data = {}
-if os.path.exists(path):
-    try:
-        with open(path) as f: data = json.load(f)
-    except Exception:
-        sys.exit(3)
-pre = data.setdefault("hooks", {}).setdefault("PreToolUse", [])
-pre.append({"matcher": "Edit|Write|MultiEdit|NotebookEdit",
-            "hooks": [{"type": "command", "command": cmd, "timeout": 10}]})
+    python3 - "$settings" "$gate" "$remind" <<'PY' || rc=$?
+import json, sys
+path, gate, remind = sys.argv[1], sys.argv[2], sys.argv[3]
+try:
+    with open(path) as f: data = json.load(f)
+except Exception:
+    sys.exit(3)
+hooks = data.setdefault("hooks", {})
+for ev in list(hooks):
+    if isinstance(hooks[ev], list):
+        hooks[ev] = [e for e in hooks[ev] if "dotagents-" not in json.dumps(e)]
+        if not hooks[ev]:
+            del hooks[ev]
+hooks.setdefault("PreToolUse", []).append({"matcher": "Edit|Write|MultiEdit|NotebookEdit",
+    "hooks": [{"type": "command", "command": gate, "timeout": 10}]})
+hooks.setdefault("UserPromptSubmit", []).append({"type": "command", "command": remind, "timeout": 5})
 with open(path, "w") as f:
     json.dump(data, f, indent=2, ensure_ascii=False)
     f.write("\n")
 PY
     if [ "$rc" -eq 0 ]; then
-      info "  ✅ Hook registrado em $AGENTS_ROOT/settings.json"
+      info "  ✅ Hooks mesclados em $AGENTS_ROOT/settings.json (gate + remind; entradas dotagents antigas substituídas)"
     else
       info "  ⚠️ Não foi possível mesclar $AGENTS_ROOT/settings.json (JSON inválido?) — registre manualmente:"
-      print_claude_snippet "$cmd"
+      print_claude_snippet "$gate" "$remind"
     fi
   else
-    info "  ⚠️ python3 ausente — registre o hook manualmente:"
-    print_claude_snippet "$cmd"
+    info "  ⚠️ python3 ausente e $AGENTS_ROOT/settings.json existe — registre manualmente:"
+    print_claude_snippet "$gate" "$remind"
   fi
 }
 
 merge_hooks_antigravity() {
+  local gate="$AGENTS_ROOT/hooks/dotagents-gate.sh antigravity"
+  local remind="$AGENTS_ROOT/hooks/dotagents-remind.sh antigravity"
   local hooksfile="$TARGET_DIR/hooks.json"
-  local cmd="$AGENTS_ROOT/hooks/dotagents-gate.sh antigravity"
-  if [ -f "$hooksfile" ] && grep -q "dotagents-gate" "$hooksfile"; then
-    info "  ✅ Hook já registrado em $AGENTS_ROOT/hooks.json"; return 0
-  fi
   if [ ! -f "$hooksfile" ]; then
     cat > "$hooksfile" <<EOF
 {
-  "hooks": {
+  "dotagents": {
+    "enabled": true,
     "PreToolUse": [
-      { "matcher": "write_file",           "command": "$cmd", "timeoutSec": 10 },
-      { "matcher": "replace_file_content", "command": "$cmd", "timeoutSec": 10 }
+      { "matcher": "write_to_file|replace_file_content|multi_replace_file_content",
+        "hooks": [ { "type": "command", "command": "$gate", "timeout": 10 } ] }
+    ],
+    "PreInvocation": [
+      { "type": "command", "command": "$remind", "timeout": 5 }
     ]
   }
 }
 EOF
-    info "  ✅ Hook registrado em $AGENTS_ROOT/hooks.json (valide com /hooks no TUI ou 'agy inspect')"
-  elif command -v python3 >/dev/null 2>&1; then
+    info "  ✅ Hooks registrados em $AGENTS_ROOT/hooks.json (chave 'dotagents'; valide com /hooks ou 'agy inspect')"
+    return 0
+  fi
+  if command -v python3 >/dev/null 2>&1; then
     local rc=0
-    python3 - "$hooksfile" "$cmd" <<'PY' || rc=$?
+    python3 - "$hooksfile" "$gate" "$remind" <<'PY' || rc=$?
 import json, sys
-path, cmd = sys.argv[1], sys.argv[2]
+path, gate, remind = sys.argv[1], sys.argv[2], sys.argv[3]
 try:
     with open(path) as f: data = json.load(f)
 except Exception:
     sys.exit(3)
-pre = data.setdefault("hooks", {}).setdefault("PreToolUse", [])
-for m in ("write_file", "replace_file_content"):
-    pre.append({"matcher": m, "command": cmd, "timeoutSec": 10})
+# expurga resíduos dotagents fora da nossa chave (ex.: schema inválido do v2.0.0 sob "hooks")
+for name in list(data):
+    v = data[name]
+    if name == "dotagents" or not isinstance(v, dict):
+        continue
+    for ev in list(v):
+        if isinstance(v[ev], list):
+            v[ev] = [e for e in v[ev] if "dotagents-" not in json.dumps(e)]
+            if not v[ev]:
+                del v[ev]
+    if not v:
+        del data[name]
+data["dotagents"] = {"enabled": True,
+    "PreToolUse": [{"matcher": "write_to_file|replace_file_content|multi_replace_file_content",
+                    "hooks": [{"type": "command", "command": gate, "timeout": 10}]}],
+    "PreInvocation": [{"type": "command", "command": remind, "timeout": 5}]}
 with open(path, "w") as f:
     json.dump(data, f, indent=2, ensure_ascii=False)
     f.write("\n")
 PY
-    if [ "$rc" -eq 0 ]; then info "  ✅ Hook mesclado em $AGENTS_ROOT/hooks.json"
-    else info "  ⚠️ Não foi possível mesclar $AGENTS_ROOT/hooks.json — adicione manualmente o comando: $cmd"; fi
+    if [ "$rc" -eq 0 ]; then
+      info "  ✅ Hooks mesclados em $AGENTS_ROOT/hooks.json (chave 'dotagents' atualizada; valide com /hooks ou 'agy inspect')"
+    else
+      info "  ⚠️ Não foi possível mesclar $AGENTS_ROOT/hooks.json (JSON inválido?) — registre manualmente:"
+      print_antigravity_snippet "$gate" "$remind"
+    fi
   else
-    info "  ⚠️ $AGENTS_ROOT/hooks.json já existe e python3 está ausente — adicione manualmente: $cmd"
+    info "  ⚠️ python3 ausente e $AGENTS_ROOT/hooks.json existe — registre manualmente:"
+    print_antigravity_snippet "$gate" "$remind"
   fi
 }
 
 merge_hooks_cursor() {
+  local gate="$AGENTS_ROOT/hooks/dotagents-gate.sh cursor"
+  local remind="$AGENTS_ROOT/hooks/dotagents-remind.sh cursor"
   local hooksfile="$TARGET_DIR/hooks.json"
-  local cmd="$AGENTS_ROOT/hooks/dotagents-gate.sh cursor"
-  if [ -f "$hooksfile" ] && grep -q "dotagents-gate" "$hooksfile"; then
-    info "  ✅ Hook já registrado em $AGENTS_ROOT/hooks.json"; return 0
-  fi
   if [ ! -f "$hooksfile" ]; then
     cat > "$hooksfile" <<EOF
 {
   "version": 1,
   "hooks": {
     "preToolUse": [
-      { "command": "$cmd" }
+      { "command": "$gate" }
+    ],
+    "sessionStart": [
+      { "command": "$remind" }
     ]
   }
 }
 EOF
-    info "  ✅ Hook registrado em $AGENTS_ROOT/hooks.json"
+    info "  ✅ Hooks registrados em $AGENTS_ROOT/hooks.json (gate + remind)"
+    return 0
+  fi
+  if command -v python3 >/dev/null 2>&1; then
+    local rc=0
+    python3 - "$hooksfile" "$gate" "$remind" <<'PY' || rc=$?
+import json, sys
+path, gate, remind = sys.argv[1], sys.argv[2], sys.argv[3]
+try:
+    with open(path) as f: data = json.load(f)
+except Exception:
+    sys.exit(3)
+data.setdefault("version", 1)
+h = data.setdefault("hooks", {})
+for ev in list(h):
+    if isinstance(h[ev], list):
+        h[ev] = [e for e in h[ev] if "dotagents-" not in json.dumps(e)]
+        if not h[ev]:
+            del h[ev]
+h.setdefault("preToolUse", []).append({"command": gate})
+h.setdefault("sessionStart", []).append({"command": remind})
+with open(path, "w") as f:
+    json.dump(data, f, indent=2, ensure_ascii=False)
+    f.write("\n")
+PY
+    if [ "$rc" -eq 0 ]; then
+      info "  ✅ Hooks mesclados em $AGENTS_ROOT/hooks.json (gate + remind)"
+    else
+      info "  ⚠️ Não foi possível mesclar $AGENTS_ROOT/hooks.json (JSON inválido?) — registre manualmente:"
+      print_cursor_snippet "$gate" "$remind"
+    fi
   else
-    info "  ⚠️ $AGENTS_ROOT/hooks.json já existe — adicione manualmente em preToolUse: $cmd"
+    info "  ⚠️ python3 ausente e $AGENTS_ROOT/hooks.json existe — registre manualmente:"
+    print_cursor_snippet "$gate" "$remind"
   fi
 }
 
 install_hook() {
   if [ "$NO_HOOKS" -eq 1 ]; then info "⏭️ Hooks desativados (--no-hooks)."; return 0; fi
-  info "🔒 Instalando hook de enforcement (fail-open)..."
+  info "🔒 Instalando hooks de enforcement (fail-open): gate de escrita + lembrete por prompt..."
   mkdir -p "$TARGET_DIR/hooks"
   cat > "$TARGET_DIR/hooks/dotagents-gate.sh" <<'HOOK'
 #!/bin/sh
@@ -360,20 +462,33 @@ TARGET="${1:-claude}"
 IN=$(cat 2>/dev/null) || exit 0
 get_file() {
   if command -v jq >/dev/null 2>&1; then
-    printf '%s' "$IN" | jq -r '.tool_input.file_path // .tool_input.path // empty' 2>/dev/null
+    printf '%s' "$IN" | jq -r '.tool_input.file_path // .tool_input.path // .toolCall.args.TargetFile // .input.file_path // empty' 2>/dev/null
   elif command -v python3 >/dev/null 2>&1; then
     printf '%s' "$IN" | python3 -c 'import sys,json
 try:
     d = json.load(sys.stdin)
     ti = d.get("tool_input") or {}
-    print(ti.get("file_path") or ti.get("path") or "")
+    tc = (d.get("toolCall") or {}).get("args") or {}
+    inp = d.get("input") or {}
+    print(ti.get("file_path") or ti.get("path") or tc.get("TargetFile") or inp.get("file_path") or "")
 except Exception:
     pass' 2>/dev/null
   fi
 }
+get_ws() {
+  if command -v jq >/dev/null 2>&1; then
+    printf '%s' "$IN" | jq -r '.workspacePaths[0] // empty' 2>/dev/null
+  else
+    printf '%s' "$IN" | sed -n 's/.*"workspacePaths"[[:space:]]*:[[:space:]]*\[[[:space:]]*"\([^"]*\)".*/\1/p' 2>/dev/null
+  fi
+}
 FILE=$(get_file) || exit 0
 [ -z "$FILE" ] && exit 0
-ROOT="${CLAUDE_PROJECT_DIR:-$PWD}"
+ROOT="${CLAUDE_PROJECT_DIR:-}"
+if [ -z "$ROOT" ]; then
+  WS=$(get_ws) || WS=""
+  if [ -n "$WS" ] && [ -d "$WS" ]; then ROOT="$WS"; else ROOT="$PWD"; fi
+fi
 [ -f "$ROOT/docs/todo/.dotagents-bypass" ] && exit 0
 # Allowlist: infra da squad, docs e memórias nunca bloqueiam
 case "$FILE" in
@@ -385,14 +500,54 @@ if grep -lE '^\*\*Status:\*\*.*(planejada|em-implementacao|em-qa|em-security|em-
 fi
 REASON="DotAgents: nenhuma task ativa em docs/todo/*/task.md. Roteie a demanda pelo Manager (o PO/TL cria a task) ou registre opt-out formal ('sem squad' cria docs/todo/.dotagents-bypass)."
 case "$TARGET" in
-  claude) printf '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"%s"}}\n' "$REASON" ;;
-  cursor) printf '{"permission":"deny","userMessage":"%s"}\n' "$REASON" ;;
-  *)      printf '%s\n' "$REASON" >&2; exit 1 ;;
+  claude)      printf '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"%s"}}\n' "$REASON" ;;
+  antigravity) printf '{"decision":"deny","reason":"%s"}\n' "$REASON" ;;
+  cursor)      printf '{"permission":"deny","user_message":"%s"}\n' "$REASON" ;;
+  *)           exit 0 ;;
 esac
 exit 0
 HOOK
   chmod +x "$TARGET_DIR/hooks/dotagents-gate.sh"
-  info "  ✅ Gate: $AGENTS_ROOT/hooks/dotagents-gate.sh"
+  cat > "$TARGET_DIR/hooks/dotagents-remind.sh" <<'HOOK2'
+#!/bin/sh
+# DotAgents remind: reinjeta o protocolo da squad a cada prompt/invocação do modelo.
+# Claude: UserPromptSubmit (stdout vira contexto) · Antigravity: PreInvocation (injectSteps)
+# Cursor: sessionStart (additional_context). FAIL-OPEN: qualquer erro => exit 0 sem output.
+TARGET="${1:-claude}"
+IN=$(cat 2>/dev/null) || IN=""
+case "$TARGET" in antigravity) AR=".agents" ;; cursor) AR=".cursor" ;; *) AR=".claude" ;; esac
+ROOT="${CLAUDE_PROJECT_DIR:-}"
+if [ -z "$ROOT" ]; then
+  WS=$(printf '%s' "$IN" | sed -n 's/.*"workspacePaths"[[:space:]]*:[[:space:]]*\[[[:space:]]*"\([^"]*\)".*/\1/p' 2>/dev/null)
+  if [ -n "$WS" ] && [ -d "$WS" ]; then ROOT="$WS"; else ROOT="$PWD"; fi
+fi
+TASK="nenhuma task ativa — toda escrita de codigo exige task criada pelo fluxo"
+F=$(grep -lE '^\*\*Status:\*\*.*(em-refinamento|spec-aprovada|planejada|em-implementacao|em-qa|em-security|em-review|aprovada-para-entrega)' "$ROOT"/docs/todo/*/task.md 2>/dev/null | head -n 1)
+if [ -n "$F" ]; then
+  S=$(grep -m1 '^\*\*Status:\*\*' "$F" 2>/dev/null | sed -e 's/^\*\*Status:\*\* *//' -e 's/<!--.*-->//' | tr -d '"\\' | tr -s ' ')
+  TASK="task ativa: $(basename "$(dirname "$F")") ($S) — retome pelo manager (§ Estados)"
+fi
+case "$TARGET" in
+  antigravity)
+    # Política: emitir SEMPRE (a chamada de modelo que gera o plano é tardia no loop do /plan).
+    # Para emitir só na 1ª invocação, descomente a linha abaixo:
+    # N=$(printf '%s' "$IN" | sed -n 's/.*"invocationNum"[[:space:]]*:[[:space:]]*\([0-9]*\).*/\1/p'); [ "${N:-0}" -gt 0 ] && exit 0
+    printf '{"injectSteps":[{"ephemeralMessage":"DotAgents: protocolo da squad ativo (%s/commands/manager.md) — classifique, anuncie a persona e garanta o task.md antes de agir; vale DENTRO de /plan e comandos nativos (plano = personas produzindo o task.md). Estado: %s."}]}\n' "$AR" "$TASK"
+    ;;
+  cursor)
+    printf '{"additional_context":"[DotAgents] Protocolo da squad ativo — toda demanda é regida por %s/commands/manager.md. 1) Classifique, anuncie a persona e garanta o task.md ANTES de agir. 2) Vale DENTRO de modos nativos (plan/agent): planejar = personas produzindo o conteudo do task.md; ao sair do modo somente-leitura, materialize-o antes de editar codigo. 3) Estado: %s."}\n' "$AR" "$TASK"
+    ;;
+  *)
+    printf '[DotAgents] Protocolo da squad ativo — esta demanda é regida por %s/commands/manager.md.\n' "$AR"
+    printf '1) Classifique, anuncie a persona (📢) e garanta o task.md ANTES de agir.\n'
+    printf '2) Vale DENTRO de comandos nativos (/plan, modo de planejamento): execute a intenção do comando ATRAVÉS da squad — planejar = personas produzindo o conteúdo do task.md; ao sair do plan mode, a primeira ação é materializá-lo.\n'
+    printf '3) Estado: %s.\n' "$TASK"
+    ;;
+esac
+exit 0
+HOOK2
+  chmod +x "$TARGET_DIR/hooks/dotagents-remind.sh"
+  info "  ✅ Gate: $AGENTS_ROOT/hooks/dotagents-gate.sh · Remind: $AGENTS_ROOT/hooks/dotagents-remind.sh"
   case "$OPTION" in
     1) merge_hooks_antigravity ;;
     2) merge_hooks_claude ;;

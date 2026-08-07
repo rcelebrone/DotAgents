@@ -2,7 +2,7 @@
 
 Framework agnóstico para instalar uma **squad multi-agente** (PO, Architect, Tech Lead, Developer, QA, Security, Ops) em qualquer projeto, de qualquer linguagem. A squad é regida por um **Manager central** com roteamento automático, **gates por artefato verificável** (nenhuma etapa "aconteceu" sem o arquivo que a prova), estados de task auditáveis e uma **memória viva** específica do projeto.
 
-**Versão:** 2.0.0 · **Ferramentas suportadas:** Antigravity (IDE e CLI) · Claude Code · Cursor AI
+**Versão:** 2.1.0 · **Ferramentas suportadas:** Antigravity (IDE e CLI) · Claude Code · Cursor AI
 
 ---
 
@@ -41,7 +41,7 @@ O instalador é **idempotente**: re-rodar atualiza os artefatos da squad, preser
 | Artefatos | `.agents/{agents,skills,commands}` | `.claude/{agents,skills,commands}` | `.cursor/{agents,skills,commands}` + regra sempre-ativa em `.cursor/rules/` |
 | Roteamento raiz | bloco gerido em `AGENTS.md` | bloco gerido em `CLAUDE.md` (com import `@.claude/commands/manager.md`) | bloco gerido em `AGENTS.md` |
 | Subagentes | nativos (`subagent: true`) | nativos (`.claude/agents/`) | Persona Shift (ou nativos com `--cursor-native`) |
-| Enforcement | `.agents/hooks.json` | `.claude/settings.json` (PreToolUse) | `.cursor/hooks.json` |
+| Enforcement | `.agents/hooks.json` (PreToolUse + PreInvocation) | `.claude/settings.json` (PreToolUse + UserPromptSubmit) | `.cursor/hooks.json` (preToolUse + sessionStart) |
 | Memória viva | `memories/` na raiz do projeto (compartilhada entre ferramentas) | idem | idem |
 
 O frontmatter dos agentes é **traduzido na instalação** para o formato de cada ferramenta (nomes de tools, valores de `model`) — os arquivos-fonte permanecem agnósticos.
@@ -80,9 +80,13 @@ Demanda → 🧠 Manager (classifica e roteia)
 
 ## 🔒 Enforcement
 
-Duas camadas:
-1. **Protocolo por artefatos** (agnóstica): specs, relatórios de QA, review e security são arquivos verificáveis; o Manager exige cada um no seu gate.
-2. **Hook nativo** (`dotagents-gate.sh`, fail-open): nega edição de **código** quando não existe task ativa em `docs/todo/` — docs, memórias e configs da squad nunca são bloqueados.
+A fundação é o **protocolo por artefatos** (agnóstico): specs, relatórios de QA, review e security são arquivos verificáveis — o Manager exige cada um no seu gate. Sobre ela, **3 camadas técnicas**:
+
+1. **Bloco raiz gerido no TOPO** do `CLAUDE.md`/`AGENTS.md`, com cláusula explícita de precedência: o protocolo vale **também dentro** de comandos e modos nativos da ferramenta (`/plan` etc.).
+2. **Lembrete por prompt** (`dotagents-remind.sh`): reinjeta o protocolo + o status da task ativa a cada interação — Claude via `UserPromptSubmit`, **Antigravity via `PreInvocation` (antes de CADA chamada ao modelo, inclusive dentro do `/plan`)**, Cursor via `sessionStart` + regra `alwaysApply`.
+3. **Gate de escrita** (`dotagents-gate.sh`, fail-open): nega edição de **código** quando não existe task ativa em `docs/todo/` — docs, memórias e configs da squad nunca são bloqueados.
+
+**Limitação conhecida:** comandos nativos de prompt rígido (ex.: `/plan`) prependam instruções próprias e restringem as tools a leitura — o gate de escrita não dispara ali e o modelo tende a obedecer ao prefixo do comando. A camada 2 neutraliza isso reinjetando o protocolo em cada chamada de modelo dentro do próprio comando; ao sair do modo, as camadas 1 e 3 voltam a valer (a primeira ação exigida é materializar o task.md).
 
 **Opt-out consciente:** diga literalmente **"sem squad"** ou **"modo direto"** — vale só para a demanda atual, é registrado em `docs/todo/opt-outs.md` e nunca autoriza deploy remoto.
 
