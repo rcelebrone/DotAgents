@@ -1,5 +1,0 @@
-# Bug Template
-
-## Issue
-
-## Reproduction

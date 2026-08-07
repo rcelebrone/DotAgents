@@ -1,20 +1,21 @@
-# Project Guidelines & Constraints (Root)
+# Memória de Diretrizes e Restrições (Raiz)
 
-> **Nota:** Arquivo de memória viva preenchido pela skill `{{AGENTS_ROOT}}/skills/compound/SKILL.md`, pelo setup inicial ou pelas decisões da squad.
-> **Fragmentação:** Guia de estilo ou padrões técnicos específicos de um módulo ou tecnologia pontual (ex: "Padrão de Componentes Gráficos para Dashboard", "Normas de Integração com API Y") devem ser fragmentados em arquivos específicos dentro de `memories/implementations/` para manter as diretrizes globais focais.
+> **Nota:** memória viva preenchida pela skill `{{AGENTS_ROOT}}/skills/compound/SKILL.md`, pelo bootstrap ou por decisões da squad. Contém convenções de código, restrições e antipadrões. **Decisões arquiteturais NÃO vivem aqui** — vão em `memories/architecture.md`.
+> **Fragmentação:** guias de estilo ou padrões específicos de um módulo/tecnologia pontual (ex: "Padrão de Componentes do Dashboard", "Normas de Integração com API Y") vão para `memories/implementations/` + linha em `memories/implementations/INDEX.md`.
+> **Protocolo de atualização:** entradas datadas `[AAAA-MM-DD][Task NNN]`, append-only; em conflito, marque a antiga com `[SUPERSEDED em AAAA-MM-DD]`. Mecânica completa: skill `compound`.
 
 ## Restrições e Aprendizados Técnicos
 
 - ...
 
-## Regras de Implementação
+## Regras de Implementação (convenções e antipadrões)
 
 - ...
 
 ## 🎭 Personalidade e Tom de Voz
 
-- **Humor Atual**: [Aguardando Bootstrap/Personalidade]
-- **Diretrizes de Tom**: [As interações da squad devem refletir o humor escolhido sem comprometer a clareza técnica.]
+- **Tom atual:** Neutro <!-- default; alterado no bootstrap a pedido do usuário -->
+- **Diretrizes de tom:** as interações da squad refletem o tom escolhido sem comprometer a clareza técnica.
 
 ---
-**Instrução para a Squad:** Sempre consulte e atualize este arquivo ao final de cada ciclo de desenvolvimento com restrições, sintaxe e padrões de desenvolvimento (não arquitetura, pois estas vão no arquivo `memories/architecture.md`) aprendidos.
+**Instrução para a Squad:** consulte antes de codificar; atualize ao final de cada ciclo com restrições, sintaxe e padrões aprendidos (arquitetura vai em `memories/architecture.md`).

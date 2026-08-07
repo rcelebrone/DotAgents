@@ -1,22 +1,24 @@
-# Business Rules & Domain Decisions (Functional Requirements)
+# Memória de Negócio — Regras e Domínio (Requisitos Funcionais)
 
-Este arquivo centraliza e persiste exclusivamente as regras de negócio intrínsecas e os **Requisitos Funcionais** da aplicação. Ele mapeia "o que o sistema faz", para quem e suas lógicas de negócio.
-> *Fronteira:* NÃO COLOQUE tecnologias base de infra ou macro-arquitetura (isso vai no `memories/architecture.md`) nem regras de convenção/clean-code de linguagem (isso vai no `memories/guidelines.md`).
-> **Fragmentação:** Regras de negócio detalhadas de módulos específicos (ex: "Cálculo de Imposto Interestadual", "Fluxo de Checkout B2B") que não sejam core devem ser fragmentadas em arquivos específicos dentro de `memories/implementations/` (ex: `memories/implementations/checkout-rules.md`) para evitar que este arquivo se torne extenso e difícil de navegar.
+Este arquivo centraliza e persiste exclusivamente as regras de negócio intrínsecas e os **Requisitos Funcionais** da aplicação: "o que o sistema faz", para quem e sob quais lógicas.
 
-Ele nasce em branco (ou com este boilerplate essencial) em novos templates e **deve ser constantemente abastecido e mantido atualizado pelo Product Owner (e pela squad)** conforme novas funcionalidades baseadas em regras do negócio evoluem.
+> **Fronteira:** NÃO coloque tecnologias de infra ou macro-arquitetura (isso vai em `memories/architecture.md`) nem regras de convenção/clean-code de linguagem (isso vai em `memories/guidelines.md`).
+> **Fragmentação:** regras detalhadas de módulos específicos (ex: "Cálculo de Imposto Interestadual", "Fluxo de Checkout B2B") que não sejam core devem ser fragmentadas em `memories/implementations/<dominio>-<topico>.md` e indexadas em `memories/implementations/INDEX.md`, para manter este arquivo navegável.
+> **Protocolo de atualização:** entradas datadas `[AAAA-MM-DD][Task NNN]`, append-only — nunca reescreva entradas antigas; em conflito, marque a antiga com `[SUPERSEDED em AAAA-MM-DD]`. Mecânica completa: skill `compound`.
+
+Nasce em branco em projetos novos e **é constantemente abastecido pelo Product Owner (e pela squad)** conforme as funcionalidades evoluem.
 
 ## 1. Glossário de Domínio e Terminologia
 
 - ...
 
-## 2. Regras de Negócio Core (O que a aplicação restringe logica ou operacionalmente)
+## 2. Regras de Negócio Core (o que a aplicação restringe lógica ou operacionalmente)
 
 - ...
 
-## 3. Direitos de Acesso e Entidades Funcionais (Regras de Permissão de Usuário)
+## 3. Direitos de Acesso e Entidades Funcionais (regras de permissão de usuário)
 
 - ...
 
 ---
-**Instrução para a Squad:** Sempre consulte e atualize este arquivo nas fases de Refinamento (Product Owner). As regras de domínio estritamente orientadas ao problema do usuário devem ser atualizadas nesta memória global de negócios para não se perder ao longo do desenvolvimento.
+**Instrução para a Squad:** consulte e atualize este arquivo na fase de Refinamento (Product Owner). Regras de domínio orientadas ao problema do usuário vivem aqui para não se perder ao longo do desenvolvimento.
