@@ -1,88 +1,41 @@
 ---
 name: code-review
-description: Revisão holística pré-commit (estilo PR Review). Valida o diff contra as 3 memórias vivas (guidelines, architecture, business), a spec da task e os padrões Clean Code. Executada obrigatoriamente pelo Tech Lead antes de liberar para Ops.
+description: Revisão holística pré-commit (estilo PR Review). Valida o diff contra as 3 memórias vivas, a spec da task e Clean Code, com pré-condição de evidência de teste. Executada pelo Tech Lead; veredito escrito em review.md.
 ---
 
-# Skill: Code Review (PR-Style Pre-Commit Gate)
+# Skill: Code Review (Gate Pré-Commit)
 
-**Objetivo:** Atuar como gate de qualidade pré-commit, simulando uma revisão de PR humana. O Tech Lead executa esta skill após a aprovação funcional do QA (e Security, quando aplicável) e antes de liberar para o Ops fechar o ciclo.
+**Objetivo:** gate de qualidade pré-commit executado pelo **Tech Lead** após a aprovação do QA (e do Security, quando acionado). O veredito é **escrito em `docs/todo/<NNN-slug>/review.md`** (template canônico `memories/templates/review.md`) — relatório apenas no chat não conta.
 
-## Workflow de Execução
+## 0. Pré-condição (obrigatória — sem ela, proibido aprovar)
+- `qa-report.md` presente, com veredito APROVADO e **evidência real de execução** (saída de comandos colada).
+- Projeto sem suíte → justificativa escrita no qa-report com a verificação mínima viável executada.
+- Superfície sensível tocada → `security-review.md` presente, com Critical/High mitigados ou aceitos pelo procedimento único (manager § 🚧 Aceite de Risco).
 
-### 1. Coleta de Contexto
-- Ler a task/spec ativa em `docs/todo/<NNN-nome-kebab>/tasks.md` para entender o que foi especificado.
-- Ler as 3 memórias do projeto:
-  - `memories/guidelines.md` — padrões técnicos, convenções, restrições de implementação.
-  - `memories/architecture.md` — decisões arquiteturais, NFRs, stack definida.
-  - `memories/business.md` — regras de negócio, requisitos funcionais, glossário de domínio.
+## 1. Coleta de Contexto
+- `docs/todo/<NNN-slug>/task.md` (spec, DoD, checklist, decisões) e `qa-report.md`.
+- As 3 memórias: `memories/guidelines.md`, `memories/architecture.md`, `memories/business.md`.
+- `memories/implementations/INDEX.md` → fragmentos do domínio tocado, se houver.
 
-### 2. Diff Analysis
-- Analisar as mudanças não commitadas (`git diff`) ou o diff da branch atual.
-- Mapear quais arquivos foram alterados e qual o escopo da mudança.
+## 2. Diff Analysis
+- Analisar as mudanças da branch/ciclo (`git diff`), mapeando os arquivos alterados vs § Arquivos Alterados da task.
 
-### 3. Checklist de Validação Cruzada
-Para cada item do diff, validar:
+## 3. Checklist de Validação Cruzada
+- **Spec (task ↔ código):** todos os itens implementados? Algum CA do DoD sem cobertura? Scope creep?
+- **Guidelines:** naming, estrutura, Clean Code, restrições e antipadrões registrados respeitados?
+- **Arquitetura:** decisões/ADRs respeitados (apoio: skill `guard` § Conformidade), NFRs considerados, dependências novas alinhadas?
+- **Negócio:** regras conforme `business.md`, glossário de domínio respeitado, permissões corretas?
+- **Higiene:** código morto, imports não usados, funções gigantes (complexidade ciclomática), duplicação, código de debug, segredos.
 
-#### 3a. Spec Compliance (Task ↔ Código)
-- Todos os itens da task/spec foram implementados?
-- Algum critério de aceite (DoD) ficou sem cobertura?
-- Há código que extrapola o escopo da task (scope creep)?
+## 4. Veredito (escrito em review.md)
+Preencher o template canônico: pré-condição, tabela de conformidade, veredito **✅ APPROVED | 🔁 CHANGES REQUESTED** e ressalvas/aceites ativos.
+- **APPROVED** → TL define Status `aprovada-para-entrega`, marca os checkboxes de Gate e delega ao Ops.
+- **CHANGES REQUESTED** → devolver ao Developer com o review.md (re-passar pelo QA somente se as mudanças forem substanciais).
 
-#### 3b. Guidelines Compliance (memories/guidelines.md ↔ Código)
-- Convenções de naming, estrutura de arquivos e padrões Clean Code respeitados?
-- Restrições técnicas documentadas foram seguidas?
-- Antipadrões registrados foram evitados?
-
-#### 3c. Architecture Compliance (memories/architecture.md ↔ Código)
-- O código respeita as decisões arquiteturais registradas (stack, patterns, camadas)?
-- NFRs documentados foram considerados (performance, escalabilidade)?
-- Novas dependências ou integrações estão alinhadas com o ecossistema definido?
-
-#### 3d. Business Compliance (memories/business.md ↔ Código)
-- Regras de negócio implementadas estão de acordo com o documentado?
-- Glossário de domínio está sendo respeitado (naming de entidades, variáveis de negócio)?
-- Permissões e fluxos de acesso seguem o modelo definido?
-
-#### 3e. Higiene de Código (Clean Code)
-- Código morto ou importações não utilizadas.
-- Variáveis não semânticas ou nomenclaturas confusas.
-- Funções excessivamente grandes (Complexidade Ciclomática alta).
-- Duplicação desnecessária.
-
-### 4. Relatório de Review
-Gerar relatório estruturado com o seguinte formato:
-
-```
-## 📝 Code Review Report — Task [NNN]
-
-**Revisor:** 👑 Tech Lead
-**Data:** YYYY-MM-DD
-**Veredito:** ✅ APPROVED | 🔁 CHANGES REQUESTED
-
-### Spec Compliance
-- [✅|❌] [Item da spec] — [observação]
-
-### Guidelines Compliance
-- [✅|⚠️] [Regra] — [observação]
-
-### Architecture Compliance
-- [✅|⚠️] [Decisão] — [observação]
-
-### Business Compliance
-- [✅|⚠️] [Regra de negócio] — [observação]
-
-### Higiene de Código
-- [Arquivo:Linha] — [sugestão]
-
-### Veredito Final
-[Explicação concisa da decisão]
-```
-
-### 5. Ação Pós-Review
-- **✅ APPROVED**: Liberar para o Ops fechar o ciclo (changelog + versão + commit).
-- **🔁 CHANGES REQUESTED**: Devolver ao Developer com o relatório. O Developer corrige e re-submete ao Tech Lead (loop iterativo, sem re-passar pelo QA a menos que mudanças substanciais).
+## 5. Loop Limitado
+Máx **3 iterações** TL⇄Developer (campo `Iteração: N/3` no review.md). Na 3ª reprovação: escalar ao usuário via PO — opções do manager § Loops Limitados.
 
 ## Restrições
-- **Não duplicar** validação funcional (é responsabilidade do QA) nem auditoria de segurança (é responsabilidade do Security).
-- **Foco na conformidade**: o review valida se o que foi feito está de acordo com o que foi especificado e documentado nas memórias.
-- Manter o tom configurado em `memories/guidelines.md` (seção Personalidade e Tom de Voz).
+- Não duplicar validação funcional (QA) nem auditoria de segurança (Security) — o review é de **conformidade**.
+- Review sem review.md gravado não aconteceu (regra universal dos gates).
+- Manter o tom configurado em `memories/guidelines.md` (§ Personalidade e Tom de Voz).

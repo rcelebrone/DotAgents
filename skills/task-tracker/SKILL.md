@@ -1,21 +1,30 @@
 ---
 name: task-tracker
-description: Escaneia docs/todo/ procurando demandas pendentes e arquiva as concluídas em docs/done/. Use para "verificar tasks", "fechar task", "o que está pendente" ou "mover para done".
+description: Escaneia docs/todo/ reportando o Status de cada task e arquiva em docs/done/ somente as entregues. Use para "verificar tasks", "o que está pendente" ou "arquivar concluídas".
 ---
 
-## Workflow
+# Skill: Task Tracker
 
-1. **Scan**: Varre `docs/todo/` listando todos os subdiretórios de demanda existentes.
+## 1. Scan
+Varrer `docs/todo/`, lendo a linha `**Status:**` do `task.md` de cada subdiretório (a **palavra** é normativa — ver manager § 📌 Estados da Task).
 
-2. **Análise de Status**: Para cada subdiretório, lê o arquivo de tasks e verifica:
-   - Todos os itens `- [x]` marcados → Demanda **Concluída** ✅
-   - Existem itens `- [ ]` pendentes → Demanda **Em Andamento** 🔄
-   - Nenhum item marcado → Demanda **Não Iniciada** 📋
+## 2. Relatório
+Sumário por status (em-refinamento → entregue, pausada, bloqueada), com prioridade e tipo. Diretório sem linha `**Status:**` (formato legado) → listar como **legado** — apenas reportar, NUNCA arquivar automaticamente.
 
-3. **Relatório**: Exibe um sumário classificado por status antes de qualquer ação.
+## 3. Trava de Arquivamento
+Arquivar SOMENTE quando TODAS as condições valem:
+- `**Status:**` contém `entregue` no task.md;
+- `review.md` presente com veredito APPROVED;
+- `qa-report.md` presente com veredito aprovado;
+- `Tipo: hotfix|rollback` → `**Retro:**` diferente de `pendente`.
+Checkboxes marcados NÃO bastam — o Status e os artefatos de gate são a verdade.
 
-4. **Arquivamento das Concluídas**: Para cada demanda com status Concluída:
-   - Move o subdiretório de `docs/todo/<NNN-nome>/` para `docs/done/<NNN-nome>/`
-   - Mantém os arquivos internos intactos (spec.md, plan.md, task.md)
+## 4. Arquivamento
+Mover o **diretório inteiro** `docs/todo/<NNN-slug>/` → `docs/done/<NNN-slug>/` (task.md + qa-report.md + review.md + security-review.md + demais artefatos, intactos).
 
-5. **Confirmação**: Informa ao usuário quais demandas foram arquivadas e quantas permanecem pendentes.
+## 5. Confirmação
+Informar o que foi arquivado e o que permanece (com status, e o motivo da retenção quando houver).
+
+## Restrições
+- Esta skill NÃO altera Status nem marca checkboxes — só reporta e arquiva.
+- NNN de task arquivada nunca é reutilizado (regra de alocação do manager).

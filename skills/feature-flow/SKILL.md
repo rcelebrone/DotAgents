@@ -1,11 +1,26 @@
 ---
 name: feature-flow
-description: Orquestra o ciclo de vida de novas funcionalidades e tarefas técnicas. Use para "criar feature", "iniciar tarefa", "branch" ou "gerar boilerplate".
+description: Cria o diretório canônico da task (docs/todo/NNN-slug/), a branch e o scaffolding inicial. Use para "criar feature", "iniciar tarefa" ou "abrir task".
 ---
 
-## Workflow
+# Skill: Feature Flow (Abertura de Task)
 
-1. **Requirement Storage**: Se invocado pelo PO, gera o documento `docs/features/NNN-nome-da-feature.md` com os critérios de aceite (DoD) e valor de negócio.
-2. **Branching**: O Tech Lead ou Dev cria a branch `<type>/<kebab-case>` (Tipos: feat, fix, refactor, chore).
-3. **Tasking**: O Tech Lead gera arquivos técnicos sequenciais `001-nome.md` em `docs/todo/` baseados no documento da feature. O arquivo gerado DEVE refletir a estrutura definida no Spec Kit (`memories/templates/task.md` ou `memories/templates/bug.md`).
-4. **Scaffolding**: Gera boilerplate (Entities, Controllers, Services) seguindo o padrão injetado no `memories/architecture.md`.
+Fluxo único de criação — TODA task nasce assim (feature, bug, refactor, docs, hotfix, rollback):
+
+## 1. Alocação de NNN
+Liste `docs/todo/` **e** `docs/done/`; NNN = maior prefixo numérico + 1 (3 dígitos, zero-padded). Diretório resultante já existe → incremente até o primeiro livre. NNN nunca é reutilizado.
+
+## 2. Criação do Artefato
+Crie `docs/todo/<NNN-slug>/task.md` a partir do template canônico `memories/templates/task.md`, preenchendo `Tipo`, `Status: em-refinamento`, `Prioridade`, `Branch` e a primeira linha do Log.
+- Invocada pelo **PO** (feature/docs): PO preenche Demanda, User Stories, Gate de Completude, NFRs e DoD no próprio task.md.
+- Invocada pelo **TL** (bug/hotfix, via triage): TL preenche Reprodução e RCA.
+
+## 3. Branch
+Criar `<tipo>/NNN-slug` (tipos: `feat`, `fix`, `refactor`, `docs`, `hotfix`, `rollback`). O NNN na branch elimina colisões — ainda assim, verifique se a branch já existe antes de criar.
+
+## 4. Scaffolding (opcional, pós-planejamento)
+Gerar boilerplate (entities, controllers, services) conforme o padrão registrado em `memories/architecture.md` — somente após o TL definir a checklist (`Status: planejada`).
+
+## Restrições
+- NENHUM outro layout é válido: sem `docs/features/`, sem arquivos soltos em `docs/todo/`, sem `tasks.md` (plural).
+- Esta skill não implementa código de produção.

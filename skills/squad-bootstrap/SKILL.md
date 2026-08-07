@@ -1,16 +1,16 @@
 ---
 name: squad-bootstrap
-description: Skill de inicialização da squad. Faz a varredura do projeto e popula a memória técnica e de negócios em `memories/`. ATENÇÃO - SÓ DEVE ser executada se houver solicitação explícita do usuário ("instalar a squad", "fazer setup inicial", "bootstrap do projeto") ou após o instalador raiz (`agent.md`) já ter feito a configuração de ferramenta.
+description: Skill de inicialização da squad. Faz a varredura do projeto e popula a memória técnica e de negócios em `memories/`. ATENÇÃO - SÓ DEVE ser executada se houver solicitação explícita do usuário ("instalar a squad", "fazer setup inicial", "bootstrap do projeto") ou logo após o instalador (`install.sh`) ter configurado a ferramenta.
 ---
 
-> **Nota de Design:** Esta é a única skill sem agente dono por definição. Ela existe para popular a memória inicial — pré-requisito para que os agentes operem com contexto. É invocada diretamente pelo usuário, pelo workflow `bootstrap.md` ou pelo instalador raiz `agent.md` após configurar a ferramenta de gerenciamento.
+> **Nota de Design:** Esta é a única skill sem agente dono por definição (o Ops a executa em setups de ambiente). Ela existe para popular a memória inicial — pré-requisito para que os agentes operem com contexto. É invocada diretamente pelo usuário ou pelo workflow `dot-agent-bootstrap.md`, logo após a instalação.
 >
-> **Escopo desta skill:** APENAS varredura do projeto e preenchimento de `memories/`. A configuração da ferramenta (Claude Code, Cursor, Antigravity, Gemini-CLI, etc.) é responsabilidade do `agent.md` na raiz, não desta skill.
+> **Escopo desta skill:** APENAS varredura do projeto e preenchimento de `memories/`. A configuração da ferramenta (Claude Code, Cursor, Antigravity) é responsabilidade do instalador `install.sh`, não desta skill.
 
 ## Gatilhos (Execution Triggers)
 
 - Comando explícito do usuário: "Setup project context", "Instale a squad neste projeto", "Execute o bootstrap".
-- Etapa final do instalador raiz `agent.md` após a configuração de symlinks/cópias para a ferramenta escolhida.
+- Primeira execução da squad após o `install.sh` ter instalado os artefatos no projeto.
 
 ## Papel dos Arquivos de Memória (Fronteiras Rígidas)
 
@@ -56,4 +56,4 @@ Após popular `memories/`, resumir ao usuário:
 - Stacks detectadas (linguagem, framework, banco, CI/CD).
 - Personalidade adotada pela squad.
 - Caminho onde a squad foi configurada (e qual ferramenta detectada/escolhida).
-- Próximo passo sugerido (ex: "Pronto. Para abrir uma feature, use o workflow `nova-feature` ou simplesmente descreva a demanda — o Product Owner assume o controle.").
+- Próximo passo sugerido (ex: "Pronto. Para abrir uma feature, use o comando `dot-agent-new-feature` ou simplesmente descreva a demanda — o Manager classifica e roteia.").

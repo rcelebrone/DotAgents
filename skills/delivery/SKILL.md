@@ -1,11 +1,32 @@
 ---
 name: delivery
-description: Gerencia ciclo de releases, changelogs e deployments. Use para "finalizar tarefa", "fazer release", "deploy" ou "publicar versão".
+description: Fecha o ciclo de entrega local — build check, bump semântico, changelog e commit convencional. Deploy remoto somente sob a condição dupla do Ops. Use para "finalizar tarefa", "fazer release" ou "publicar versão".
 ---
 
-## Workflow de Conclusão (Template Adaptativo)
+# Skill: Delivery (Ciclo de Entrega)
 
-1. **Build Check**: Identificar e executar o comando de build conforme a stack detectada no bootstrap (ex: `npm run build`, `go build`, `mvn package`, etc). Garanta que o projeto compila sem erros.
-2. **Versionamento**: Realizar o *bump* semântico no manifesto principal (ex: `package.json`, `version.go`, `VERSION`, etc).
-3. **Changelog**: Atualizar o `CHANGELOG.md` ou arquivo equivalente com as novas implementações.
-4. **Git Sync**: Executar Git flow (commits convencionais) e realizar o deploy para o provedor configurado no bootstrap (ex: Firebase, AWS, Vercel, etc) utilizando os comandos dinâmicos da stack.
+Executada pelo **Ops**, somente após o Gate do Ops (checklist pré-entrega + [S/N] afirmativo — ver `{{AGENTS_ROOT}}/agents/ops.md`).
+
+## 1. Build Check
+Executar o comando de build da stack (registrado em `memories/architecture.md` no bootstrap: `npm run build`, `go build`, `mvn package`, etc.) **agora**, colando a saída em task.md § Evidências. Build quebrado → parar e devolver ao fluxo (sem commit).
+
+## 2. Versionamento Semântico
+Bump no manifesto principal (`package.json`, `version.go`, `VERSION`, etc.):
+- `feat` → **minor** · `fix`/`chore` → **patch** · **breaking change** → **major**, somente com confirmação explícita do usuário.
+
+## 3. Changelog
+Atualizar `CHANGELOG.md` (ou equivalente) com a entrega do ciclo, referenciando a Task NNN.
+
+## 4. Commit Local (Conventional Commits)
+- Formato: `tipo(escopo): descrição` — tipos: `feat|fix|refactor|chore|docs|test|perf`.
+- Corpo referencia a task: `Task NNN`.
+- Tag anotada `vX.Y.Z` opcional, conforme convenção registrada em `memories/architecture.md`.
+
+## 5. Deploy Remoto (fronteira dura)
+- **Default: NÃO existe.** Push/deploy remoto SOMENTE com (a) procedimento registrado em `memories/architecture.md § Deploy` **e** (b) segunda confirmação explícita do usuário nomeando o alvo (condição dupla do Ops — o opt-out não a dispensa).
+- Sem a condição dupla, encerre no ciclo local e informe o usuário.
+
+## 6. Encerramento
+- Resultado (build + versão + commit) registrado em task.md § Evidências.
+- Remova `docs/todo/.dotagents-bypass` se existir.
+- Handoff: **PO (Validação Final)** — nunca direto ao compound.

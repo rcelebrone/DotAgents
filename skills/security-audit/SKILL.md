@@ -10,7 +10,8 @@ Esta skill é acionada pelo `{{AGENTS_ROOT}}/agents/security.md` (e ocasionalmen
 ## Pré-requisitos
 
 - Antes de auditar, ler `memories/architecture.md` (stack, fluxos de dados, classificação de dados) e `memories/guidelines.md` (vulnerabilidades já remediadas — não revisitar a fundo o que já foi corrigido).
-- Identificar o escopo: PR completo, módulo específico ou superfície sensível (auth, upload, integração externa, etc.).
+- Identificar o escopo: PR completo, módulo específico ou superfície sensível (checklist canônica: manager § 🚧 Superfícies Sensíveis).
+- Severidades seguem a rubrica operacional de `{{AGENTS_ROOT}}/agents/security.md` (§ Rubrica de Severidade).
 
 ## Workflow de Execução
 
@@ -59,9 +60,9 @@ Se encontrado: **Critical**. Recomenda-se rotação imediata e remoção via `gi
 
 Em colaboração com `{{AGENTS_ROOT}}/skills/infrastructure/SKILL.md`:
 - Executar o auditor nativo da stack: `npm audit`, `pip-audit`, `cargo audit`, `mvn dependency-check`, `bundle audit`, etc.
-- Para cada vulnerabilidade, classificar:
-  - **Critical**: bloqueador, exige atualização ou mitigação imediata.
-  - **High**: bloqueador para release, mitigação aceita pelo Tech Lead.
+- Para cada vulnerabilidade, classificar pela rubrica do `{{AGENTS_ROOT}}/agents/security.md`:
+  - **Critical**: bloqueador absoluto, exige atualização ou mitigação imediata.
+  - **High**: bloqueador para o release; aceite só pelo procedimento único (manager § 🚧 Aceite de Risco).
   - **Medium/Low**: task separada com prioridade P2/P3.
 
 ### 5. Validação de Configuração
@@ -103,14 +104,19 @@ Gere `docs/todo/<NNN>/security-review.md` com a estrutura:
 
 ### [SEC-002] ...
 
+## Aceites de Risco
+<!-- Somente via procedimento único (manager § 🚧 Aceite de Risco). Sem entradas → "nenhum". -->
+- [SEC-00X | severidade | justificativa | mitigação futura (task NNN) | expira em AAAA-MM-DD | ciente: usuário S/N]
+
 ## Decisão de Liberação
-- [ ] Aprovado para Ops (todos Critical/High mitigados ou aceitos)
+- [ ] Aprovado para o Tech Lead Review (todos Critical/High mitigados ou aceitos formalmente)
 - [ ] Bloqueado (motivo: ...)
 ```
 
 ### 7. Loop com Developer
 
-- Achados **Critical/High** retornam ao `{{AGENTS_ROOT}}/agents/developer.md` como bloqueadores. O Developer corrige e Security re-audita o ponto específico.
+- Achados **Critical/High** retornam ao `{{AGENTS_ROOT}}/agents/developer.md` como bloqueadores. O Developer corrige e o Security re-audita **os achados devolvidos + arquivos alterados desde a auditoria anterior** (re-auditoria completa somente se a correção mudou estrutura — nova rota, novo fluxo de dados).
+- **Loop limitado:** máx 3 iterações (manager § Loops Limitados).
 - Achados **Medium/Low** entram como tasks separadas (`P2`/`P3`) em `docs/todo/`, salvo decisão diferente do Tech Lead.
 
 ### 8. Atualização de Memória

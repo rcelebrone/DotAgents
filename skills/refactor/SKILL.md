@@ -1,18 +1,20 @@
 ---
 name: refactor
-description: Skill para reestruturação estrutural de código sem alterar o comportamento externo, melhorando manutenibilidade.
+description: Reestruturação segura de código sem alterar o comportamento externo, para reduzir dívida técnica. Acionada pelo Architect ou Tech Lead.
 ---
 
-# Skill: Safe Code Refactoring (Lean)
-
-Esta skill é focada em aplicar técnicas de refatoração seguras para diminuir dívida técnica, geralmente acionada pelo `architect` ou `techlead`.
+# Skill: Safe Refactoring
 
 ## Pré-requisitos
-- O código atual DEVE ter cobertura de testes ou se comportar de maneira validável antes da refatoração.
-- As diretrizes base devem ser lidas em `memories/guidelines.md`.
+- O código alvo DEVE ter cobertura de testes ou comportamento validável ANTES da refatoração (sem rede de proteção → primeiro abrir task de testes, depois refatorar).
+- Ler `memories/guidelines.md` e `memories/architecture.md`.
 
-## Passos de Execução
-1. **Entendimento da Base**: Avalie o arquivo ou componente alvo, listando as responsabilidades (Single Responsibility Principle) que ele fere atualmente.
-2. **Plano de Corte**: Crie um `docs/todo/[NOME_REFACTOR].md` definindo os micro-passos (extrair função, mover componente, unificar interfaces).
-3. **Delegação**: O `techlead` delega a task criada no passo 2 para o `developer` executar, informando que o comportamento (features) deve permanecer intacto.
-4. **Verificação (QA)**: O `{{AGENTS_ROOT}}/agents/qa-specialist.md` revisa se os testes continuam passando.
+## Passos
+1. **Entendimento da Base:** avalie o alvo e liste as responsabilidades que ele fere (SRP) e os acoplamentos indevidos.
+2. **Plano de Corte:** crie a task via `{{AGENTS_ROOT}}/skills/feature-flow/SKILL.md` (`Tipo: refactor`, branch `refactor/NNN-slug`) com micro-passos na checklist (extrair função, mover componente, unificar interface) — cada micro-passo com verificação própria.
+3. **Execução:** o fluxo normal do manager assume (TL planeja → Developer executa preservando comportamento → QA re-executa a suíte → review).
+4. **Critério de aceite fixo:** suíte verde antes E depois, sem mudança observável de comportamento externo.
+
+## Restrições
+- Refatoração NUNCA mistura mudança de comportamento (isso é feature/bug — task separada).
+- Big-bang é proibido: micro-passos com verificação própria.

@@ -14,6 +14,9 @@ Esta skill lê o código fonte, interpreta a lógica de negócio e gera artefato
 3. **Comentários Inline**: Adiciona blocos de comentários padronizados (Docstrings, JSDoc, JavaDoc) em funções complexas, focando no "Por que" e não no "O que".
 4. **Docs Sync**: Se uma nova feature de alto nível for documentada, sugere a atualização automática do `README.md` do projeto.
 
+## Rota Docs-Only (manager § 🔀 Rotas)
+Quando a demanda é exclusivamente documentação, o Manager roteia `📚 Docs-only`: task `Tipo: docs` → Tech Lead (plano curto) → Developer executa esta skill → TL review de exatidão (docs × código real; sem segredos/endpoints internos expostos) → Ops [S/N]. Sem ciclo completo de QA/Security — por definição da rota.
+
 ## Restrições
 - Não documente getters/setters lógicos ou código autoexplicativo (evite poluição).
 - Consulte `memories/guidelines.md` para verificar o padrão de documentação do projeto antes de escrever.
