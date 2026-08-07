@@ -1,29 +1,24 @@
 ---
 name: squad-visualizer
-description: Gera e exibe o dashboard visual da squad. Use quando o usuário pedir para "apresentar a squad", "mostrar como vocês funcionam" ou "exibir o dashboard dos agentes".
+description: Apresenta a squad — personas, fluxo e estado atual — em markdown com diagrama Mermaid, gerado dos arquivos reais da instalação. Use para "apresentar a squad", "quem são vocês" ou "mostrar o fluxo".
 ---
 
 # Skill: Squad Visualizer
 
-**Objetivo:** Esta skill permite que o agente forneça uma apresentação visual ou um painel de controle interativo expondo a governança, a configuração e os papéis dos membros ativos da equipe.
+Gera uma apresentação **texto/markdown** — funciona em qualquer CLI, sem servidor, sem HTML.
 
-## Gatilhos (Execution Triggers)
-Deve ser acionada sempre que o usuário mandar comandos como:
-- "Quem são vocês?"
-- "Apresente a squad"
-- "Dashboard visual"
-- "Como a inteligência está organizada?"
+## Workflow
 
-## Workflow de Execução
+1. **Leitura dos arquivos reais** (nunca de memória): `{{AGENTS_ROOT}}/commands/manager.md` (fluxo, estados, rotas), `{{AGENTS_ROOT}}/agents/*.md` (personas ativas, missão, tier) e `{{AGENTS_ROOT}}/skills/` (inventário).
 
-1. **Verificação de Instalação e Leitura de Registry:**
-   - ATENÇÃO: Esta skill só deve operar se a Squad já estiver instalada no repositório atual do usuário.
-   - Consulta o arquivo principal `{{AGENTS_ROOT}}/commands/manager.md` e a pasta `{{AGENTS_ROOT}}/agents/` (incluindo os respectivos arquivos `.md` dos agentes como `product-owner.md`, `techlead.md`, `architect.md`, `developer.md`, `qa-specialist.md`, `security.md`, `ops.md`) para confirmar quais papéis e agentes estão ativos e montar a visão correta do ecossistema.
+2. **Tabela de Personas:** persona · emoji · missão (1 linha) · tier · skills autorizadas (da tabela única do manager § 🧭).
 
-2. **Reconstrução Dinâmica da Interface (Dashboard Vivo):**
-   - O arquivo `dashboard.html` NUNCA deve ser considerado estático. Antes de exibí-lo, o agente atuante DEVE OBRIGATORIAMENTE varrer os arquivos atuais da fundação (`{{AGENTS_ROOT}}/commands/manager.md`, os manifestos individuais em `{{AGENTS_ROOT}}/agents/` e a pasta de `{{AGENTS_ROOT}}/skills/`).
-   - Com os dados reais e estruturados em sua memória, o agente vai Reescrever/Atualizar as seções de agentes e fluxos dentro do `{{AGENTS_ROOT}}/dashboard.html` preservando seu estilo moderno (CSS), transparecendo os Tiers, Ferramentas acopladas e Nomes que acabaram de ser lidos. Assim a tela será um reflexo vivo, idêntico à squad em uso naquele milissegundo.
+3. **Diagrama do Fluxo (Mermaid):** gerar um `flowchart TD` refletindo o Fluxo Obrigatório do manager (PO → Architect → Tech Lead → Developer → QA → [Security] → TL Review → Ops → PO Validação Final → compound), com os loops "máx 3" anotados.
 
-3. **Hospedagem e Apresentação (SEMPRE via Localhost):**
-   - O agente DEVE rodar um servidor na pasta `{{AGENTS_ROOT}}` usando a tool de comandos do terminal (ex: `python3 -m http.server 8080`).
-   - Finaliza fornecendo ao usuário OBRIGATORIAMENTE uma URL localhost para ele clicar (ex: `http://localhost:8080/dashboard.html`). Não retorne chaves ou formatos em `file:///`. A experiência de entrega final do dashboard se dá pela URL web ativa.
+4. **Estado atual (opcional):** se `docs/todo/` existir, anexar o sumário de tasks por Status (reuso do passo Scan/Relatório da skill `task-tracker` — sem arquivar nada).
+
+5. **Entrega:** responder no chat com o markdown completo. Se o usuário pedir um arquivo, gravar em `docs/squad-overview.md`.
+
+## Restrições
+- NUNCA exigir servidor local, porta ou HTML — a apresentação é texto/markdown.
+- O conteúdo SEMPRE reflete os arquivos instalados naquele momento (nada hardcoded).

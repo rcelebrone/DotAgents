@@ -1,5 +1,0 @@
-# Task Template
-
-## Goal
-
-## DoD

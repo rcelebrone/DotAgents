@@ -11,7 +11,12 @@ description: Gera estrutura completa de testes automatizados (unitários, integr
    - Caminhos Felizes (Happy Paths).
    - Limites (Boundary values / Edge cases).
    - Tratamento de Exceções (Falhas de rede, null pointers, retornos inválidos).
-4. **Criação de Artefatos**: Gera o arquivo de teste `*.spec.*` ou `*_test.*` no local adequado conforme o padrão do framework detectado em `memorys/architecture.md`.
+4. **Criação de Artefatos**: Gera o arquivo de teste `*.spec.*` ou `*_test.*` no local adequado conforme o padrão do framework detectado em `memories/architecture.md`.
+
+## Propriedade (quem usa, quando)
+- **Developer:** durante a implementação — testes unitários e mocks da própria task (mesmo diff).
+- **QA Specialist:** lacunas de integração/E2E encontradas na auditoria — os testes entram no ciclo de QA da task.
+- **Projeto sem framework de teste:** a adoção inicial é task P2 própria (sugerida pelo QA), nunca embutida silenciosamente no ciclo corrente.
 
 ## Restrições
 - Testes devem usar nomes descritivos.

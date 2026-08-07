@@ -1,13 +1,11 @@
 ---
-description: Revisão arquitetural ou refatoração — aciona o Architect para avaliação de impacto
+description: Revisão arquitetural ou refatoração — pré-classifica como 🏛️ Arquitetura/Refactor e entra pelo Architect
 ---
 
-Leia `{{AGENTS_ROOT}}/commands/manager.md` para entender o protocolo da squad.
+Leia `{{AGENTS_ROOT}}/commands/manager.md` — ele é o protocolo absoluto desta execução.
 
-Atue como o **Architect** (`{{AGENTS_ROOT}}/agents/architect.md`).
+Pré-classificação: **🏛️ Arquitetura/Refactor**. Entre pelo **Architect** (`{{AGENTS_ROOT}}/agents/architect.md`).
 
-Leia `memorys/architecture.md` e `memorys/guidelines.md` para entender o estado atual da arquitetura.
-
-Avalie o impacto da mudança proposta em segurança, manutenibilidade e escalabilidade. Registre decisões técnicas e antipadrões identificados em `memorys/guidelines.md` e, se houver mudança estrutural relevante, atualize `memorys/architecture.md`. Em seguida, libere para o **Tech Lead** criar o plano de execução.
+Leia `memories/architecture.md` e `memories/guidelines.md`; avalie impacto em manutenibilidade, escalabilidade e segurança (tocou manager § Superfícies Sensíveis → threat modeling com o Security). **Decisões arquiteturais → ADR via skill `guard` + `memories/architecture.md`; em `memories/guidelines.md` entram apenas convenções e antipadrões.** Em seguida, libere para o Tech Lead planejar — e o restante do pipeline segue (Developer → QA → Review → Ops).
 
 Siga o fluxo obrigatório definido em `{{AGENTS_ROOT}}/commands/manager.md`. Não pule etapas.
