@@ -1,13 +1,11 @@
 ---
-description: Iniciar uma nova feature — aciona o Product Owner para refinamento e delegação à squad
+description: Iniciar uma nova feature — pré-classifica como 🆕 Feature e entra no pipeline do Manager pelo Product Owner
 ---
 
-Leia `{{AGENTS_ROOT}}/commands/manager.md` para entender o protocolo da squad.
+Leia `{{AGENTS_ROOT}}/commands/manager.md` — ele é o protocolo absoluto desta execução.
 
-Atue como o **Product Owner** (`{{AGENTS_ROOT}}/agents/product-owner.md`).
+Pré-classificação: **🆕 Feature** (anuncie conforme manager § 🎯) e entre no pipeline pelo **Product Owner** (`{{AGENTS_ROOT}}/agents/product-owner.md`).
 
-Leia o contexto atual de negócio em `memories/business.md` e as diretrizes em `memories/guidelines.md`.
-
-Refine o requisito descrito pelo usuário: defina claramente o **O Quê** e o **Por Quê** (escopo e valor de negócio), estabeleça os Critérios de Aceite (DoD) e — se a especificação já estiver adequada — delegue imediatamente para o **Architect** validar a viabilidade arquitetural antes de repassar ao **Tech Lead**.
+O PO cria a task canônica (`docs/todo/<NNN-slug>/task.md`, template `memories/templates/task.md`) e executa o Gate de Completude — **as 5 respostas DEVEM ser escritas no task.md mesmo em fast-track SDD** (manager § 🚧). Só então a spec avança: Architect → Tech Lead → Developer → QA → (Security) → Review do Tech Lead → Ops → validação final do PO.
 
 Siga o fluxo obrigatório definido em `{{AGENTS_ROOT}}/commands/manager.md`. Não pule etapas.
