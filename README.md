@@ -13,14 +13,14 @@ Requisitos: `bash` e `git`. Opcional: `python3` ou `jq` (registro automático do
 Clone o repositório (dentro ou fora do seu projeto):
 
 ```bash
-git clone https://github.com/rodrigo-celebrone/DotAgents.git DotAgents
+git clone git@github.com:rcelebrone/DotAgents.git
 ```
 
 Rode o instalador **a partir da raiz do seu projeto** (ou aponte com `--dest`):
 
 ```bash
 cd meu-projeto
-bash ../DotAgents/install.sh --claude          # ou --antigravity, ou --cursor
+bash DotAgents/install.sh --claude          # ou --antigravity, ou --cursor
 ```
 
 | Flag | Efeito |
