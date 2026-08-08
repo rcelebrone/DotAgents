@@ -258,7 +258,7 @@ inject_root_block() {
 print_claude_snippet() {
   cat <<EOF
   Adicione em $AGENTS_ROOT/settings.json:
-  {"hooks":{"PreToolUse":[{"matcher":"Edit|Write|MultiEdit|NotebookEdit","hooks":[{"type":"command","command":"$1","timeout":10}]}],"UserPromptSubmit":[{"type":"command","command":"$2","timeout":5}]}}
+  {"hooks":{"PreToolUse":[{"matcher":"Edit|Write|MultiEdit|NotebookEdit","hooks":[{"type":"command","command":"$1","timeout":10}]}],"UserPromptSubmit":[{"hooks":[{"type":"command","command":"$2","timeout":5}]}]}}
 EOF
 }
 
@@ -289,7 +289,7 @@ merge_hooks_claude() {
         "hooks": [ { "type": "command", "command": "$gate", "timeout": 10 } ] }
     ],
     "UserPromptSubmit": [
-      { "type": "command", "command": "$remind", "timeout": 5 }
+      { "hooks": [ { "type": "command", "command": "$remind", "timeout": 5 } ] }
     ]
   }
 }
@@ -314,7 +314,8 @@ for ev in list(hooks):
             del hooks[ev]
 hooks.setdefault("PreToolUse", []).append({"matcher": "Edit|Write|MultiEdit|NotebookEdit",
     "hooks": [{"type": "command", "command": gate, "timeout": 10}]})
-hooks.setdefault("UserPromptSubmit", []).append({"type": "command", "command": remind, "timeout": 5})
+hooks.setdefault("UserPromptSubmit", []).append(
+    {"hooks": [{"type": "command", "command": remind, "timeout": 5}]})
 with open(path, "w") as f:
     json.dump(data, f, indent=2, ensure_ascii=False)
     f.write("\n")
