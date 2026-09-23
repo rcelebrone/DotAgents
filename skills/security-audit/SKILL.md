@@ -109,7 +109,7 @@ Gere `docs/todo/<NNN>/security-review.md` com a estrutura:
 - [SEC-00X | severidade | justificativa | mitigação futura (task NNN) | expira em AAAA-MM-DD | ciente: usuário S/N]
 
 ## Decisão de Liberação
-- [ ] Aprovado para o Tech Lead Review (todos Critical/High mitigados ou aceitos formalmente)
+- [ ] Liberado para o join do Tech Lead (todos Critical/High mitigados ou aceitos formalmente)
 - [ ] Bloqueado (motivo: ...)
 ```
 

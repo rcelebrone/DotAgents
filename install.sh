@@ -6,7 +6,7 @@
 
 set -euo pipefail
 
-DOTAGENTS_VERSION="2.1.0"
+DOTAGENTS_VERSION="2.2.0"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 OPTION=""
@@ -81,9 +81,9 @@ confirm() {
 }
 
 case "$OPTION" in
-  1) TOOL_NAME="Antigravity"; AGENTS_ROOT=".agents"; ROOT_FILE="AGENTS.md"; DISPATCH_MODE="subagentes";    HOOK_TARGET="antigravity" ;;
-  2) TOOL_NAME="Claude Code"; AGENTS_ROOT=".claude"; ROOT_FILE="CLAUDE.md"; DISPATCH_MODE="subagentes";    HOOK_TARGET="claude" ;;
-  3) TOOL_NAME="Cursor AI";   AGENTS_ROOT=".cursor"; ROOT_FILE="AGENTS.md"; DISPATCH_MODE="persona-shift"; HOOK_TARGET="cursor"
+  1) TOOL_NAME="Antigravity"; AGENTS_ROOT=".agents"; ROOT_FILE="AGENTS.md"; DISPATCH_MODE="subagentes";    HOOK_TARGET="antigravity"; RESET_CMD="/clear" ;;
+  2) TOOL_NAME="Claude Code"; AGENTS_ROOT=".claude"; ROOT_FILE="CLAUDE.md"; DISPATCH_MODE="subagentes";    HOOK_TARGET="claude";      RESET_CMD="/clear" ;;
+  3) TOOL_NAME="Cursor AI";   AGENTS_ROOT=".cursor"; ROOT_FILE="AGENTS.md"; DISPATCH_MODE="persona-shift"; HOOK_TARGET="cursor";      RESET_CMD="New Chat (Ctrl/Cmd+N no painel do Agent)"
      [ "$CURSOR_NATIVE" -eq 1 ] && DISPATCH_MODE="subagentes" ;;
 esac
 TARGET_DIR="$DEST_DIR/$AGENTS_ROOT"
@@ -101,12 +101,12 @@ confirm "Instalar em $DEST_DIR?" || die "Instalação cancelada."
 # Copia src -> dst substituindo os placeholders (portável BSD/GNU: nunca sed -i)
 render_file() {
   mkdir -p "$(dirname "$2")"
-  sed -e "s|{{AGENTS_ROOT}}|$AGENTS_ROOT|g" -e "s|{{DISPATCH_MODE}}|$DISPATCH_MODE|g" "$1" > "$2"
+  sed -e "s|{{AGENTS_ROOT}}|$AGENTS_ROOT|g" -e "s|{{DISPATCH_MODE}}|$DISPATCH_MODE|g" -e "s|{{RESET_CMD}}|$RESET_CMD|g" "$1" > "$2"
 }
 
 render_tree_inplace() {
   find "$1" -type f -name "*.md" | while IFS= read -r f; do
-    sed -e "s|{{AGENTS_ROOT}}|$AGENTS_ROOT|g" -e "s|{{DISPATCH_MODE}}|$DISPATCH_MODE|g" "$f" > "$f.tmp" && mv "$f.tmp" "$f"
+    sed -e "s|{{AGENTS_ROOT}}|$AGENTS_ROOT|g" -e "s|{{DISPATCH_MODE}}|$DISPATCH_MODE|g" -e "s|{{RESET_CMD}}|$RESET_CMD|g" "$f" > "$f.tmp" && mv "$f.tmp" "$f"
   done
 }
 
@@ -454,100 +454,11 @@ install_hook() {
   if [ "$NO_HOOKS" -eq 1 ]; then info "⏭️ Hooks desativados (--no-hooks)."; return 0; fi
   info "🔒 Instalando hooks de enforcement (fail-open): gate de escrita + lembrete por prompt..."
   mkdir -p "$TARGET_DIR/hooks"
-  cat > "$TARGET_DIR/hooks/dotagents-gate.sh" <<'HOOK'
-#!/bin/sh
-# DotAgents gate (PreToolUse): nega edição de CÓDIGO quando não há task ativa.
-# FAIL-OPEN: qualquer erro ou dado ausente => permite.
-# Escape: docs/todo/.dotagents-bypass (criado apenas via opt-out formal "sem squad" — manager § Opt-out).
-TARGET="${1:-claude}"
-IN=$(cat 2>/dev/null) || exit 0
-get_file() {
-  if command -v jq >/dev/null 2>&1; then
-    printf '%s' "$IN" | jq -r '.tool_input.file_path // .tool_input.path // .toolCall.args.TargetFile // .input.file_path // empty' 2>/dev/null
-  elif command -v python3 >/dev/null 2>&1; then
-    printf '%s' "$IN" | python3 -c 'import sys,json
-try:
-    d = json.load(sys.stdin)
-    ti = d.get("tool_input") or {}
-    tc = (d.get("toolCall") or {}).get("args") or {}
-    inp = d.get("input") or {}
-    print(ti.get("file_path") or ti.get("path") or tc.get("TargetFile") or inp.get("file_path") or "")
-except Exception:
-    pass' 2>/dev/null
-  fi
-}
-get_ws() {
-  if command -v jq >/dev/null 2>&1; then
-    printf '%s' "$IN" | jq -r '.workspacePaths[0] // empty' 2>/dev/null
-  else
-    printf '%s' "$IN" | sed -n 's/.*"workspacePaths"[[:space:]]*:[[:space:]]*\[[[:space:]]*"\([^"]*\)".*/\1/p' 2>/dev/null
-  fi
-}
-FILE=$(get_file) || exit 0
-[ -z "$FILE" ] && exit 0
-ROOT="${CLAUDE_PROJECT_DIR:-}"
-if [ -z "$ROOT" ]; then
-  WS=$(get_ws) || WS=""
-  if [ -n "$WS" ] && [ -d "$WS" ]; then ROOT="$WS"; else ROOT="$PWD"; fi
-fi
-[ -f "$ROOT/docs/todo/.dotagents-bypass" ] && exit 0
-# Allowlist: infra da squad, docs e memórias nunca bloqueiam
-case "$FILE" in
-  *.md|*/docs/*|docs/*|*/memories/*|memories/*|*/.claude/*|.claude/*|*/.agents/*|.agents/*|*/.cursor/*|.cursor/*|*CHANGELOG*|*.env.example) exit 0 ;;
-esac
-# Task ativa (status de trabalho) => permite
-if grep -lE '^\*\*Status:\*\*.*(planejada|em-implementacao|em-qa|em-security|em-review|aprovada-para-entrega)' "$ROOT"/docs/todo/*/task.md >/dev/null 2>&1; then
-  exit 0
-fi
-REASON="DotAgents: nenhuma task ativa em docs/todo/*/task.md. Roteie a demanda pelo Manager (o PO/TL cria a task) ou registre opt-out formal ('sem squad' cria docs/todo/.dotagents-bypass)."
-case "$TARGET" in
-  claude)      printf '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"%s"}}\n' "$REASON" ;;
-  antigravity) printf '{"decision":"deny","reason":"%s"}\n' "$REASON" ;;
-  cursor)      printf '{"permission":"deny","user_message":"%s"}\n' "$REASON" ;;
-  *)           exit 0 ;;
-esac
-exit 0
-HOOK
-  chmod +x "$TARGET_DIR/hooks/dotagents-gate.sh"
-  cat > "$TARGET_DIR/hooks/dotagents-remind.sh" <<'HOOK2'
-#!/bin/sh
-# DotAgents remind: reinjeta o protocolo da squad a cada prompt/invocação do modelo.
-# Claude: UserPromptSubmit (stdout vira contexto) · Antigravity: PreInvocation (injectSteps)
-# Cursor: sessionStart (additional_context). FAIL-OPEN: qualquer erro => exit 0 sem output.
-TARGET="${1:-claude}"
-IN=$(cat 2>/dev/null) || IN=""
-case "$TARGET" in antigravity) AR=".agents" ;; cursor) AR=".cursor" ;; *) AR=".claude" ;; esac
-ROOT="${CLAUDE_PROJECT_DIR:-}"
-if [ -z "$ROOT" ]; then
-  WS=$(printf '%s' "$IN" | sed -n 's/.*"workspacePaths"[[:space:]]*:[[:space:]]*\[[[:space:]]*"\([^"]*\)".*/\1/p' 2>/dev/null)
-  if [ -n "$WS" ] && [ -d "$WS" ]; then ROOT="$WS"; else ROOT="$PWD"; fi
-fi
-TASK="nenhuma task ativa — toda escrita de codigo exige task criada pelo fluxo"
-F=$(grep -lE '^\*\*Status:\*\*.*(em-refinamento|spec-aprovada|planejada|em-implementacao|em-qa|em-security|em-review|aprovada-para-entrega)' "$ROOT"/docs/todo/*/task.md 2>/dev/null | head -n 1)
-if [ -n "$F" ]; then
-  S=$(grep -m1 '^\*\*Status:\*\*' "$F" 2>/dev/null | sed -e 's/^\*\*Status:\*\* *//' -e 's/<!--.*-->//' | tr -d '"\\' | tr -s ' ')
-  TASK="task ativa: $(basename "$(dirname "$F")") ($S) — retome pelo manager (§ Estados)"
-fi
-case "$TARGET" in
-  antigravity)
-    # Política: emitir SEMPRE (a chamada de modelo que gera o plano é tardia no loop do /plan).
-    # Para emitir só na 1ª invocação, descomente a linha abaixo:
-    # N=$(printf '%s' "$IN" | sed -n 's/.*"invocationNum"[[:space:]]*:[[:space:]]*\([0-9]*\).*/\1/p'); [ "${N:-0}" -gt 0 ] && exit 0
-    printf '{"injectSteps":[{"ephemeralMessage":"DotAgents: protocolo da squad ativo (%s/commands/manager.md) — classifique, anuncie a persona e garanta o task.md antes de agir; vale DENTRO de /plan e comandos nativos (plano = personas produzindo o task.md). Estado: %s."}]}\n' "$AR" "$TASK"
-    ;;
-  cursor)
-    printf '{"additional_context":"[DotAgents] Protocolo da squad ativo — toda demanda é regida por %s/commands/manager.md. 1) Classifique, anuncie a persona e garanta o task.md ANTES de agir. 2) Vale DENTRO de modos nativos (plan/agent): planejar = personas produzindo o conteudo do task.md; ao sair do modo somente-leitura, materialize-o antes de editar codigo. 3) Estado: %s."}\n' "$AR" "$TASK"
-    ;;
-  *)
-    printf '[DotAgents] Protocolo da squad ativo — esta demanda é regida por %s/commands/manager.md.\n' "$AR"
-    printf '1) Classifique, anuncie a persona (📢) e garanta o task.md ANTES de agir.\n'
-    printf '2) Vale DENTRO de comandos nativos (/plan, modo de planejamento): execute a intenção do comando ATRAVÉS da squad — planejar = personas produzindo o conteúdo do task.md; ao sair do plan mode, a primeira ação é materializá-lo.\n'
-    printf '3) Estado: %s.\n' "$TASK"
-    ;;
-esac
-exit 0
-HOOK2
-  chmod +x "$TARGET_DIR/hooks/dotagents-remind.sh"
+  local f
+  for f in dotagents-gate.sh dotagents-remind.sh; do
+    [ -f "$SCRIPT_DIR/hooks/$f" ] || die "Hook-fonte ausente: $SCRIPT_DIR/hooks/$f"
+    cp "$SCRIPT_DIR/hooks/$f" "$TARGET_DIR/hooks/$f" && chmod +x "$TARGET_DIR/hooks/$f"
+  done
   info "  ✅ Gate: $AGENTS_ROOT/hooks/dotagents-gate.sh · Remind: $AGENTS_ROOT/hooks/dotagents-remind.sh"
   case "$OPTION" in
     1) merge_hooks_antigravity ;;
@@ -573,6 +484,7 @@ stamp_version() {
 version=$DOTAGENTS_VERSION
 tool=$TOOL_NAME
 dispatch=$DISPATCH_MODE
+reset_cmd=$RESET_CMD
 installed_at=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 EOF
 }
