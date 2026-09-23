@@ -22,6 +22,7 @@
 - [ ] Todos os CAs do DoD verificados individualmente
 - [ ] Suíte completa executada e verde (ou justificativa escrita: projeto sem framework de teste → verificação mínima viável descrita em Execução)
 - [ ] Zero defeitos Sev1/Sev2 abertos
-- [ ] Superfícies Sensíveis avaliadas (manager § Superfícies Sensíveis): não se aplica | 🔒 Security acionado
+- [ ] Superfícies Sensíveis avaliadas (manager § Superfícies Sensíveis): não se aplica | 🔒 Security já no fan-out | ⚠️ não prevista → join aciona o Security
 
-**Veredito:** ✅ APROVADO | ❌ REPROVADO → devolvido ao Developer (motivos em Defeitos)
+**Veredito:** ✅ APROVADO | ❌ REPROVADO → join do Tech Lead devolve ao Developer (motivos em Defeitos)
+<!-- Gate paralelo (manager § 🔀): o QA NÃO altera o task.md — o join do TL consolida Status e Log. -->

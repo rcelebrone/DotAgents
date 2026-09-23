@@ -2,7 +2,7 @@
 
 Framework agnóstico para instalar uma **squad multi-agente** (PO, Architect, Tech Lead, Developer, QA, Security, Ops) em qualquer projeto, de qualquer linguagem. A squad é regida por um **Manager central** com roteamento automático, **gates por artefato verificável** (nenhuma etapa "aconteceu" sem o arquivo que a prova), estados de task auditáveis e uma **memória viva** específica do projeto.
 
-**Versão:** 2.1.0 · **Ferramentas suportadas:** Antigravity (IDE e CLI) · Claude Code · Cursor AI
+**Versão:** 2.2.0 · **Ferramentas suportadas:** Antigravity (IDE e CLI) · Claude Code · Cursor AI
 
 ---
 
@@ -65,10 +65,11 @@ Demanda → 🧠 Manager (classifica e roteia)
   → 📋 PO (Gate de Completude ESCRITO na task)
   → 🏛️ Architect (impacto/ADR; aciona 🔒 p/ superfícies sensíveis)
   → 👑 Tech Lead (checklist granular)
-  → 💻 Developer (TDD + evidências coladas)
-  → 🧪 QA (re-executa tudo → qa-report.md)         ↺ loops máx 3
-  → 🔒 Security quando aplicável (security-review.md)
-  → 👑 Review pré-commit (review.md, exige evidência de teste)
+  → 💻 Developer (TDD + evidências; grupos independentes em subagentes paralelos → join)
+  → ┌ 🧪 QA (re-executa tudo → qa-report.md)          ┐ em paralelo
+    │ 🔒 Security quando aplicável (security-review.md) │ ↺ loops máx 3
+    └ 👑 Review pré-commit (review.md)                  ┘   por gate
+  → 👑 join do TL (todos ✅ + evidência de teste → aprovada-para-entrega)
   → 🚀 Ops ([S/N] → changelog + versão + commit; deploy remoto só se configurado)
   → 📋 PO valida o DoD e entrega o resumo → memória atualizada (compound)
 ```
@@ -76,6 +77,8 @@ Demanda → 🧠 Manager (classifica e roteia)
 - **Gates por artefato:** cada etapa valida o artefato da anterior — *gate sem artefato não aconteceu*.
 - **Estados auditáveis:** a task vive em `docs/todo/<NNN-slug>/task.md` com `Status` normativo e Log de transições; concluídas vão para `docs/done/`.
 - **Rotas dedicadas:** Pergunta (sem task), Docs-only, **Hotfix** (expresso, com retro obrigatória), **Rollback** (git revert, nunca reset --hard) — além de Feature/Bug/Refactor/Security/Deploy.
+- **Paralelismo por padrão (fan-out/join):** uma etapa só espera outra se consome o artefato dela. QA, Security e Review rodam juntos sobre o mesmo diff; grupos de itens com arquivos disjuntos viram subagentes Developer paralelos. Subagentes nunca escrevem no `task.md` — o dono do join consolida (no Cursor/persona-shift, a execução é sequencial com o mesmo join).
+- **Higiene de contexto:** demanda nova sem relação com o que a sessão já tratou → o PO salva o estado (task ativa `pausada`, nova task criada), para e pede o reset da sessão — `/clear` no Claude Code e no Antigravity CLI, *New Chat* no Cursor — para não arrastar tokens de outra task. Responder "seguir aqui" mantém a sessão (no modo subagentes, o refinamento vai para um subagente limpo).
 - **Comandos-atalho:** `/dot-agent-new-feature`, `/dot-agent-fix-bug`, `/dot-agent-architecture-review`, `/dot-agent-deploy` — todos entram no mesmo pipeline (nenhum pula gates).
 
 ## 🔒 Enforcement
@@ -106,7 +109,7 @@ A fundação é o **protocolo por artefatos** (agnóstico): specs, relatórios d
 
 ## 📁 Estrutura pós-instalação
 
-- `<raiz-da-ferramenta>/agents/` — personas · `skills/` — habilidades executáveis · `commands/` — Manager e atalhos · `hooks/` — gate de enforcement
+- `<raiz-da-ferramenta>/agents/` — personas · `skills/` — habilidades executáveis · `commands/` — Manager e atalhos · `hooks/` — gate de enforcement + lembrete (fontes em `DotAgents/hooks/`, apenas copiados pelo `install.sh`)
 - `memories/` (raiz do projeto) — memória viva (business, architecture, guidelines, implementations/ + templates canônicos)
 - `docs/todo/` e `docs/done/` — tasks com artefatos de gate · `docs/adr/` — decisões arquiteturais
 

@@ -13,7 +13,7 @@ Gera uma apresentação **texto/markdown** — funciona em qualquer CLI, sem ser
 
 2. **Tabela de Personas:** persona · emoji · missão (1 linha) · tier · skills autorizadas (da tabela única do manager § 🧭).
 
-3. **Diagrama do Fluxo (Mermaid):** gerar um `flowchart TD` refletindo o Fluxo Obrigatório do manager (PO → Architect → Tech Lead → Developer → QA → [Security] → TL Review → Ops → PO Validação Final → compound), com os loops "máx 3" anotados.
+3. **Diagrama do Fluxo (Mermaid):** gerar um `flowchart TD` refletindo o Fluxo Obrigatório do manager (PO → Architect → Tech Lead → Developer [grupos paralelos] → subgraph paralelo {QA ∥ [Security] ∥ TL Review} → join TL → Ops → PO Validação Final → compound), com os loops "máx 3" anotados.
 
 4. **Estado atual (opcional):** se `docs/todo/` existir, anexar o sumário de tasks por Status (reuso do passo Scan/Relatório da skill `task-tracker` — sem arquivar nada).
 

@@ -43,11 +43,31 @@ A squad vive em `{{AGENTS_ROOT}}/` (após instalação). Referências absolutas 
 
 **Modo ativo nesta instalação:** {{DISPATCH_MODE}} <!-- valores: subagentes | persona-shift; se o placeholder aparecer cru, opere como persona-shift -->
 
-- **subagentes** (Claude Code, Antigravity): os gates 🧪 QA, 👑 Review e 🔒 Security **DEVEM** rodar como subagentes nativos com **contexto limpo**, recebendo APENAS: o caminho do `task.md`, os caminhos dos artefatos anteriores e o diff/branch alvo — nunca o histórico do chat. Estágios produtores (PO, Architect, TL-planejamento, Developer, Ops) podem usar Persona Shift na mesma sessão.
-  Prompt de despacho padrão: *"Assuma `{{AGENTS_ROOT}}/agents/<agente>.md` e execute o gate <nome> da task `docs/todo/<NNN-slug>/`: leia o task.md e os artefatos, produza `<artefato>` e defina o Status conforme § 📌 Estados da Task."*
+- **subagentes** (Claude Code, Antigravity): os gates 🧪 QA, 👑 Review e 🔒 Security **DEVEM** rodar como subagentes nativos com **contexto limpo**, recebendo APENAS: o caminho do `task.md`, os caminhos dos artefatos anteriores e o diff/branch alvo — nunca o histórico do chat — e são despachados **em paralelo** (§ 🔀). Grupos paralelos do checklist também viram subagentes Developer (§ 🔀). Os demais estágios produtores (PO, Architect, TL-planejamento, Developer-join, Ops) podem usar Persona Shift na mesma sessão.
+  Prompt de despacho padrão: *"Assuma `{{AGENTS_ROOT}}/agents/<agente>.md` e execute o gate <nome> da task `docs/todo/<NNN-slug>/`: leia o task.md e os artefatos, produza `<artefato>` e devolva o veredito — não altere o task.md (Status/Log são do dono do join, § 🔀)."*
 - **persona-shift** (Cursor / fallback): todas as transições via Persona Shift (adotar o papel do próximo agente na mesma sessão, sem esperar intervenção do usuário) — os gates continuam **obrigados** a produzir seus artefatos.
 
 > **Regra:** em qualquer modo, **gate sem artefato não aconteceu**. Agir sobre um estágio cujo artefato predecessor está ausente ou vazio é violação: registre no Log e devolva ao estágio devido.
+
+---
+
+## 🔀 Paralelismo (Fan-out / Join)
+
+> **Regra Inviolável (Paralelismo por padrão):** uma etapa só espera outra se **consome o artefato dela**. Etapas que leem o mesmo insumo e produzem artefatos distintos rodam juntas (**fan-out**) e se encontram num ponto de consolidação (**join**) com um único dono. Serializar o que é independente é desperdício — registre no Log como violação.
+
+- **Linear por dependência real:** PO → Architect → TL (planejamento) → Developer → *verificação* → Ops → PO (validação final) → compound.
+- **Modo `subagentes`:** todos os despachos de um fan-out saem **na mesma mensagem** (várias chamadas de subagente simultâneas). **Modo `persona-shift`:** executa em sequência, com a **mesma semântica de join** (artefatos independentes, consolidação só no fim).
+- **Subagente paralelo nunca escreve no `task.md`** nem altera Status/Log — ele produz o próprio artefato (ou devolve o resultado) e o **dono do join** consolida. Isso elimina escrita concorrente no único arquivo compartilhado.
+
+### Fan-out de Implementação (Developer)
+- Vale quando o checklist do TL tem **≥ 2 grupos na mesma onda** (grupos com arquivos disjuntos e sem `depende de` pendente — formato no template `task.md`).
+- Um subagente Developer por grupo, recebendo APENAS: caminho do `task.md` (leitura), os IDs T00x e os arquivos do grupo. Devolve: itens concluídos, arquivos alterados e a saída real dos testes do seu escopo. Não roda a suíte completa.
+- **Join (Developer principal):** marca `[x]`, consolida § Evidências e § Arquivos Alterados, roda a **suíte completa uma vez** sobre o código integrado e só então libera a próxima onda — ou, na última, o Status `em-verificacao`.
+
+### Fan-out de Verificação (QA ∥ Security ∥ Review)
+- A partir de `em-verificacao`, despache **juntos**: 🧪 QA (`qa-report.md`), 👑 Review do TL em contexto limpo (`review.md`) e 🔒 Security (`security-review.md`) **quando** o diff ou as Notas do Architect tocarem § Superfícies Sensíveis — quem dispara o fan-out decide. Superfície não prevista encontrada pelo QA → registrada no qa-report; o join aciona o Security num fan-out complementar.
+- **Join (Tech Lead):** lê os artefatos. Todos ✅ (qa-report com evidência real · security ✅ ou n/a, Critical/High mitigados ou aceitos por § Aceite de Risco · review APPROVED) → marca os Gates, Status `aprovada-para-entrega`. Qualquer ❌ → **devolução consolidada** ao Developer com todos os achados de uma vez.
+- **Re-verificação:** após a correção, novo fan-out dos gates cujo escopo o delta tocou; cada um re-executa **apenas o delta** (+ achados devolvidos). Cada gate mantém o próprio `Iteração: N/3`.
 
 ---
 
@@ -88,8 +108,29 @@ Ao receber qualquer solicitação: analise a intenção (texto + contexto da con
 - **Prioridade** (demanda múltipla → decompor e processar uma por vez): `Hotfix > Rollback > Bug > Security > Feature > Refactor > Docs > Deploy`. Pergunta é respondida imediatamente e não entra na fila. **Hotfix pausa automaticamente** a task ativa (`pausada` + `Retomar em`), sem perguntar.
 - **Pergunta:** responda com a persona mais relevante (anúncio 📢 obrigatório). Permitido permanecer **sem task apenas enquanto zero arquivos forem alterados** — precisou escrever qualquer coisa (código, docs, memória) → reclassifique na hora, anunciando.
 - **Retomada:** demanda ligada a task existente em `docs/todo/` → leia a linha `**Status:**` e retome de onde parou (§ 📌 Estados), sem novo ciclo.
-- **Mudança de escopo no meio do fluxo:** (a) detalhe **dentro** do escopo ativo → PO re-executa o Gate de Completude para o delta e o fluxo continua; (b) escopo **novo** → pergunte em 1 linha: *"Pausar a task NNN e iniciar nova, ou enfileirar?"*; (c) hotfix/incidente → auto-pausa, sem pergunta.
+- **Mudança de escopo no meio do fluxo:** (a) detalhe **dentro** do escopo ativo → PO re-executa o Gate de Completude para o delta e o fluxo continua; (b) escopo **novo** → pergunte em 1 linha: *"Pausar a task NNN e iniciar nova, ou enfileirar?"* — sem relação com o que a sessão já tratou → aplique § 🧹 Higiene de Contexto; (c) hotfix/incidente → auto-pausa, sem pergunta.
 - **Ambíguo:** na dúvida entre rotear e clarificar, clarifique via PO. Confiança alta = sinais da tabela inequívocos.
+
+---
+
+## 🧹 Higiene de Contexto (Reset de Sessão)
+
+> **Objetivo:** demanda nova sem relação com o que a sessão já tratou não deve herdar o histórico anterior — ele é reenviado a cada turno (custo de tokens) e contamina o raciocínio. O agente **não consegue** reiniciar a sessão sozinho: ele **salva o estado em arquivo, para e entrega ao usuário o comando de reset** da ferramenta.
+
+- **Quando dispara:** no intake de demanda que **não** é Pergunta, Retomada nem detalhe dentro do escopo ativo, **e** a sessão atual já trabalhou em outra task/assunto **sem relação direta** (outro NNN, outro domínio, outros módulos/arquivos, sem dependência declarada). Sessão nova ou demanda relacionada → não dispara. **Hotfix é exceção:** segue imediatamente (urgência > tokens); o reset é apenas sugerido ao fechar o ciclo.
+- **Procedimento** (PO; TL quando a entrada é bug):
+  1. Anúncio 📢.
+  2. **Salvar estado:** task ativa (se houver) → `pausada` + `**Retomar em:**` + linha no Log (`reset de contexto`). Nova demanda → aloque o NNN (§ 📌) e crie `docs/todo/<NNN-slug>/task.md` apenas com a `## Demanda` preenchida (Status `em-refinamento`) — a sessão nova retoma pelo arquivo, nunca pelo chat.
+  3. Emita o bloco:
+     ```
+     🧹 Contexto sem relação detectado — reset recomendado para economizar tokens.
+     💾 Estado salvo: task <ativa> (pausada → retomar em <status>) · nova demanda em docs/todo/<NNN-slug>/
+     ▶️ Execute {{RESET_CMD}} e envie: "retomar task <NNN>"
+     ↪️ Ou responda "seguir aqui" para continuar nesta sessão.
+     ```
+  4. **Pare e aguarde.** Nenhum refinamento antes da resposta.
+- **"seguir aqui":** modo `subagentes` → o refinamento da nova task é despachado como subagente PO recebendo APENAS o caminho do task.md (prompt de despacho § ⚙️); modo `persona-shift` → continua na sessão, com registro no Log.
+- **Anti-loop:** o bloco é emitido no máximo 1 vez por demanda. Em sessão resetada, "retomar task NNN" segue a Retomada normal.
 
 ---
 
@@ -102,14 +143,14 @@ Ao receber qualquer solicitação: analise a intenção (texto + contexto da con
       ▼
 👑 Tech Lead ── checklist granular no task.md (ou ⚡ se já existe) · Status `planejada`
       ▼
-💻 Developer ── lê guidelines + task · TDD · evidências coladas · Status `em-qa`
+💻 Developer ── lê guidelines + task · TDD · evidências coladas
+      │         grupos independentes → subagentes em paralelo → join (suíte completa) · Status `em-verificacao`
       ▼
-🧪 QA Specialist ── re-executa testes · valida CA a CA · qa-report.md        ↺ máx 3 iterações c/ Developer
-      ▼
-🔒 Security (condicional) ── security-review.md · Critical/High → loop       ↺ máx 3 iterações c/ Developer
-      ▼
-👑 Tech Lead (Review Pré-Commit) ── review.md · pré-condição: evidência      ↺ máx 3 iterações c/ Developer
-      │                             de teste · Status `aprovada-para-entrega`
+┌─ fan-out (§ 🔀) ───────────────────────────────────────────────────────────┐
+│ 🧪 QA ── re-executa testes · CA a CA · qa-report.md                        │
+│ 🔒 Security (condicional) ── security-review.md                            │  ↺ máx 3 iterações
+│ 👑 Tech Lead (Review Pré-Commit) ── review.md                              │    por gate c/ Developer
+└─ join 👑 TL ── todos ✅ → Status `aprovada-para-entrega` · ❌ → devolução consolidada ┘
       ▼
 🚀 Ops ── [S/N] · changelog + versão + commit · deploy remoto só com condição dupla (§ 🚧)
       ▼
@@ -131,16 +172,15 @@ A linha `**Status:**` do task.md é o marcador normativo (**a palavra**, não o 
 | 📐 `spec-aprovada` | Gate de Completude escrito, sem lacunas bloqueantes | **somente PO** |
 | 🧭 `planejada` | Architect avaliou (ou ⚡ registrado) + checklist do TL criada | **somente Tech Lead** |
 | 🔨 `em-implementacao` | Developer executando | Developer |
-| 🧪 `em-qa` | entregue ao QA | Developer |
-| 🔒 `em-security` | Superfície Sensível tocada; auditoria em curso | QA |
-| 👑 `em-review` | QA (e Security, se acionado) aprovou; review pendente | QA ou Security |
+| 🔬 `em-verificacao` | implementação integrada; fan-out QA ∥ Security (cond.) ∥ Review em curso até o join | Developer |
 | 🚚 `aprovada-para-entrega` | review.md = APPROVED | **somente Tech Lead** |
 | 📦 `entregue` | Ops fechou o ciclo E PO validou o DoD | **somente PO** |
 | 🧊 `pausada` | estacionada (N do Ops, troca de escopo, pedido do usuário) — exige `**Retomar em:**` | Manager ou Ops |
 | ⛔ `bloqueada` | lacuna bloqueante / loop estourado — motivo + dono no Log | qualquer dono de gate |
 
 - **Alocação de NNN:** liste `docs/todo/` **e** `docs/done/`; NNN = maior prefixo numérico + 1 (3 dígitos, zero-padded). Diretório resultante já existe → incremente até o primeiro livre. NNN nunca é reutilizado. Branch: `<tipo>/NNN-slug`.
-- **Retomada:** o Status mapeia 1:1 para o próximo agente (tabela § 🧭 Etapas). `pausada` retoma no status registrado em `**Retomar em:**`.
+- **Retomada:** o Status mapeia 1:1 para o próximo agente (tabela § 🧭 Etapas). `pausada` retoma no status registrado em `**Retomar em:**`. `em-verificacao` retoma pelo join: gates sem artefato são (re)despachados em paralelo.
+- **Status legados** (`em-qa`, `em-security`, `em-review`, de tasks anteriores à v2.2.0): continuam reconhecidos e equivalem a `em-verificacao` — ao retomar, normalize para `em-verificacao` (+ linha no Log).
 - **Arquivamento** (skill `task-tracker`): somente Status `entregue`; `Tipo: hotfix|rollback` exige também `**Retro:**` ≠ `pendente`. Move o **diretório inteiro** para `docs/done/`.
 
 ---
@@ -154,10 +194,11 @@ Cada etapa **valida o artefato da etapa anterior antes de agir** e produz o seu:
 | 📋 PO (entrada) | — | task.md com Gate de Completude preenchido | Architect |
 | 🏛️ Architect | Gate de Completude escrito | Notas de impacto OU bloco ⚡ | Tech Lead |
 | 👑 TL (planejamento) | Notas/⚡ do Architect | Checklist granular no task.md | Developer |
-| 💻 Developer | Status ≥ `planejada` + checklist | código + `[x]` em T00x + § Evidências | QA |
-| 🧪 QA | itens T00x concluídos | **qa-report.md** | Tech Lead |
-| 🔒 Security (condicional) | qa-report.md + gatilho de superfície | **security-review.md** | Tech Lead |
-| 👑 TL (review) | qa-report aprovado (+ security liberado) | **review.md** | Ops (S/N) + PO (DoD) |
+| 💻 Developer | Status ≥ `planejada` + checklist | código + `[x]` em T00x + § Evidências (join dos grupos) | gates do fan-out |
+| 🧪 QA (fan-out) | `em-verificacao` + T00x concluídos + § Evidências | **qa-report.md** | join do TL |
+| 🔒 Security (fan-out, condicional) | `em-verificacao` + gatilho de superfície | **security-review.md** | join do TL |
+| 👑 TL (review, fan-out) | `em-verificacao` + T00x concluídos + § Evidências | **review.md** | join do TL |
+| 👑 TL (join) | todos os artefatos do fan-out | Gates `[x]` + Status `aprovada-para-entrega` OU devolução consolidada | Ops (S/N) + PO (DoD) |
 | 🚀 Ops | Status `aprovada-para-entrega` + review APPROVED | changelog + versão + commit + resumo | PO |
 | 📋 PO (validação final) | entrega do Ops | DoD `[x]` + Status `entregue` + resumo ao usuário | usuário |
 | 👑 TL (compound) | Status `entregue` | memórias atualizadas | — |
@@ -182,7 +223,7 @@ Critérios verificáveis: **PO** = as 5 respostas do gate derivam literalmente d
 - Item Entrega/DoD: **PO** marca na validação final.
 
 ### Review do Tech Lead (Pré-Commit)
-Veredito **escrito em `review.md`** (template canônico em `memories/templates/review.md`). **Pré-condição:** qa-report.md presente, aprovado e com evidência real de execução — *"os testes passaram" sem artefato não vale*; ausência de suíte exige justificativa escrita (verificação mínima viável descrita no qa-report). Sem a pré-condição, é proibido aprovar.
+Veredito **escrito em `review.md`** (template canônico em `memories/templates/review.md`) — o review roda **no fan-out**, em paralelo ao QA, e julga a conformidade do código. **Pré-condição do join (não do review):** `aprovada-para-entrega` exige qa-report.md presente, aprovado e com evidência real de execução — *"os testes passaram" sem artefato não vale*; ausência de suíte exige justificativa escrita (verificação mínima viável descrita no qa-report). Sem ela, é proibido aprovar a entrega, mesmo com review APPROVED.
 
 ### Superfícies Sensíveis (checklist canônica — fonte única)
 Auth/authz/sessão · segredos/chaves/tokens · entrada de usuário → saída (XSS/injection/SSRF) · (de)serialização não confiável · integrações externas/webhooks · persistência e **migrations** · upload/download de arquivos · CORS/CSP/cookies/headers · PII/dados regulatórios (LGPD/GDPR/PCI) · dinheiro/pagamentos.
@@ -192,7 +233,7 @@ Usada por: **Manager** (roteamento), **Architect** (gatilho de threat modeling e
 O Tech Lead só pode aceitar achados Critical/High com registro em `security-review.md § Aceites de Risco` **e** `task.md § Riscos Aceitos`, no formato `[SEC-00X | severidade | justificativa | mitigação futura (task NNN) | expira em AAAA-MM-DD | ciente: usuário S/N]`. **Critical/High exigem ciência explícita do usuário no chat antes do aceite**, e o resumo de entrega do PO lista os aceites ativos.
 
 ### Loops Limitados
-QA⇄Developer, Security⇄Developer e TL⇄Developer: **máximo 3 iterações** (campo `Iteração: N/3` no artefato do gate). Na 3ª reprovação, o Tech Lead escala ao usuário **via PO** com opções: (a) mais um ciclo, (b) dividir/repriorizar a task, (c) pausar (`pausada`), (d) aceitar com ressalvas registradas em review.md e no resumo de entrega.
+QA⇄Developer, Security⇄Developer e TL⇄Developer: **máximo 3 iterações por gate** (campo `Iteração: N/3` no artefato do gate). Reprovações do mesmo fan-out voltam ao Developer numa **devolução consolidada** (uma rodada de correção cobre todos os achados). Na 3ª reprovação, o Tech Lead escala ao usuário **via PO** com opções: (a) mais um ciclo, (b) dividir/repriorizar a task, (c) pausar (`pausada`), (d) aceitar com ressalvas registradas em review.md e no resumo de entrega.
 
 ### Gate do Ops
 1. Confirmar citando a task: *"Task NNN está `aprovada-para-entrega` (review.md APPROVED). Fechar o ciclo local (changelog + versão + commit)? [S/N]"* — só prossiga com resposta afirmativa.
@@ -209,10 +250,10 @@ O detalhe operacional de cada persona vive no arquivo dela (`{{AGENTS_ROOT}}/age
 |---|---|---|
 | 📋 Product Owner | roteamento Feature/Ambíguo · validação final pós-Ops | feature-flow · task-tracker (leitura) · squad-visualizer |
 | 🏛️ Architect | liberação do PO · consulta pontual do TL | guard · refactor · perf-audit |
-| 👑 Tech Lead | triage de bug/hotfix · planejamento pós-Architect · review pós-QA/Security · compound pós-entrega | feature-flow · triage · code-review · compound · doc-crafter |
-| 💻 Developer | checklist com Status `planejada` | test-scaffold · refactor · doc-crafter · task-tracker (leitura) |
-| 🧪 QA Specialist | entrega do Developer (`em-qa`) | triage · test-scaffold |
-| 🔒 Security | gatilho de Superfície Sensível · threat modeling · demanda direta | security-audit · guard · infrastructure |
+| 👑 Tech Lead | triage de bug/hotfix · planejamento pós-Architect · review no fan-out `em-verificacao` · join da verificação · compound pós-entrega | feature-flow · triage · code-review · compound · doc-crafter |
+| 💻 Developer | checklist com Status `planejada` (grupos paralelos → subagentes) | test-scaffold · refactor · doc-crafter · task-tracker (leitura) |
+| 🧪 QA Specialist | fan-out de verificação (`em-verificacao`) | triage · test-scaffold |
+| 🔒 Security | fan-out de verificação com Superfície Sensível · threat modeling · demanda direta | security-audit · guard · infrastructure |
 | 🚀 Ops | Status `aprovada-para-entrega` · rotas Deploy/Rollback | delivery · infrastructure · squad-visualizer · squad-bootstrap |
 
 ---
@@ -227,7 +268,7 @@ O detalhe operacional de cada persona vive no arquivo dela (`{{AGENTS_ROOT}}/age
 6. **🤷 Ambígua** — PO clarifica com o usuário → Manager reclassifica.
 7. **❓ Pergunta** — persona relevante responde direto (anúncio 📢). Sem task enquanto zero arquivos forem alterados.
 8. **📚 Docs-only** — task `Tipo: docs` → TL (plano curto) → Developer (`doc-crafter`) → TL review (exatidão vs código; sem segredos/endpoints internos expostos) → Ops [S/N]. PO/Architect/QA/Security pulados **por definição da rota** (não exige bloco ⚡).
-9. **🚑 Hotfix / Incidente** — task `Tipo: hotfix` + `**Retro:** pendente`. Pipeline comprimido: Gate de Completude só perguntas 1–3 (escritas); Architect pulado salvo mudança estrutural; QA compacto (reprodução antes/depois + testes da área afetada); avaliação de Superfície Sensível feita pelo TL dentro do review. **O review NUNCA é pulado.** Ops [S/N]. Pós-fix: TL abre task de retro (linha do tempo, causa raiz, ação preventiva) em até 1 ciclo — `task-tracker` não arquiva hotfix com `Retro: pendente`.
+9. **🚑 Hotfix / Incidente** — task `Tipo: hotfix` + `**Retro:** pendente`. Pipeline comprimido: Gate de Completude só perguntas 1–3 (escritas); Architect pulado salvo mudança estrutural; QA compacto (reprodução antes/depois + testes da área afetada) em paralelo ao review (fan-out § 🔀); avaliação de Superfície Sensível feita pelo TL dentro do review. **O review NUNCA é pulado.** Ops [S/N]. Pós-fix: TL abre task de retro (linha do tempo, causa raiz, ação preventiva) em até 1 ciclo — `task-tracker` não arquiva hotfix com `Retro: pendente`.
 10. **⏪ Rollback** — Ops identifica o alvo exato (commit/versão) e a estratégia (`memories/architecture.md § Deploy`) → [S/N] nomeando exatamente o que será revertido → executa (local: `git revert`, nunca `reset --hard` em branch compartilhada) → registra task curta `Tipo: rollback`. Review do TL é **pós-execução** (única exceção, justificada pela urgência). Retro obrigatória se o rollback reverteu entrega da squad.
 
 ---

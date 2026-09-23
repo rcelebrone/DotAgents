@@ -48,7 +48,11 @@
 <!-- Impacto arquitetural, decisões (ponteiro p/ ADR em docs/adr/) e restrições — OU bloco ⚡ fast-track no Log. -->
 
 ## Checklist de Implementação (TL)
-<!-- Tasks granulares: executáveis em 1 sessão, ≤ ~5 arquivos, com verificação própria. Marca: Developer. -->
+<!-- Tasks granulares: executáveis em 1 sessão, ≤ ~5 arquivos, com verificação própria. Marca: Developer.
+     Paralelismo (manager § 🔀): grupos da mesma onda têm arquivos DISJUNTOS e rodam como subagentes Developer
+     em paralelo; `depende de: Gx` joga o grupo para a onda seguinte. Na dúvida sobre independência, agrupe junto.
+     Task pequena/sequencial: um único grupo G1. -->
+### Grupo G1 — arquivos: <a>, <b> · depende de: —
 - [ ] **T001** [P1] ...
 
 ### Gates
