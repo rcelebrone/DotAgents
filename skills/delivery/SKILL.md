@@ -7,8 +7,10 @@ description: Fecha o ciclo de entrega local — build check, bump semântico, ch
 
 Executada pelo **Ops**, somente após o Gate do Ops (checklist pré-entrega + [S/N] afirmativo — ver `{{AGENTS_ROOT}}/agents/ops.md`).
 
-## 1. Build Check
-Executar o comando de build da stack (registrado em `memories/architecture.md` no bootstrap: `npm run build`, `go build`, `mvn package`, etc.) **agora**, colando a saída em task.md § Evidências. Build quebrado → parar e devolver ao fluxo (sem commit).
+## 1. Build Check e Verificação de Integridade
+Executar o comando de build da stack (registrado em `memories/architecture.md` no bootstrap: `npm run build`, `go build`, `mvn package`, etc.) **agora**, colando a saída em task.md § Evidências.
+- Executar `dependency-lock` para validar paridade do lockfile e ausência de dependências não autorizadas.
+- Build ou trava quebrada → parar e devolver ao fluxo (sem commit).
 
 ## 2. Versionamento Semântico
 Bump no manifesto principal (`package.json`, `version.go`, `VERSION`, etc.):
@@ -18,6 +20,7 @@ Bump no manifesto principal (`package.json`, `version.go`, `VERSION`, etc.):
 Atualizar `CHANGELOG.md` (ou equivalente) com a entrega do ciclo, referenciando a Task NNN.
 
 ## 4. Commit Local (Conventional Commits)
+- Validar obrigatoriamente a mensagem via skill `semantic-commit-checker` (`{{AGENTS_ROOT}}/hooks/dotagents-commit-check.sh "<mensagem>"`). Exit code 1 → rejeição determinística até a mensagem ser corrigida.
 - Formato: `tipo(escopo): descrição` — tipos: `feat|fix|refactor|chore|docs|test|perf`.
 - Corpo referencia a task: `Task NNN`.
 - Tag anotada `vX.Y.Z` opcional, conforme convenção registrada em `memories/architecture.md`.

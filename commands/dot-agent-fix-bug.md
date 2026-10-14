@@ -6,6 +6,6 @@ Leia `{{AGENTS_ROOT}}/commands/manager.md` — ele é o protocolo absoluto desta
 
 Pré-classificação: **🐛 Bug** (sinais de urgência de produção → reclassifique como 🚑 Hotfix, manager § 🔀 Rotas). Entre pelo **Tech Lead** (`{{AGENTS_ROOT}}/agents/techlead.md`).
 
-O TL executa `{{AGENTS_ROOT}}/skills/triage/SKILL.md` — Reprodução + RCA escritos em `docs/todo/<NNN-slug>/task.md` (`Tipo: bug`, criado do template `memories/templates/task.md`). Bug que muda regra de negócio → PO valida antes do planejamento. Depois, o fluxo completo: **Developer** → em paralelo **QA Specialist** (qa-report.md) ∥ **Security** se tocar Superfície Sensível (security-review.md) ∥ **Review do Tech Lead** (review.md) → join do TL (manager § 🔀) → **Ops**.
+O TL executa `{{AGENTS_ROOT}}/skills/triage/SKILL.md` — Reprodução + RCA escritos em `docs/todo/<NNN-slug>/task.md` (`Tipo: bug`, criado do template `memories/templates/task.md`). Bug que muda regra de negócio → PO valida antes do planejamento. Depois, o fluxo completo: **Developer** (cria snapshot com `{{AGENTS_ROOT}}/skills/state-checkpoint/SKILL.md` e restaura se a compilação falhar) → em paralelo **QA Specialist** (qa-report.md) ∥ **Security** se tocar Superfície Sensível (security-review.md) ∥ **Review do Tech Lead** (review.md) → join do TL (manager § 🔀) → **Ops**.
 
 Siga o fluxo obrigatório definido em `{{AGENTS_ROOT}}/commands/manager.md`. Não pule etapas.

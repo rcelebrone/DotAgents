@@ -56,9 +56,10 @@ Varra o diff por padrões de segredos vazados:
 
 Se encontrado: **Critical**. Recomenda-se rotação imediata e remoção via `git filter-repo` ou equivalente — alertar o usuário sobre necessidade de purga do histórico.
 
-### 4. Auditoria de Dependências (CVEs)
+### 4. Auditoria de Dependências (CVEs e Trava de Lockfile)
 
-Em colaboração com `{{AGENTS_ROOT}}/skills/infrastructure/SKILL.md`:
+Em colaboração com `{{AGENTS_ROOT}}/skills/dependency-lock/SKILL.md` e `{{AGENTS_ROOT}}/skills/infrastructure/SKILL.md`:
+- Executar a skill `dependency-lock` para validar deterministamente se alterações em manifestos foram formalmente autorizadas e se o lockfile mantém paridade absoluta.
 - Executar o auditor nativo da stack: `npm audit`, `pip-audit`, `cargo audit`, `mvn dependency-check`, `bundle audit`, etc.
 - Para cada vulnerabilidade, classificar pela rubrica do `{{AGENTS_ROOT}}/agents/security.md`:
   - **Critical**: bloqueador absoluto, exige atualização ou mitigação imediata.

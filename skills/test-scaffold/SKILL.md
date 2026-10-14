@@ -16,6 +16,7 @@ description: Gera estrutura completa de testes automatizados (unitários, integr
 ## Propriedade (quem usa, quando)
 - **Developer:** durante a implementação — testes unitários e mocks da própria task (mesmo diff).
 - **QA Specialist:** lacunas de integração/E2E encontradas na auditoria — os testes entram no ciclo de QA da task.
+- **Acionamento via `coverage-gate`:** quando o portão determinístico de cobertura rejeitar o diff por linhas/branches descobertas, use o relatório de linhas do `coverage-gate` como alvo prioritário do scaffold.
 - **Projeto sem framework de teste:** a adoção inicial é task P2 própria (sugerida pelo QA), nunca embutida silenciosamente no ciclo corrente.
 
 ## Restrições

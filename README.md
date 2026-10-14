@@ -88,6 +88,13 @@ A fundação é o **protocolo por artefatos** (agnóstico): specs, relatórios d
 1. **Bloco raiz gerido no TOPO** do `CLAUDE.md`/`AGENTS.md`, com cláusula explícita de precedência: o protocolo vale **também dentro** de comandos e modos nativos da ferramenta (`/plan` etc.).
 2. **Lembrete por prompt** (`dotagents-remind.sh`): reinjeta o protocolo + o status da task ativa a cada interação — Claude via `UserPromptSubmit`, **Antigravity via `PreInvocation` (antes de CADA chamada ao modelo, inclusive dentro do `/plan`)**, Cursor via `sessionStart` + regra `alwaysApply`.
 3. **Gate de escrita** (`dotagents-gate.sh`, fail-open): nega edição de **código** quando não existe task ativa em `docs/todo/` — docs, memórias e configs da squad nunca são bloqueados.
+4. **Guardrails Determinísticos (Portões Duros Pré-Probabilísticos):** ferramentas de linha de comando e validações rígidas que bloqueiam alterações antes de análises subjetivas de LLM:
+   - `linter-enforcer`: validação sintática estrita (ESLint/Prettier/Ruff) que barra o diff antes do `code-review`.
+   - `coverage-gate`: rejeição determinística se a cobertura de testes cair ou violar o threshold, acionando o `test-scaffold`.
+   - `ast-validator`: parser de Árvore Sintática Abstrata (AST) e type-checkers (anti-alucinação de métodos/imports e blindagem de `refactor`).
+   - `dependency-lock`: bloqueio de modificações não autorizadas em manifestos e auditoria determinística de lockfiles/CVEs.
+   - `semantic-commit-checker`: validação estrita por RegEx de Conventional Commits via `hooks/dotagents-commit-check.sh`.
+   - `state-checkpoint`: snapshot Git pré-alteração e auto-rollback imediato caso testes ou compilação local falhem.
 
 **Limitação conhecida:** comandos nativos de prompt rígido (ex.: `/plan`) prependam instruções próprias e restringem as tools a leitura — o gate de escrita não dispara ali e o modelo tende a obedecer ao prefixo do comando. A camada 2 neutraliza isso reinjetando o protocolo em cada chamada de modelo dentro do próprio comando; ao sair do modo, as camadas 1 e 3 voltam a valer (a primeira ação exigida é materializar o task.md).
 
@@ -109,7 +116,7 @@ A fundação é o **protocolo por artefatos** (agnóstico): specs, relatórios d
 
 ## 📁 Estrutura pós-instalação
 
-- `<raiz-da-ferramenta>/agents/` — personas · `skills/` — habilidades executáveis · `commands/` — Manager e atalhos · `hooks/` — gate de enforcement + lembrete (fontes em `DotAgents/hooks/`, apenas copiados pelo `install.sh`)
+- `<raiz-da-ferramenta>/agents/` — personas · `skills/` — habilidades executáveis (21 skills, com guardrails determinísticos) · `commands/` — Manager e atalhos · `hooks/` — gate de enforcement, lembrete e commit checker (`dotagents-gate.sh`, `dotagents-remind.sh`, `dotagents-commit-check.sh`)
 - `memories/` (raiz do projeto) — memória viva (business, architecture, guidelines, implementations/ + templates canônicos)
 - `docs/todo/` e `docs/done/` — tasks com artefatos de gate · `docs/adr/` — decisões arquiteturais
 

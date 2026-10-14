@@ -240,6 +240,15 @@ QA⇄Developer, Security⇄Developer e TL⇄Developer: **máximo 3 iterações p
 2. **Caminho "N":** Status `pausada` + `**Retomar em:** aprovada-para-entrega` + linha no Log; controle volta ao Manager. Sem compound, sem arquivamento.
 3. **Deploy remoto — condição dupla:** exige (a) procedimento registrado em `memories/architecture.md § Deploy` **e** (b) segunda confirmação explícita do usuário nomeando o alvo. Sem (a), deploy remoto **não existe** — encerre no ciclo local. O opt-out não dispensa esta regra.
 
+### Guardrails Determinísticos (Portões Duros Pré-Probabilísticos)
+Para munir a squad de garantias estritas baseadas em regras rígidas e ferramentas de linha de comando (em vez de inferência probabilística de LLM), os seguintes portões operam de forma automatizada:
+1. **Gate Sintático (`linter-enforcer`):** Validação estrita por CLI (ESLint, Prettier, Ruff, etc.). Bloqueia o diff antes de qualquer análise do `code-review`.
+2. **Gate de Cobertura (`coverage-gate`):** Rejeição matemática se a cobertura regredir ou o diff não atingir o threshold mínimo, acionando o `test-scaffold`.
+3. **Validação Estrutural AST (`ast-validator`):** Parser de Árvore Sintática Abstrata e type-checkers (tsc, mypy, go vet) para garantir que funções, variáveis e imports invocados existem (anti-alucinação e segurança em refatorações).
+4. **Trava de Dependências (`dependency-lock`):** Impede alterações não autorizadas em manifestos/lockfiles e audita CVEs via CLI nativo.
+5. **Commit Semântico RegEx (`semantic-commit-checker`):** Expressão regular estrita que valida Conventional Commits via `hooks/dotagents-commit-check.sh` na entrega do Ops.
+6. **Snapshot e Rollback (`state-checkpoint`):** Cria checkpoint via Git antes de alterações e restaura automaticamente o workspace à versão funcional anterior se a compilação local falhar.
+
 ---
 
 ## 🧭 Etapas & Skills Autorizadas
@@ -249,12 +258,12 @@ O detalhe operacional de cada persona vive no arquivo dela (`{{AGENTS_ROOT}}/age
 | Persona | Entra quando | Skills autorizadas |
 |---|---|---|
 | 📋 Product Owner | roteamento Feature/Ambíguo · validação final pós-Ops | feature-flow · task-tracker (leitura) · squad-visualizer |
-| 🏛️ Architect | liberação do PO · consulta pontual do TL | guard · refactor · perf-audit |
-| 👑 Tech Lead | triage de bug/hotfix · planejamento pós-Architect · review no fan-out `em-verificacao` · join da verificação · compound pós-entrega | feature-flow · triage · code-review · compound · doc-crafter |
-| 💻 Developer | checklist com Status `planejada` (grupos paralelos → subagentes) | test-scaffold · refactor · doc-crafter · task-tracker (leitura) |
-| 🧪 QA Specialist | fan-out de verificação (`em-verificacao`) | triage · test-scaffold |
-| 🔒 Security | fan-out de verificação com Superfície Sensível · threat modeling · demanda direta | security-audit · guard · infrastructure |
-| 🚀 Ops | Status `aprovada-para-entrega` · rotas Deploy/Rollback | delivery · infrastructure · squad-visualizer · squad-bootstrap |
+| 🏛️ Architect | liberação do PO · consulta pontual do TL | guard · refactor · perf-audit · ast-validator |
+| 👑 Tech Lead | triage de bug/hotfix · planejamento pós-Architect · review no fan-out `em-verificacao` · join da verificação · compound pós-entrega | feature-flow · triage · code-review · compound · doc-crafter · linter-enforcer · coverage-gate · ast-validator · state-checkpoint |
+| 💻 Developer | checklist com Status `planejada` (grupos paralelos → subagentes) | test-scaffold · refactor · doc-crafter · task-tracker (leitura) · linter-enforcer · coverage-gate · ast-validator · state-checkpoint |
+| 🧪 QA Specialist | fan-out de verificação (`em-verificacao`) | triage · test-scaffold · coverage-gate · linter-enforcer |
+| 🔒 Security | fan-out de verificação com Superfície Sensível · threat modeling · demanda direta | security-audit · guard · infrastructure · dependency-lock |
+| 🚀 Ops | Status `aprovada-para-entrega` · rotas Deploy/Rollback | delivery · infrastructure · squad-visualizer · squad-bootstrap · semantic-commit-checker · dependency-lock · state-checkpoint |
 
 ---
 
