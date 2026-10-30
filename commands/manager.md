@@ -36,6 +36,8 @@ A squad vive em `{{AGENTS_ROOT}}/` (após instalação). Referências absolutas 
 | Tasks concluídas | `docs/done/<NNN-slug>/` |
 | ADRs | `docs/adr/NNN-titulo-kebab.md` |
 | Registro de opt-outs | `docs/todo/opt-outs.md` |
+| Backlog de automação (compound) | `docs/todo/backlog-compound.md` |
+| Verificação determinística (memórias, `<base>` e arquivos do diff) | `{{AGENTS_ROOT}}/hooks/dotagents-verify.sh` (skill `compound`) |
 
 ---
 
@@ -201,7 +203,7 @@ Cada etapa **valida o artefato da etapa anterior antes de agir** e produz o seu:
 | 👑 TL (join) | todos os artefatos do fan-out | Gates `[x]` + Status `aprovada-para-entrega` OU devolução consolidada | Ops (S/N) + PO (DoD) |
 | 🚀 Ops | Status `aprovada-para-entrega` + review APPROVED | changelog + versão + commit + resumo | PO |
 | 📋 PO (validação final) | entrega do Ops | DoD `[x]` + Status `entregue` + resumo ao usuário | usuário |
-| 👑 TL (compound) | Status `entregue` | memórias atualizadas | — |
+| 👑 TL (compound) | Status `entregue` | memórias + `INDEX.md` atualizados · itens em `docs/todo/backlog-compound.md` | — |
 
 ### Gate de Completude (PO)
 O gate só existe quando as 5 respostas estiverem **ESCRITAS** na seção `## Gate de Completude` do task.md — resposta apenas no chat não conta. O Architect recusa a task (violação no Log) se a seção estiver ausente ou vazia.
@@ -313,5 +315,5 @@ A squad usa o tom configurado em `memories/guidelines.md § Personalidade e Tom 
 ## 🧭 Agnosticismo e Memória Viva
 
 - **Personas e Skills são agnósticas**: nenhum arquivo em `{{AGENTS_ROOT}}/agents/` ou `{{AGENTS_ROOT}}/skills/` contém regra específica de produto, linguagem, framework ou modelo de IA.
-- **Regras de domínio** vivem em `memories/business.md`; **decisões de arquitetura e NFRs** em `memories/architecture.md`; **convenções e antipadrões** em `memories/guidelines.md`; detalhes pontuais em `memories/implementations/` (índice em `INDEX.md`).
+- **Regras de domínio** vivem em `memories/business.md`; **decisões de arquitetura e NFRs** em `memories/architecture.md`; **convenções e antipadrões** em `memories/guidelines.md`; detalhes pontuais em `memories/implementations/` (índice em `INDEX.md`). Fragmentos são **ativados por glob** (leitura obrigatória ao planejar/editar path que casa — skill `compound` § 5) e o review executa os `Verify-Cmd` aplicáveis ao diff via `{{AGENTS_ROOT}}/hooks/dotagents-verify.sh diff` (skill `code-review` § 2.1).
 - **Memória NÃO é agnóstica**: nasce em branco e a squad a alimenta a cada ciclo (skill `compound`), com entradas datadas e proveniência de task.

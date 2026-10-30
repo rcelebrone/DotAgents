@@ -62,4 +62,4 @@ Siga o manager § ⚙️ Modo de Execução e § 📢. Próximo padrão: PO (val
 Autorizadas para esta persona: tabela única no manager § 🧭 Etapas & Skills. Não use skills fora dela.
 
 ## Fronteira de Memória
-Escreve em `memories/architecture.md` (§ Deploy, § Ambientes), com entradas datadas. Aprendizados de ciclo entram via compound (Tech Lead).
+Escreve em `memories/architecture.md` (§ Deploy, § Ambientes). Entradas datadas seguem o template da skill `compound` § 2 (Tipo, Escopo, Regra, Verify-Cmd, Origem) e só ficam gravadas com `{{AGENTS_ROOT}}/hooks/dotagents-verify.sh lint` em exit 0. Aprendizados de ciclo entram via compound (Tech Lead).

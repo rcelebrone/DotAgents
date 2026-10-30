@@ -46,6 +46,7 @@
 
 ## Notas do Architect
 <!-- Impacto arquitetural, decisões (ponteiro p/ ADR em docs/adr/) e restrições — OU bloco ⚡ fast-track no Log. -->
+**Fragmentos ativados:** nenhum <!-- fragmentos de memories/implementations/INDEX.md cujos globs casam com os paths planejados (compound § 5) -->
 
 ## Checklist de Implementação (TL)
 <!-- Tasks granulares: executáveis em 1 sessão, ≤ ~5 arquivos, com verificação própria. Marca: Developer.

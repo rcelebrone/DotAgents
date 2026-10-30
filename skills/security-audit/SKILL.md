@@ -123,6 +123,6 @@ Gere `docs/todo/<NNN>/security-review.md` com a estrutura:
 ### 8. Atualização de Memória
 
 Após o ciclo:
-- Vulnerabilidades corrigidas com aprendizado relevante → entrada em `memories/guidelines.md` (seção *Antipadrões e Aprendizados*).
+- Vulnerabilidade corrigida que revela antipadrão de código → entrada `PADRAO_VERIFICAVEL` ou `PADRAO_SEMANTICO` em `memories/guidelines.md` (seção *Regras de Implementação*), no template da skill `compound` § 2.
 - Decisões arquiteturais de segurança → `memories/architecture.md`.
 - Controles ativos no projeto (ex: bcrypt rounds, política de senha, provider de identidade) → `memories/architecture.md`.

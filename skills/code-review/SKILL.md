@@ -18,14 +18,22 @@ description: Revisão holística pré-commit (estilo PR Review). Valida o diff c
 ## 1. Coleta de Contexto
 - `docs/todo/<NNN-slug>/task.md` (spec, DoD, checklist, decisões, § Evidências do Developer).
 - As 3 memórias: `memories/guidelines.md`, `memories/architecture.md`, `memories/business.md`.
-- `memories/implementations/INDEX.md` → fragmentos do domínio tocado, se houver.
+- **Fragmentos ativados:** linhas `FRAGMENTO ATIVO:` de `{{AGENTS_ROOT}}/hooks/dotagents-verify.sh diff 2>&1` (skill `compound` § 5) — leitura obrigatória antes do veredito.
 
 ## 2. Diff Analysis
 - Analisar as mudanças da branch/ciclo (`git diff`), mapeando os arquivos alterados vs § Arquivos Alterados da task.
 
+## 2.1 Verificações Determinísticas (Verify-Cmd)
+- Rode `{{AGENTS_ROOT}}/hooks/dotagents-verify.sh diff 2>&1` na raiz do escopo (lint + seleção + execução no snapshot — skill `compound` § 5) e cole a saída inteira (fragmentos ativos, tabela **comando + exit code**, ⚠️ e 🚨) em `review.md § Verificações Determinísticas`.
+- **Verificador alterado** (diff ou atualização da squad que muda `hooks/dotagents-verify.sh`) → 🚨: execute a versão do merge-base fora do repositório e revise a mudança do script manualmente. Verificador sem versão no merge-base (instalação da squad nesta branch) → ⚠️; revise-o manualmente e registre em Ressalvas (skill `compound` § 5).
+- **⚠️ entrada removida ou alterada neste diff:** confirme que a regra não foi enfraquecida (Verify-Cmd afrouxado, Escopo reduzido, entrada apagada); enfraquecimento sem justificativa registrada na task → CHANGES REQUESTED (Guidelines ❌).
+- **⚠️ entrada desativada neste diff (SUPERSEDED):** confirme que existe a entrada substituta; sem ela, CHANGES REQUESTED (Guidelines ❌).
+- **Exit 3 (🚨):** nenhum Verify-Cmd foi executado ou a execução falhou (gramática, symlink, merge-base, git, ferramenta ausente, erro do comando, timeout) — cole as linhas 🚨 em Ressalvas e decida o veredito como CHANGES REQUESTED (memória a corrigir) ou bloqueio de ambiente, nunca como "nenhum Verify-Cmd aplicável".
+- **Efeito no veredito:** qualquer linha da tabela com exit 1 (violação) → dimensão Guidelines (ou Arquitetura, quando a entrada é `ARQUITETURA`) ❌ e veredito 🔁 CHANGES REQUESTED, com a saída do comando colada.
+
 ## 3. Checklist de Validação Cruzada
 - **Spec (task ↔ código):** todos os itens implementados? Algum CA do DoD sem cobertura? Scope creep?
-- **Guidelines:** naming, estrutura, Clean Code, restrições e antipadrões registrados respeitados?
+- **Guidelines:** naming, estrutura, Clean Code e entradas `PADRAO_SEMANTICO` respeitados? (Entradas `PADRAO_VERIFICAVEL` já foram decididas pelo exit code no § 2.1 — não as reavalie por leitura.)
 - **Arquitetura:** decisões/ADRs respeitados (apoio: skill `guard` § Conformidade), NFRs considerados, dependências novas alinhadas?
 - **Negócio:** regras conforme `business.md`, glossário de domínio respeitado, permissões corretas?
 - **Higiene:** código morto, imports não usados, funções gigantes (complexidade ciclomática), duplicação, código de debug, segredos.
