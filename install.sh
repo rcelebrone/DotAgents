@@ -181,7 +181,7 @@ install_squad_files() {
   for f in "$SCRIPT_DIR"/commands/*.md; do
     render_file "$f" "$TARGET_DIR/commands/$(basename "$f")"
   done
-  info "  ✅ 7 agents (frontmatter traduzido p/ $TOOL_NAME) · 15 skills · 6 commands"
+  info "  ✅ 7 agents (frontmatter traduzido p/ $TOOL_NAME) · 21 skills · 6 commands"
 }
 
 install_cursor_rule() {
@@ -455,11 +455,11 @@ install_hook() {
   info "🔒 Instalando hooks de enforcement (fail-open): gate de escrita + lembrete por prompt..."
   mkdir -p "$TARGET_DIR/hooks"
   local f
-  for f in dotagents-gate.sh dotagents-remind.sh; do
+  for f in dotagents-gate.sh dotagents-remind.sh dotagents-commit-check.sh; do
     [ -f "$SCRIPT_DIR/hooks/$f" ] || die "Hook-fonte ausente: $SCRIPT_DIR/hooks/$f"
     cp "$SCRIPT_DIR/hooks/$f" "$TARGET_DIR/hooks/$f" && chmod +x "$TARGET_DIR/hooks/$f"
   done
-  info "  ✅ Gate: $AGENTS_ROOT/hooks/dotagents-gate.sh · Remind: $AGENTS_ROOT/hooks/dotagents-remind.sh"
+  info "  ✅ Gate: $AGENTS_ROOT/hooks/dotagents-gate.sh · Remind: $AGENTS_ROOT/hooks/dotagents-remind.sh · CommitCheck: $AGENTS_ROOT/hooks/dotagents-commit-check.sh"
   case "$OPTION" in
     1) merge_hooks_antigravity ;;
     2) merge_hooks_claude ;;

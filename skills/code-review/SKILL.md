@@ -8,9 +8,10 @@ description: Revisão holística pré-commit (estilo PR Review). Valida o diff c
 **Objetivo:** gate de qualidade pré-commit executado pelo **Tech Lead** no **fan-out de verificação**, em paralelo ao QA e ao Security (manager § 🔀). O veredito é **escrito em `docs/todo/<NNN-slug>/review.md`** (template canônico `memories/templates/review.md`) — relatório apenas no chat não conta.
 
 ## 0. Entrada e pré-condição do join
-- **Entrada do review:** Status `em-verificacao`, T00x concluídos e § Evidências preenchida — **não** espera o qa-report.
+- **Portões determinísticos pré-review (Hard Gates):** antes de iniciar a leitura probabilística, execute `linter-enforcer` e `ast-validator`. Se houver falha de sintaxe, formatação ou resolução de símbolos/imports, **interrompa o review imediatamente** e devolva ao Developer com a saída do terminal (zero desperdício de tokens de LLM com revisão subjetiva).
+- **Entrada do review:** Status `em-verificacao`, T00x concluídos, § Evidências preenchida e portões determinísticos verdes — **não** espera o qa-report.
 - **Pré-condição do join** (checada depois, pelo TL, antes de `aprovada-para-entrega` — sem ela, proibido aprovar a entrega):
-  - `qa-report.md` presente, com veredito APROVADO e **evidência real de execução** (saída de comandos colada).
+  - `qa-report.md` presente, com veredito APROVADO, `coverage-gate` atendido e **evidência real de execução** (saída de comandos colada).
   - Projeto sem suíte → justificativa escrita no qa-report com a verificação mínima viável executada.
   - Superfície sensível tocada → `security-review.md` presente, com Critical/High mitigados ou aceitos pelo procedimento único (manager § 🚧 Aceite de Risco).
 
