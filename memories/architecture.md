@@ -2,8 +2,8 @@
 
 > **Nota:** este arquivo mantém as decisões arquiteturais globais, banco de dados, infraestrutura e os **Requisitos Não Funcionais**. Decisões formais têm ADR em `docs/adr/` (skill `guard`) — aqui vive o estado consolidado.
 > **Fronteira:** NÃO coloque regras sistêmicas de código, sintaxe ou formatação (isso vai em `memories/guidelines.md`) nem regras de domínio ou fluxo de usuário/produto (isso vai em `memories/business.md`).
-> **Fragmentação:** memórias de implementação técnica pontual (ex: "Configuração do Redis Cluster", "Migração de Schema X") vão para `memories/implementations/<dominio>-<topico>.md` + linha em `memories/implementations/INDEX.md`, para manter este arquivo conciso.
-> **Protocolo de atualização:** entradas datadas `[AAAA-MM-DD][Task NNN]`, append-only; em conflito, marque a antiga com `[SUPERSEDED em AAAA-MM-DD]`. Mecânica completa: skill `compound`.
+> **Fragmentação:** gatilho, nomeação (`<segmento>-<tipo>[-N].md`) e linha no `memories/implementations/INDEX.md` são determinísticos — skill `compound` § 4.
+> **Protocolo de atualização:** entradas no template da skill `compound` § 2 (`Tipo` `ARQUITETURA`, `Escopo (globs)`, `Regra`, `Verify-Cmd`, `Origem`), append-only — nunca reescreva entradas antigas; em conflito, marque a antiga com ` [SUPERSEDED em AAAA-MM-DD]`. Validação: `dotagents-verify.sh lint`.
 
 ## Requisitos Não Funcionais, Stack e Infra (o que sustenta o app)
 
@@ -39,4 +39,4 @@
 - ...
 
 ---
-**Instrução para a Squad:** consulte e atualize este arquivo nas decisões técnicas de base (Architect, Security, Ops). Requisitos não-funcionais são memória viva rigorosa deste arquivo.
+**Instrução para a Squad:** consulte e atualize este arquivo nas decisões técnicas de base (Architect, Security, Ops), sempre no template da skill `compound` § 2. Requisitos não-funcionais são memória viva rigorosa deste arquivo.

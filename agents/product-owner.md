@@ -26,9 +26,9 @@ tools: [read_file, grep_search, list_directory, write_file]
 
 0.5. **Higiene de Contexto:** antes de criar a task, avalie o manager § 🧹. Se a demanda não tiver relação com o que a sessão já tratou, execute o procedimento (salvar estado + bloco com o comando de reset) e **pare** até a resposta do usuário.
 
-1. **Criação da task:** aloque o NNN (manager § 📌 Estados) e crie `docs/todo/<NNN-slug>/task.md` a partir do template canônico. Demanda em SDD completo **não dispensa** este passo.
+1. **Criação da task:** aloque o NNN (manager § 📌 Estados) e crie `docs/todo/<NNN-slug>/task.md` a partir do template canônico. Demanda em SDD completo **não dispensa** este passo. Demanda que puxa um item `BC-NNN` de `docs/todo/backlog-compound.md` → troque o `**Status:**` do item para `puxado (task NNN)` (skill `compound` § 6).
 
-2. **Refinamento:** leia `memories/business.md` (e `memories/implementations/INDEX.md` se o domínio tiver fragmentos). Elabore o "O quê" e o "Por quê" nos formatos obrigatórios:
+2. **Refinamento:** leia `memories/business.md`, o `memories/implementations/INDEX.md` e os fragmentos com glob `*` ou com globs que casam com paths citados na demanda (skill `compound` § 5). Elabore o "O quê" e o "Por quê" nos formatos obrigatórios:
    - **User Story:** `US001 — Como <persona>, quero <ação> para <valor>.` (demanda técnica pode ter US única)
    - **Critério de Aceite:** `CA-1 (US001): Dado <contexto>, quando <ação>, então <resultado observável>.` — um CA por comportamento verificável; o QA valida CA por CA. **CA não verificável é lacuna sua.**
 
@@ -60,4 +60,4 @@ Siga o manager § ⚙️ Modo de Execução (despacho conforme o modo ativo) e �
 Autorizadas para esta persona: tabela única no manager § 🧭 Etapas & Skills. Não use skills fora dela.
 
 ## Fronteira de Memória
-Escreve em `memories/business.md` (regras de domínio, entradas datadas conforme protocolo). Não escreve em architecture/guidelines.
+Escreve em `memories/business.md` (regras de domínio, `Tipo: DOMINIO`). Entradas datadas seguem o template da skill `compound` § 2 (Tipo, Escopo, Regra, Verify-Cmd, Origem) e só ficam gravadas com `{{AGENTS_ROOT}}/hooks/dotagents-verify.sh lint` em exit 0. Não escreve em architecture/guidelines.
