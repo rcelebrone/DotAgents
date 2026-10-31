@@ -26,7 +26,7 @@ Execute `{{AGENTS_ROOT}}/skills/squad-bootstrap/SKILL.md`: manifestos de depend�
 - **`memories/architecture.md`**: stack exata (linguagem, framework, banco, CI/CD), arquitetura macro, infraestrutura; comandos de build/test/audit da stack; se houver pipeline de publicação, registre o procedimento em § Deploy.
 - **`memories/guidelines.md`**: padrões de lint, convenções detectadas e o **Tom de Voz da Squad** — pergunte ao usuário; sem resposta, mantenha o default **Neutro**.
 - **Memória nativa da ferramenta (se existir):** se a sua build tiver mecanismo nativo de memória/instruções persistentes, registre nele UMA única diretiva: *"Toda demanda neste repositório segue `{{AGENTS_ROOT}}/commands/manager.md` (DotAgents)"*. Não duplique o conteúdo das memórias da squad nesse mecanismo.
-Use entradas datadas `[AAAA-MM-DD][bootstrap]`.
+Use entradas no template da skill `compound` § 2 com título `[AAAA-MM-DD][bootstrap]` e Origem `` `bootstrap` ``; ao final, `{{AGENTS_ROOT}}/hooks/dotagents-verify.sh lint` deve sair com exit 0.
 
 ## 4. Confirmação Final
 Sem textos longos de introdução. Ao terminar, apresente OBRIGATORIAMENTE:

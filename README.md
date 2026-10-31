@@ -2,13 +2,13 @@
 
 Framework agnóstico para instalar uma **squad multi-agente** (PO, Architect, Tech Lead, Developer, QA, Security, Ops) em qualquer projeto, de qualquer linguagem. A squad é regida por um **Manager central** com roteamento automático, **gates por artefato verificável** (nenhuma etapa "aconteceu" sem o arquivo que a prova), estados de task auditáveis e uma **memória viva** específica do projeto.
 
-**Versão:** 2.2.0 · **Ferramentas suportadas:** Antigravity (IDE e CLI) · Claude Code · Cursor AI
+**Versão:** 2.3.0 · **Ferramentas suportadas:** Antigravity (IDE e CLI) · Claude Code · Cursor AI
 
 ---
 
 ## 🚀 Instalação
 
-Requisitos: `bash` e `git`. Opcional: `python3` ou `jq` (registro automático dos hooks de enforcement).
+Requisitos: `bash`, `git` e os utilitários `awk`, `grep`, `sed`, `sort`, `cut`, `find`, `tr`, `wc`, `cat`, `head`, `dirname`, `mkdir`, `rm`, `mktemp` e `tar`. Opcional: `python3` ou `jq` (registro automático dos hooks de enforcement), `timeout` (limite de tempo dos Verify-Cmd) e `ripgrep` (forma `rg` dos Verify-Cmd; sem ele, use a forma `grep`).
 
 Clone o repositório (dentro ou fora do seu projeto):
 
@@ -28,7 +28,7 @@ bash DotAgents/install.sh --claude          # ou --antigravity, ou --cursor
 | `--antigravity` / `--claude` / `--cursor` | Escolhe a ferramenta (sem flag: menu interativo) |
 | `--dest <dir>` | Projeto destino (default: diretório atual) |
 | `--yes` | Sem confirmações (CI/automação) |
-| `--no-hooks` | Não instala o hook de enforcement |
+| `--no-hooks` | Não instala os hooks de enforcement (o verificador das memórias, `dotagents-verify.sh`, é instalado sempre) |
 | `--cursor-native` | (Cursor) usa subagentes nativos em vez de Persona Shift |
 | `--purge` | Remove a pasta `DotAgents/` ao final (default: **preserva**, para updates) |
 
@@ -83,7 +83,7 @@ Demanda → 🧠 Manager (classifica e roteia)
 
 ## 🔒 Enforcement
 
-A fundação é o **protocolo por artefatos** (agnóstico): specs, relatórios de QA, review e security são arquivos verificáveis — o Manager exige cada um no seu gate. Sobre ela, **3 camadas técnicas**:
+A fundação é o **protocolo por artefatos** (agnóstico): specs, relatórios de QA, review e security são arquivos verificáveis — o Manager exige cada um no seu gate. Sobre ela, **4 camadas técnicas**:
 
 1. **Bloco raiz gerido no TOPO** do `CLAUDE.md`/`AGENTS.md`, com cláusula explícita de precedência: o protocolo vale **também dentro** de comandos e modos nativos da ferramenta (`/plan` etc.).
 2. **Lembrete por prompt** (`dotagents-remind.sh`): reinjeta o protocolo + o status da task ativa a cada interação — Claude via `UserPromptSubmit`, **Antigravity via `PreInvocation` (antes de CADA chamada ao modelo, inclusive dentro do `/plan`)**, Cursor via `sessionStart` + regra `alwaysApply`.
@@ -95,8 +95,9 @@ A fundação é o **protocolo por artefatos** (agnóstico): specs, relatórios d
    - `dependency-lock`: bloqueio de modificações não autorizadas em manifestos e auditoria determinística de lockfiles/CVEs.
    - `semantic-commit-checker`: validação estrita por RegEx de Conventional Commits via `hooks/dotagents-commit-check.sh`.
    - `state-checkpoint`: snapshot Git pré-alteração e auto-rollback imediato caso testes ou compilação local falhem.
+   - `compound` + `hooks/dotagents-verify.sh`: memórias tipadas, com `Escopo (globs)` e `Verify-Cmd` executável; os fragmentos são ativados por glob e o review executa as regras aplicáveis ao diff num snapshot isolado (só arquivos visíveis ao git). O mesmo verificador fornece o merge-base e os arquivos do diff às skills acima. Regressão: `sh tests/dotagents-verify.test.sh` · mutação: `sh tests/dotagents-verify.mutation.sh`.
 
-**Limitação conhecida:** comandos nativos de prompt rígido (ex.: `/plan`) prependam instruções próprias e restringem as tools a leitura — o gate de escrita não dispara ali e o modelo tende a obedecer ao prefixo do comando. A camada 2 neutraliza isso reinjetando o protocolo em cada chamada de modelo dentro do próprio comando; ao sair do modo, as camadas 1 e 3 voltam a valer (a primeira ação exigida é materializar o task.md).
+**Limitação conhecida:** comandos nativos de prompt rígido (ex.: `/plan`) prefixam instruções próprias e restringem as tools a leitura — o gate de escrita não dispara ali e o modelo tende a obedecer ao prefixo do comando. A camada 2 neutraliza isso reinjetando o protocolo em cada chamada de modelo dentro do próprio comando; ao sair do modo, as camadas 1 e 3 voltam a valer (a primeira ação exigida é materializar o task.md).
 
 **Opt-out consciente:** diga literalmente **"sem squad"** ou **"modo direto"** — vale só para a demanda atual, é registrado em `docs/todo/opt-outs.md` e nunca autoriza deploy remoto.
 
@@ -116,13 +117,13 @@ A fundação é o **protocolo por artefatos** (agnóstico): specs, relatórios d
 
 ## 📁 Estrutura pós-instalação
 
-- `<raiz-da-ferramenta>/agents/` — personas · `skills/` — habilidades executáveis (21 skills, com guardrails determinísticos) · `commands/` — Manager e atalhos · `hooks/` — gate de enforcement, lembrete e commit checker (`dotagents-gate.sh`, `dotagents-remind.sh`, `dotagents-commit-check.sh`)
+- `<raiz-da-ferramenta>/agents/` — personas · `skills/` — habilidades executáveis (21 skills, com guardrails determinísticos) · `commands/` — Manager e atalhos · `hooks/` — gate de enforcement, lembrete, commit checker e verificador das memórias (`dotagents-gate.sh`, `dotagents-remind.sh`, `dotagents-commit-check.sh`, `dotagents-verify.sh` — este instalado mesmo com `--no-hooks`)
 - `memories/` (raiz do projeto) — memória viva (business, architecture, guidelines, implementations/ + templates canônicos)
 - `docs/todo/` e `docs/done/` — tasks com artefatos de gate · `docs/adr/` — decisões arquiteturais
 
 ## 🔄 Atualização e desinstalação
 
-- **Atualizar:** `git pull` na pasta `DotAgents/` + re-rodar o `install.sh` (idempotente; memórias preservadas).
+- **Atualizar:** `git pull` na pasta `DotAgents/` + re-rodar o `install.sh` (idempotente; memórias preservadas). Entradas de memória anteriores à v2.3.0 ficam como **legadas** (⚠️, não executáveis), e um `INDEX.md` em formato livre ativa todos os fragmentos até o `compound` convertê-lo ao formato de tabela. Atualização que muda o `dotagents-verify.sh` já commitado faz o verificador parar com 🚨 até o commit da atualização (a cópia nova não é confiável dentro do próprio diff — skill `compound` § 5).
 - **Desinstalar:** remova o diretório da ferramenta (`.claude/`, `.agents/` ou `.cursor/`), o bloco entre `<!-- dotagents:begin -->` e `<!-- dotagents:end -->` no arquivo raiz, e — se desejar — `memories/` e `docs/todo|done/`.
 
 ## 📄 Licença

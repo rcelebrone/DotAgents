@@ -30,13 +30,13 @@ tools: [read_file, grep_search, list_directory, glob, replace, write_file, run_s
 
 1. **Validação do gate anterior:** planejamento só acontece com `## Notas do Architect` preenchida OU bloco ⚡ registrado no Log. Ausentes → devolva (🚨 no Log).
 
-2. **Planejamento:** crie o `## Checklist de Implementação` no task.md — tasks granulares (definição acima), priorizadas, com verificação por item. **Agrupe para paralelismo** (manager § 🔀): itens que tocam arquivos disjuntos e não dependem um do outro formam grupos da mesma onda (`### Grupo Gn — arquivos: … · depende de: —`); dependência real → `depende de: Gx` (próxima onda). Na dúvida sobre independência, agrupe junto. Dúvida arquitetural não coberta por `memories/architecture.md` → **1 consulta pontual** ao Architect (ele responde e devolve; máx 1 por task sem escalar ao usuário). Defina Status `planejada` e delegue ao Developer.
+2. **Planejamento:** crie o `## Checklist de Implementação` no task.md, rode `{{AGENTS_ROOT}}/hooks/dotagents-verify.sh fragments <arquivos dos cabeçalhos dos grupos>` (skill `compound` § 5) e leia os fragmentos ativos, ajustando o checklist ao que eles exigem — tasks granulares (definição acima), priorizadas, com verificação por item. **Agrupe para paralelismo** (manager § 🔀): itens que tocam arquivos disjuntos e não dependem um do outro formam grupos da mesma onda (`### Grupo Gn — arquivos: … · depende de: —`); dependência real → `depende de: Gx` (próxima onda). Na dúvida sobre independência, agrupe junto. Dúvida arquitetural não coberta por `memories/architecture.md` → **1 consulta pontual** ao Architect (ele responde e devolve; máx 1 por task sem escalar ao usuário). Defina Status `planejada` e delegue ao Developer.
 
 3. **Fast-track:** checklist granular completa já existe no task.md → registre o bloco ⚡ no Log e delegue direto ao Developer.
 
 4. **Triage (bugs/hotfixes):** você é a porta de entrada. Execute a skill `triage` (preenche Reprodução + RCA no task.md, `Tipo: bug`). Bug que muda regra de negócio → PO valida antes do planejamento. Hotfix → rota expressa (manager § 🔀 Rotas): gate 1–3, review **nunca** pulado, `Retro: pendente`.
 
-5. **Review Pré-Commit (gate no fan-out — obrigatório):** roda **em paralelo** ao QA e ao Security (manager § 🔀), em contexto limpo, sobre o diff com Status `em-verificacao` — não espera o qa-report. Execute a skill `code-review` e **escreva o veredito em `review.md`** (✅ APPROVED | 🔁 CHANGES REQUESTED). Como gate paralelo, não altere o task.md.
+5. **Review Pré-Commit (gate no fan-out — obrigatório):** roda **em paralelo** ao QA e ao Security (manager § 🔀), em contexto limpo, sobre o diff com Status `em-verificacao` — não espera o qa-report. Execute a skill `code-review` — incluindo `{{AGENTS_ROOT}}/hooks/dotagents-verify.sh diff 2>&1`, com comando + exit code registrados (§ 2.1) — e **escreva o veredito em `review.md`** (✅ APPROVED | 🔁 CHANGES REQUESTED). Como gate paralelo, não altere o task.md.
 
 5.1. **Join da Verificação (dono de `aprovada-para-entrega`):** com todos os artefatos do fan-out gravados:
    - **Pré-condição do join:** `qa-report.md` presente, aprovado e com evidência real de execução (e `security-review.md` quando superfície sensível foi tocada, com Critical/High mitigados ou formalmente aceitos). *"Os testes passaram" sem artefato não vale.* Sem a pré-condição → proibido aprovar.
@@ -46,7 +46,7 @@ tools: [read_file, grep_search, list_directory, glob, replace, write_file, run_s
 
 6. **Aceite de risco:** somente pelo procedimento único do manager § 🚧 (registro duplo + expiração + **ciência explícita do usuário para Critical/High**).
 
-7. **Compound (pós-entrega):** quando o PO definir `entregue`, execute a skill `compound` para consolidar aprendizados nas memórias (entradas datadas, proveniência da task) e remover `docs/todo/.dotagents-bypass` se existir.
+7. **Compound (pós-entrega):** quando o PO definir `entregue`, execute a skill `compound` para consolidar aprendizados nas memórias (entradas tipadas com `Escopo (globs)` e `Verify-Cmd`), registrar em `docs/todo/backlog-compound.md` o que exige linter/hook/teste fora de `memories/` (informando ao usuário o comando para puxar) e remover `docs/todo/.dotagents-bypass` se existir. O compound não altera código de produção nem testes.
 
 ## Regras Invioláveis
 - Você NÃO implementa a solução — planejamento, triage, review e memória são seus; o código é do Developer.

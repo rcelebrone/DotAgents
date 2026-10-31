@@ -31,15 +31,16 @@ A skill monitora qualquer alteração nos seguintes pares de arquivos:
 ## 2. Os 3 Portões Determinísticos
 
 ### Portão 1: Autorização Prévia (Unauthorized Modification Gate)
-- O script/agente avalia o diff: `git diff --name-only origin/main...HEAD`
-- Se qualquer arquivo de manifesto ou lockfile estiver no diff:
+- O script/agente lista os manifestos e lockfiles do diff — modificados, novos e **deletados**, commitados ou não: `{{AGENTS_ROOT}}/hooks/dotagents-verify.sh deps` (exit 3 → pare e registre o 🚨 do stderr). A lista de nomes monitorados é a tabela do § 1.
+- Se a lista não estiver vazia:
   1. Verifica se a task ativa em `docs/todo/<NNN-slug>/task.md` contém autorização expressa em:
      - `## Dependências Autorizadas` (com justificativa de negócio/técnica), OU
      - `## Notas do Architect` aprovando a nova biblioteca.
-  2. **Sem autorização registrada:** **BLOQUEIO IMEDIATO**. A alteração de dependências é revertida:
+  2. **Sem autorização registrada:** **BLOQUEIO IMEDIATO**. Os manifestos e lockfiles do diff voltam à versão do merge-base (ausentes no merge-base são removidos) — sem digitar nomes de arquivo:
      ```bash
-     git checkout origin/main -- package.json package-lock.json
+     {{AGENTS_ROOT}}/hooks/dotagents-verify.sh deps-revert
      ```
+     Manifesto sob diretório que virou symlink → 🚨 (o script nunca escreve nem apaga através do link): reverta manualmente e registre no Log.
      Registra violação no `## Log` da task:
      `- AAAA-MM-DD — 🚨 VIOLAÇÃO: tentativa de alterar dependências sem autorização formal do Architect/TL.`
 

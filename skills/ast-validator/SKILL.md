@@ -28,8 +28,8 @@ O `ast-validator` resolve isso substituindo palpites por **checagem de compilado
 | Linguagem / Stack | Ferramenta Nativa de AST / Type-Check | Comando Determinístico |
 |---|---|---|
 | **TypeScript / JS** | Compilador TypeScript (`tsc`) | `npx tsc --noEmit` |
-| **JavaScript (puro)** | ESLint com regras AST de símbolos | `npx eslint --no-eslintrc --rule '{"no-undef": 2, "no-unused-vars": 2}' <arquivos>` |
-| **Python** | Compilação de Bytecode + Mypy / Pyright | `python3 -m py_compile <arquivos> && mypy --ignore-missing-imports <arquivos>` |
+| **JavaScript (puro)** | ESLint com regras AST de símbolos | executor por extensão do § 4 com `.js npx eslint --no-eslintrc --rule '{"no-undef": 2, "no-unused-vars": 2}' --` |
+| **Python** | Parser `ast` + Mypy / Pyright | script do § 4 e, com mypy configurado, `mypy --ignore-missing-imports .` |
 | **Go** | Compilador Go (`vet` + build check) | `go vet ./... && go build -o /dev/null ./...` |
 | **Rust** | Rust Compiler Frontend (`cargo check`) | `cargo check --all-targets` |
 | **Java** | Compilador Java (`javac`) | `mvn compile -DskipTests` ou `./gradlew compileJava` |
@@ -59,27 +59,47 @@ A validação de AST avalia três portões inflexíveis:
 Caso o projeto Python não possua `mypy` configurado, execute o validador sintático via módulo nativo `ast`:
 
 ```bash
-python3 -c "
-import ast, sys
+python3 - "{{AGENTS_ROOT}}/hooks/dotagents-verify.sh" <<'PY'
+import ast, subprocess, sys
+listing = subprocess.run(['sh', sys.argv[1], 'paths', '-z'], stdout=subprocess.PIPE)
+if listing.returncode != 0:
+    sys.exit(listing.returncode)
 failed = False
-for path in sys.argv[1:]:
+for path in [p for p in listing.stdout.decode('utf-8', 'surrogateescape').split('\0') if p.endswith('.py')]:
     try:
-        with open(path, 'r', encoding='utf-8') as f:
-            ast.parse(f.read(), filename=path)
-    except SyntaxError as e:
-        print(f'❌ Erro sintático de AST em {path}:{e.lineno}:{e.offset}: {e.msg}')
+        with open(path, 'rb') as source:
+            ast.parse(source.read(), filename=path)
+    except SyntaxError as error:
+        print(f'❌ Erro sintático de AST em {path}:{error.lineno}:{error.offset}: {error.msg}')
         failed = True
-if failed: sys.exit(1)
+if failed:
+    sys.exit(1)
 print('✅ Todos os arquivos possuem AST válida.')
-" $(git diff --name-only origin/main...HEAD | grep '\.py$')
+PY
+```
+
+Os arquivos vêm de `dotagents-verify.sh paths -z` (lista NUL: nomes com espaço são preservados; sem arquivos `.py` no diff → exit 0). Exit 3 do verificador (🚨 no stderr: sem `<base>`, verificador alterado etc.) é propagado — pare e registre o 🚨.
+
+**Executor por extensão** (qualquer ferramenta que recebe a lista de arquivos do diff — ex.: ESLint para `.js`): os argumentos após a extensão formam o comando, e os arquivos `.js` do diff são acrescentados ao fim; sem arquivos da extensão → exit 0; exit 3 do verificador é propagado.
+
+```bash
+python3 - "{{AGENTS_ROOT}}/hooks/dotagents-verify.sh" .js npx eslint --no-eslintrc --rule '{"no-undef": 2, "no-unused-vars": 2}' -- <<'PY'
+import subprocess, sys
+verify, extension, command = sys.argv[1], sys.argv[2], sys.argv[3:]
+listing = subprocess.run(['sh', verify, 'paths', '-z'], stdout=subprocess.PIPE)
+if listing.returncode != 0:
+    sys.exit(listing.returncode)
+files = [p for p in listing.stdout.decode('utf-8', 'surrogateescape').split('\0') if p.endswith(extension)]
+if not files:
+    print(f'nenhum arquivo {extension} no diff')
+    sys.exit(0)
+sys.exit(subprocess.run(command + files).returncode)
+PY
 ```
 
 ## 5. Workflow de Execução
 
-1. **Identificar arquivos tocados:**
-   ```bash
-   FILES=$(git diff --name-only origin/main...HEAD)
-   ```
+1. **Identificar arquivos tocados:** `{{AGENTS_ROOT}}/hooks/dotagents-verify.sh paths -z` — arquivos regulares do diff (não commitados e novos incluídos; deletados e symlinks excluídos). Exit 3 → pare e registre o 🚨 do stderr. Lista sem arquivos da stack → registre "nenhum arquivo da stack no diff"; nunca chame o validador sem argumentos.
 2. **Executar validador de AST / compilador estático:**
    Rode o comando correspondente à stack.
 3. **Decisão:**

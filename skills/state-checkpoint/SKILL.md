@@ -41,9 +41,29 @@ Após as alterações do Developer e antes de prosseguir com a entrega:
    - Node/TypeScript: `npm run build`
    - Go: `go build ./...`
    - Rust: `cargo check` ou `cargo build`
-   - Python: `python3 -m py_compile $(git diff --name-only origin/main...HEAD | grep '\.py$')`
+   - Python: script abaixo (arquivos `.py` do diff via `dotagents-verify.sh paths -z`; não grava `__pycache__`)
    - Java/Kotlin: `mvn compile -DskipTests` ou `./gradlew classes`
    - C#/.NET: `dotnet build`
+
+```bash
+python3 - "{{AGENTS_ROOT}}/hooks/dotagents-verify.sh" <<'PY'
+import subprocess, sys
+listing = subprocess.run(['sh', sys.argv[1], 'paths', '-z'], stdout=subprocess.PIPE)
+if listing.returncode != 0:
+    sys.exit(listing.returncode)
+failed = False
+for path in [p for p in listing.stdout.decode('utf-8', 'surrogateescape').split('\0') if p.endswith('.py')]:
+    try:
+        with open(path, 'rb') as source:
+            compile(source.read(), path, 'exec')
+    except SyntaxError as error:
+        print(f'❌ {path}:{error.lineno}: {error.msg}')
+        failed = True
+sys.exit(1 if failed else 0)
+PY
+```
+
+Exit 3 do verificador (🚨 no stderr) é propagado — pare e registre o 🚨.
 
 2. **Avaliação por Código de Saída:**
    - **Exit Code 0:** Compilação verde. O código está apto para seguir para o fan-out de testes/review.
@@ -54,23 +74,41 @@ Após as alterações do Developer e antes de prosseguir com a entrega:
 Se o Developer não conseguir sanar o erro de compilação ou se for atingida a 3ª iteração do loop com build quebrado, o **Auto-Rollback** é disparado imediatamente:
 
 ```bash
-# 1. Backup defensivo de evidências e logs de erro
-git diff > /tmp/dotagents-failed-diff.patch
+# 1. Checkpoint da task: o nome registrado no Log (📌 CHECKPOINT) — nunca "a tag mais recente", que pode vir do remoto
+[ -n "${CHECKPOINT:-}" ] || { echo "🚨 defina CHECKPOINT=dotagents/checkpoint-… com o nome registrado no Log da task"; exit 3; }
+git rev-parse --verify -q "refs/tags/$CHECKPOINT^{commit}" >/dev/null \
+  && git merge-base --is-ancestor "refs/tags/$CHECKPOINT" HEAD \
+  || { echo "🚨 checkpoint $CHECKPOINT inexistente ou fora do histórico da branch — rollback abortado"; exit 3; }
 
-# 2. Restauração atômica do código para o commit de checkpoint
-git reset --hard "$BASE_COMMIT"
+# 2. Backup defensivo de TUDO o que será descartado (rastreados e novos não ignorados), numa ref local do git.
+#    Qualquer falha aborta o rollback ANTES de descartar algo (identidade fixa: não depende de user.name/email).
+BACKUP_REF="refs/dotagents/backup-${CHECKPOINT#dotagents/}"
+git add -A \
+  && TREE=$(git write-tree) \
+  && BACKUP=$(git -c user.name=dotagents -c user.email=dotagents@localhost commit-tree "$TREE" -p HEAD -m "dotagents: backup antes do rollback para $CHECKPOINT") \
+  && git update-ref "$BACKUP_REF" "$BACKUP" \
+  && git reset -q \
+  || { git reset -q; echo "🚨 backup falhou — rollback abortado, nada foi descartado"; exit 3; }
 
-# 3. Remoção de arquivos novos não rastreados (órfãos) que quebraram o build
+# 3. Restauração atômica do código para o checkpoint, preservando docs/ e memories/ (Log da task, memórias)
+git reset --hard "refs/tags/$CHECKPOINT"
+for dir in docs memories; do
+  git cat-file -e "$BACKUP:./$dir" 2>/dev/null && git checkout "$BACKUP" -- "./$dir" && git reset -q -- "./$dir"
+done
+
+# 4. Remoção de arquivos novos não rastreados (órfãos) que quebraram o build
 # Mantém pastas preservadas da squad (docs/ e memories/)
 git clean -fd -e docs/ -e memories/
 
-# 4. Confirmação do estado restaurado
+# 5. Confirmação do estado restaurado
 git status
 ```
 
+Recuperar algo do backup: `git checkout "refs/dotagents/backup-<checkpoint>" -- <arquivo>`. A ref de backup é **local** e guarda todo arquivo novo não ignorado (inclusive segredos esquecidos fora do `.gitignore`): nunca publique refs `refs/dotagents/*` (ex.: `git push --mirror`) e remova-a na limpeza (§ 4).
+
 ### Registro no Log da Task:
 Após a reversão, o agente **DEVE** registrar o rollback no `## Log` do `task.md`:
-`- AAAA-MM-DD — ⏪ ROLLBACK AUTOMÁTICO: compilação falhou (<saída do compilador>); ambiente restaurado deterministicamente para o commit <BASE_COMMIT>. Diff preservado em /tmp/dotagents-failed-diff.patch.`
+`- AAAA-MM-DD — ⏪ ROLLBACK AUTOMÁTICO: compilação falhou (<saída do compilador>); ambiente restaurado deterministicamente para <CHECKPOINT>. Backup em refs/dotagents/backup-<checkpoint>.`
 
 O status da task é definido como `em-refinamento` (ou escalado ao Tech Lead para replanejamento ou divisão da task).
 
@@ -79,8 +117,9 @@ O status da task é definido como `em-refinamento` (ou escalado ao Tech Lead par
 Quando a task é finalizada e o ciclo de entrega local (`delivery`) é concluído com sucesso pelo Ops:
 
 ```bash
-# Exclui tags de checkpoint locais concluídas
-git tag -d $(git tag -l "dotagents/*") 2>/dev/null || true
+# Exclui só o checkpoint e o backup desta task (nome registrado no Log)
+git tag -d "$CHECKPOINT"
+git update-ref -d "refs/dotagents/backup-${CHECKPOINT#dotagents/}" 2>/dev/null || true
 ```
 
 ## Restrições

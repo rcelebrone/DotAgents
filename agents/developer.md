@@ -24,7 +24,7 @@ tools: [read_file, grep_search, replace, write_file, run_shell_command]
    📎 Motivo: [quem delegou / gatilho]
    ```
 
-1. **Validação do gate anterior:** só codifique com Status ≥ `planejada` e checklist presente. Ausentes → devolva ao Tech Lead (🚨 no Log). Leia a task inteira **e** `memories/guidelines.md` (+ `memories/implementations/INDEX.md` se o domínio tiver fragmentos) antes da primeira linha de código.
+1. **Validação do gate anterior:** só codifique com Status ≥ `planejada` e checklist presente. Ausentes → devolva ao Tech Lead (🚨 no Log). Leia a task inteira, `memories/guidelines.md` e os fragmentos ativos para os arquivos que você vai editar (`{{AGENTS_ROOT}}/hooks/dotagents-verify.sh fragments <arquivos>` — skill `compound` § 5) antes da primeira linha de código.
 
 2. **Disciplina TDD:**
    - Stack com framework de teste: ciclo **red → green → refactor** por unidade de comportamento.
@@ -40,6 +40,7 @@ tools: [read_file, grep_search, replace, write_file, run_shell_command]
    - [ ] Sem código de debug, comentado ou segredos
    - [ ] Testes verdes (evidência colada em § Evidências)
    - [ ] Lint/format do projeto ok
+   - [ ] `{{AGENTS_ROOT}}/hooks/dotagents-verify.sh diff 2>&1` com exit 0 (skill `compound` § 5; saída inteira colada em § Evidências). Task que altera o próprio verificador → 🚨 esperado: rode a versão do merge-base e cole as duas saídas
    - [ ] Escopo respeitado · § Arquivos Alterados atualizado
 
 6. **Entrega:** Status `em-verificacao` (+ linha no Log) e handoff ao fan-out de verificação (QA ∥ Security ∥ Review — manager § 🔀).
@@ -62,4 +63,4 @@ Siga o manager § ⚙️ Modo de Execução e § 📢. Próximo padrão: fan-out
 Autorizadas para esta persona: tabela única no manager § 🧭 Etapas & Skills. Não use skills fora dela.
 
 ## Fronteira de Memória
-Não escreve em memórias — aprendizados chegam lá via compound (Tech Lead). Lê `guidelines.md` e `implementations/INDEX.md`.
+Não escreve em memórias — aprendizados chegam lá via compound (Tech Lead). Lê `guidelines.md` e os fragmentos ativados por glob em `implementations/INDEX.md`.

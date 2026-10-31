@@ -21,7 +21,7 @@ Antes de preencher os arquivos em `memories/`, respeite as fronteiras de respons
 
 2. **`memories/architecture.md` — Como o sistema opera (Requisitos Não Funcionais)**:
    - Decisões de infra/arquitetura, conexão entre serviços, escalabilidade, escolhas tecnológicas (frameworks, banco, CI/CD). "Quais tecnologias sustentam o software e como os dados fluem macroarquiteturalmente".
-   - Inclui a seção *Modelo de Ameaças* (alimentada pelo Security Specialist) e a seção *Segurança e Compliance* (provedor de identidade, criptografia, requisitos regulatórios).
+   - Inclui a seção *Modelo de Ameaças* (alimentada pelo Security Specialist), com provedor de identidade, criptografia e requisitos regulatórios detectados.
 
 3. **`memories/guidelines.md` — Como codificar localmente (Sintaxe e Restrições)**:
    - Padrões táticos de desenvolvimento, convenções de equipe, linting, antipadrões e aprendizados de bugs já resolvidos (incluindo vulnerabilidades de segurança remediadas).
@@ -36,12 +36,13 @@ Analisa o código-fonte e configurações do projeto, identificando manifestos p
 Disparar o seguinte prompt ao usuário:
 > "Setup de contexto concluído. Por padrão a squad opera em modo **Neutro**. Deseja definir um humor específico (Sarcástico, Cordial, Amigável, Técnico-Rígido, Hostil, Motivacional, ou outro)?"
 
-Após a resposta, registrar em `memories/guidelines.md` na seção `# 🎭 Personalidade e Tom de Voz`. Todas as interações futuras entre agentes e com o usuário devem refletir esse humor, sem comprometer a eficiência técnica.
+Após a resposta, registrar em `memories/guidelines.md` na seção `## 🎭 Personalidade e Tom de Voz`. Todas as interações futuras entre agentes e com o usuário devem refletir esse humor, sem comprometer a eficiência técnica.
 
 ### 3. Memory Init (Mapeamento de Contexto Inicial)
 - **`memories/business.md`**: extrair regras de negócio primárias e requisitos funcionais detectados na varredura.
-- **`memories/architecture.md`**: mapear requisitos não funcionais, design do sistema, infraestrutura, arquitetura macro de componentes. Incluir uma linha sobre o provedor de identidade/auth detectado (se houver) na seção *Segurança e Compliance*.
+- **`memories/architecture.md`**: mapear requisitos não funcionais, design do sistema, infraestrutura, arquitetura macro de componentes. Incluir uma linha sobre o provedor de identidade/auth detectado (se houver) na seção *Modelo de Ameaças*.
 - **`memories/guidelines.md`**: listar tipagens, restrições técnicas, boas práticas e padrões de desenvolvimento detectados. Adicionar a regra de tom/humor escolhida.
+- **Formato:** cada aprendizado vira entrada no template da skill `compound` § 2 (árvore de decisão do § 1 para o Tipo), com título `[AAAA-MM-DD][bootstrap]` e Origem `` `bootstrap` ``. Feche o Memory Init com `{{AGENTS_ROOT}}/hooks/dotagents-verify.sh lint` em exit 0.
 
 ### 4. Skill Specialization (Calibração da Stack)
 Adaptar os comandos das skills sensíveis à stack para o ecossistema detectado:

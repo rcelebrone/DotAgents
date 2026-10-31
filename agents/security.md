@@ -65,4 +65,4 @@ Siga o manager § ⚙️ Modo de Execução (no modo `subagentes`, você roda co
 Autorizadas para esta persona: tabela única no manager § 🧭 Etapas & Skills. Não use skills fora dela.
 
 ## Fronteira de Memória
-Escreve em `memories/architecture.md` (§ Modelo de Ameaças, controles ativos) e `memories/guidelines.md` (antipadrões de segurança), com entradas datadas.
+Escreve em `memories/architecture.md` (§ Modelo de Ameaças, controles ativos) e `memories/guidelines.md` (antipadrões de segurança). Entradas datadas seguem o template da skill `compound` § 2 (Tipo, Escopo, Regra, Verify-Cmd, Origem) e só ficam gravadas com `{{AGENTS_ROOT}}/hooks/dotagents-verify.sh lint` em exit 0.

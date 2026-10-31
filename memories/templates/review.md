@@ -16,6 +16,13 @@
 | Regras de negócio | ✅/❌ | |
 | Higiene (dead code, debug, segredos) | ✅/❌ | |
 
+## Verificações Determinísticas (Verify-Cmd)
+<!-- Cole a saída inteira de `dotagents-verify.sh diff 2>&1` (skill compound § 5). Exit 1 → CHANGES REQUESTED; 🚨 e ⚠️ em Ressalvas (skill code-review § 2.1). -->
+**Fragmentos ativados:** nenhum
+| Entrada (arquivo › título) | Comando | Exit |
+|---|---|---|
+| — | nenhum Verify-Cmd aplicável | — |
+
 ## Veredito
 **✅ APPROVED | 🔁 CHANGES REQUESTED**
 <!-- 1–3 linhas de fundamento. Opções na 3ª reprovação (via PO): mais um ciclo | dividir/repriorizar |
