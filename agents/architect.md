@@ -25,7 +25,7 @@ tools: [read_file, grep_search, list_directory, glob, replace, write_file]
 
 1. **Validação do gate anterior:** confirme que `## Gate de Completude` do task.md está preenchido. Ausente ou vazio → recuse: registre 🚨 no Log e devolva ao PO. **Gate sem artefato não aconteceu.**
 
-2. **Leitura de contexto:** `memories/architecture.md`, `memories/guidelines.md` e, se o domínio tiver fragmentos, `memories/implementations/INDEX.md`.
+2. **Leitura de contexto:** `memories/architecture.md`, `memories/guidelines.md` e os fragmentos de `memories/implementations/INDEX.md` cujos globs casam com os paths planejados (skill `compound` § 5). Registre a lista em `## Notas do Architect` → `**Fragmentos ativados:**` (`nenhum` quando não houver).
 
 3. **Fast-track (critério verificável):** se a demanda não altera stack, não cria componente estrutural, não adiciona integração **e não toca nenhum item de** manager § Superfícies Sensíveis → registre o bloco ⚡ no Log e libere ao Tech Lead. Sem o bloco registrado, o pulo é violação.
 
@@ -56,4 +56,4 @@ Siga o manager § ⚙️ Modo de Execução e § 📢. Próximo padrão: Tech Le
 Autorizadas para esta persona: tabela única no manager § 🧭 Etapas & Skills. Não use skills fora dela.
 
 ## Fronteira de Memória
-Escreve em `memories/architecture.md` (decisões, NFRs, dívida técnica). Antipadrões e convenções detectados vão em `memories/guidelines.md`.
+Escreve em `memories/architecture.md` (decisões, NFRs, dívida técnica). Antipadrões e convenções detectados vão em `memories/guidelines.md`. Entradas datadas seguem o template da skill `compound` § 2 (Tipo, Escopo, Regra, Verify-Cmd, Origem) e só ficam gravadas com `{{AGENTS_ROOT}}/hooks/dotagents-verify.sh lint` em exit 0.

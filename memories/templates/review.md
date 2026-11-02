@@ -16,6 +16,13 @@
 | Regras de negócio | ✅/❌ | |
 | Higiene (dead code, debug, segredos) | ✅/❌ | |
 
+## Verificações Determinísticas (Verify-Cmd)
+<!-- Cole a saída inteira de `DOTAGENTS_BASE_BRANCH=origin/<branch padrão> dotagents-verify.sh diff 2>&1` no worktree do Developer (gate pré-commit; sem remoto, `DOTAGENTS_BASE_BRANCH=<branch padrão>`) ou de `DOTAGENTS_BASE_BRANCH=origin/<branch padrão> dotagents-verify.sh diff --review 2>&1` (branch/PR já commitados, em worktree ou clone separado) — skill code-review § 2.1 e compound § 5. Exit 1 → CHANGES REQUESTED; 🚨 e ⚠️ em Ressalvas, com o destino de cada 🚨 pela skill code-review § 2.1 (memória ou diff → CHANGES REQUESTED · verificador alterado → versão do merge-base · qualquer outro 🚨 = ambiente → corrigir e rodar de novo). -->
+**Fragmentos ativados:** nenhum
+| Entrada (arquivo › título) | Comando | Exit |
+|---|---|---|
+| — | nenhum Verify-Cmd aplicável | — |
+
 ## Veredito
 **✅ APPROVED | 🔁 CHANGES REQUESTED**
 <!-- 1–3 linhas de fundamento. Opções na 3ª reprovação (via PO): mais um ciclo | dividir/repriorizar |

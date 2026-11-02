@@ -1,7 +1,8 @@
 # Índice — memories/implementations/
 
-<!-- Mantido pela skill compound. Uma linha por fragmento: `nome-do-arquivo.md` — resumo — [AAAA-MM-DD].
-     Developer e Architect consultam este índice quando a task toca o domínio correspondente;
-     a skill code-review inclui os fragmentos relevantes na coleta de contexto. -->
+<!-- Mantido pela skill compound (§ 4). Uma linha por fragmento; globs = união dos `Escopo (globs)` das entradas do fragmento.
+     Ativação (compound § 5): todo agente que planejar ou editar um path que case com um glob abaixo lê o fragmento
+     antes de gerar seu artefato; `*` = global. O review (code-review § 2.1) executa os Verify-Cmd dos fragmentos ativados. -->
 
-_(vazio — nenhum fragmento de memória criado ainda)_
+| Arquivo | Globs | Resumo | Atualizado |
+|---|---|---|---|

@@ -6,7 +6,7 @@
 
 set -euo pipefail
 
-DOTAGENTS_VERSION="2.2.0"
+DOTAGENTS_VERSION="2.3.0"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 OPTION=""
@@ -30,7 +30,7 @@ Alvos:
 Opções:
   --dest <dir>       Diretório do projeto destino (default: diretório atual)
   --yes              Não perguntar confirmações (modo não interativo)
-  --no-hooks         Não instalar o hook de enforcement
+  --no-hooks         Não instalar os hooks de enforcement (o verificador das memórias é instalado sempre)
   --cursor-native    (Cursor) modo 'subagentes' em vez de 'persona-shift'
   --purge            Remover a pasta DotAgents/ ao final (default: preservar)
   --help             Esta ajuda
@@ -181,7 +181,11 @@ install_squad_files() {
   for f in "$SCRIPT_DIR"/commands/*.md; do
     render_file "$f" "$TARGET_DIR/commands/$(basename "$f")"
   done
-  info "  ✅ 7 agents (frontmatter traduzido p/ $TOOL_NAME) · 21 skills · 6 commands"
+  # Verificador das memórias (skill compound): não é hook de enforcement — instalado mesmo com --no-hooks
+  [ -f "$SCRIPT_DIR/hooks/dotagents-verify.sh" ] || die "Verificador-fonte ausente: $SCRIPT_DIR/hooks/dotagents-verify.sh"
+  mkdir -p "$TARGET_DIR/hooks"
+  cp "$SCRIPT_DIR/hooks/dotagents-verify.sh" "$TARGET_DIR/hooks/dotagents-verify.sh" && chmod +x "$TARGET_DIR/hooks/dotagents-verify.sh"
+  info "  ✅ 7 agents (frontmatter traduzido p/ $TOOL_NAME) · 21 skills · 6 commands · verificador $AGENTS_ROOT/hooks/dotagents-verify.sh"
 }
 
 install_cursor_rule() {
@@ -451,7 +455,7 @@ PY
 }
 
 install_hook() {
-  if [ "$NO_HOOKS" -eq 1 ]; then info "⏭️ Hooks desativados (--no-hooks)."; return 0; fi
+  if [ "$NO_HOOKS" -eq 1 ]; then info "⏭️ Hooks de enforcement desativados (--no-hooks); o verificador das memórias foi instalado."; return 0; fi
   info "🔒 Instalando hooks de enforcement (fail-open): gate de escrita + lembrete por prompt..."
   mkdir -p "$TARGET_DIR/hooks"
   local f
