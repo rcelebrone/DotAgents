@@ -42,7 +42,7 @@ O instalador é **idempotente**: re-rodar atualiza os artefatos da squad, preser
 | Roteamento raiz | bloco gerido em `AGENTS.md` | bloco gerido em `CLAUDE.md` (com import `@.claude/commands/manager.md`) | bloco gerido em `AGENTS.md` |
 | Subagentes | nativos (`subagent: true`) | nativos (`.claude/agents/`) | Persona Shift (ou nativos com `--cursor-native`) |
 | Enforcement | `.agents/hooks.json` (PreToolUse + PreInvocation) | `.claude/settings.json` (PreToolUse + UserPromptSubmit) | `.cursor/hooks.json` (preToolUse + sessionStart) |
-| Memória viva | `memories/` na raiz do projeto (compartilhada entre ferramentas) | idem | idem |
+| Memória viva (Cérebro Sináptico) | `memories/` na raiz do projeto (hubs raiz enxutos + rede de nós atômicos interconectados em `memories/implementations/` com headers YAML e `connections`) | idem | idem |
 
 O frontmatter dos agentes é **traduzido na instalação** para o formato de cada ferramenta (nomes de tools, valores de `model`) — os arquivos-fonte permanecem agnósticos.
 
@@ -71,7 +71,8 @@ Demanda → 🧠 Manager (classifica e roteia)
     └ 👑 Review pré-commit (review.md)                  ┘   por gate
   → 👑 join do TL (todos ✅ + evidência de teste → aprovada-para-entrega)
   → 🚀 Ops ([S/N] → changelog + versão + commit; deploy remoto só se configurado)
-  → 📋 PO valida o DoD e entrega o resumo → memória atualizada (compound)
+  → 📋 PO valida o DoD, apresenta resumo + oportunidades de melhoria para aprovação e define `entregue`
+  → 👑 Tech Lead executa `compound` (Compounding Engineering: cria guardrails determinísticos no Harness + atualiza memórias vivas)
 ```
 
 - **Gates por artefato:** cada etapa valida o artefato da anterior — *gate sem artefato não aconteceu*.
@@ -88,7 +89,7 @@ A fundação é o **protocolo por artefatos** (agnóstico): specs, relatórios d
 1. **Bloco raiz gerido no TOPO** do `CLAUDE.md`/`AGENTS.md`, com cláusula explícita de precedência: o protocolo vale **também dentro** de comandos e modos nativos da ferramenta (`/plan` etc.).
 2. **Lembrete por prompt** (`dotagents-remind.sh`): reinjeta o protocolo + o status da task ativa a cada interação — Claude via `UserPromptSubmit`, **Antigravity via `PreInvocation` (antes de CADA chamada ao modelo, inclusive dentro do `/plan`)**, Cursor via `sessionStart` + regra `alwaysApply`.
 3. **Gate de escrita** (`dotagents-gate.sh`, fail-open): nega edição de **código** quando não existe task ativa em `docs/todo/` — docs, memórias e configs da squad nunca são bloqueados.
-4. **Guardrails Determinísticos (Portões Duros Pré-Probabilísticos):** ferramentas de linha de comando e validações rígidas que bloqueiam alterações antes de análises subjetivas de LLM:
+4. **Guardrails Determinísticos (Portões Duros Pré-Probabilísticos & Compounding Engineering):** ferramentas de linha de comando e validações rígidas que bloqueiam alterações antes de análises subjetivas de LLM — e são retroalimentadas ao final de cada ciclo pela skill `compound` (construção contínua do **Harness** a partir de feedbacks do usuário, decisões de cobertura, melhorias aprovadas nos reviews e consolidações autônomas):
    - `linter-enforcer`: validação sintática estrita (ESLint/Prettier/Ruff) que barra o diff antes do `code-review`.
    - `coverage-gate`: rejeição determinística se a cobertura de testes cair ou violar o threshold, acionando o `test-scaffold`.
    - `ast-validator`: parser de Árvore Sintática Abstrata (AST) e type-checkers (anti-alucinação de métodos/imports e blindagem de `refactor`).
@@ -116,8 +117,8 @@ A fundação é o **protocolo por artefatos** (agnóstico): specs, relatórios d
 
 ## 📁 Estrutura pós-instalação
 
-- `<raiz-da-ferramenta>/agents/` — personas · `skills/` — habilidades executáveis (21 skills, com guardrails determinísticos) · `commands/` — Manager e atalhos · `hooks/` — gate de enforcement, lembrete e commit checker (`dotagents-gate.sh`, `dotagents-remind.sh`, `dotagents-commit-check.sh`)
-- `memories/` (raiz do projeto) — memória viva (business, architecture, guidelines, implementations/ + templates canônicos)
+- `<raiz-da-ferramenta>/agents/` — personas · `skills/` — habilidades executáveis (21 skills, incluindo guardrails determinísticos, `compound` de Harness + Memória Sináptica e `squad-visualizer` com o grafo do cérebro de memórias) · `commands/` — Manager e atalhos · `hooks/` — gate de enforcement, lembrete e commit checker (`dotagents-gate.sh`, `dotagents-remind.sh`, `dotagents-commit-check.sh`)
+- `memories/` (raiz do projeto) — **Cérebro Sináptico de Memória Viva**: 3 hubs raiz enxutos (`business.md`, `architecture.md`, `guidelines.md`), Mapa Sináptico (`implementations/INDEX.md`), nós atômicos interconectados com headers semânticos YAML (`implementations/*.md`) + templates canônicos (`task.md`, `qa-report.md`, `review.md`, `memory-node.md`)
 - `docs/todo/` e `docs/done/` — tasks com artefatos de gate · `docs/adr/` — decisões arquiteturais
 
 ## 🔄 Atualização e desinstalação

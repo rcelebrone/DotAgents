@@ -38,8 +38,8 @@ fi
 case "$FILE" in
   *.md|*/docs/*|docs/*|*/memories/*|memories/*|*/.claude/*|.claude/*|*/.agents/*|.agents/*|*/.cursor/*|.cursor/*|*CHANGELOG*|*.env.example) exit 0 ;;
 esac
-# Task ativa (status de trabalho) => permite
-if grep -lE '^\*\*Status:\*\*.*(planejada|em-implementacao|em-verificacao|em-qa|em-security|em-review|aprovada-para-entrega)' "$ROOT"/docs/todo/*/task.md >/dev/null 2>&1; then
+# Task ativa (status de trabalho ou compound pós-entrega) => permite
+if grep -lE '^\*\*Status:\*\*.*(planejada|em-implementacao|em-verificacao|em-qa|em-security|em-review|aprovada-para-entrega|entregue)' "$ROOT"/docs/todo/*/task.md >/dev/null 2>&1; then
   exit 0
 fi
 REASON="DotAgents: nenhuma task ativa em docs/todo/*/task.md. Roteie a demanda pelo Manager (o PO/TL cria a task) ou registre opt-out formal ('sem squad' cria docs/todo/.dotagents-bypass)."

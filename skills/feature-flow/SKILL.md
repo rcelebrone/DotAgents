@@ -15,8 +15,10 @@ Crie `docs/todo/<NNN-slug>/task.md` a partir do template canônico `memories/tem
 - Invocada pelo **PO** (feature/docs): PO preenche Demanda, User Stories, Gate de Completude, NFRs e DoD no próprio task.md.
 - Invocada pelo **TL** (bug/hotfix, via triage): TL preenche Reprodução e RCA.
 
-## 3. Branch
-Criar `<tipo>/NNN-slug` (tipos: `feat`, `fix`, `refactor`, `docs`, `hotfix`, `rollback`). O NNN na branch elimina colisões — ainda assim, verifique se a branch já existe antes de criar.
+## 3. Branch (Isolamento Baseado na Principal)
+Criar e fazer checkout de uma branch isolada `<tipo>/NNN-slug` (tipos: `feat`, `fix`, `refactor`, `docs`, `hotfix`, `rollback`) **sempre ramificada a partir da branch principal atualizada** (`main` ou `master`):
+- Sincronize/verifique a branch principal (`git checkout main && git pull --ff-only` quando houver remoto acessível, ou a partir de `origin/main`) e crie `<tipo>/NNN-slug`.
+- O NNN na branch elimina colisões — ainda assim, verifique se a branch já existe antes de criar. Todo o desenvolvimento e o fechamento via `compound` ocorrem dentro desta branch isolada para geração de Pull Request ao final.
 
 ## 4. Scaffolding (opcional, pós-planejamento)
 Gerar boilerplate (entities, controllers, services) conforme o padrão registrado em `memories/architecture.md` — somente após o TL definir a checklist (`Status: planejada`).

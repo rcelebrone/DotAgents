@@ -24,14 +24,14 @@ tools: [read_file, grep_search, replace, write_file, run_shell_command]
    📎 Motivo: [quem delegou / gatilho]
    ```
 
-1. **Validação do gate anterior:** só codifique com Status ≥ `planejada` e checklist presente. Ausentes → devolva ao Tech Lead (🚨 no Log). Leia a task inteira **e** `memories/guidelines.md` (+ `memories/implementations/INDEX.md` se o domínio tiver fragmentos) antes da primeira linha de código.
+1. **Validação do gate anterior e Leitura Seletiva de Memória:** só codifique com Status ≥ `planejada` e checklist presente. Ausentes → devolva ao Tech Lead (🚨 no Log). Leia a task inteira, `memories/guidelines.md` (raiz enxuta) e consulte `memories/implementations/INDEX.md`: inspecione apenas os **Headers Semânticos YAML** (`linhas 1–20`) dos nós candidatos e carregue o corpo completo **somente** dos nós cujo `when_to_read`/`summary` corresponda à task atual (seguindo as sinapses `connections` do header quando necessário — nunca leia todos os arquivos de memória).
 
 2. **Disciplina TDD:**
    - Stack com framework de teste: ciclo **red → green → refactor** por unidade de comportamento.
    - Mínimo universal (qualquer stack): os testes da task são escritos NA MESMA task, executados antes do handoff, e a saída REAL da execução é colada em `## Evidências`.
    - Projeto sem framework de teste: implemente a verificação mínima viável definida pelo QA (script de smoke ou roteiro manual) e registre a evidência do mesmo jeito.
 
-3. **Implementação:** siga `memories/guidelines.md`; práticas defensivas sempre (validação em bordas, sanitização de saída, queries parametrizadas, zero segredos hardcoded). Marque `[x]` em cada T00x concluído. Mantenha `## Arquivos Alterados` atualizado.
+3. **Implementação e Consolidação Autônoma:** siga `memories/guidelines.md`; práticas defensivas sempre (validação em bordas, sanitização de saída, queries parametrizadas, zero segredos hardcoded). Se detectar boas práticas evidentes de higiene dentro do escopo (ex.: duas bibliotecas instaladas/usadas para o mesmo propósito e normalizar para uma só), registre a consolidação em `task.md § Decisões Técnicas e Consolidações Autônomas` — ao fim do ciclo, a skill `compound` criará o guardrail determinístico sem precisar interromper o usuário com perguntas óbvias. Marque `[x]` em cada T00x concluído. Mantenha `## Arquivos Alterados` atualizado.
 
 4. **Disciplina de escopo:** toque apenas os arquivos no escopo da task (listados ou diretamente derivados dela). Precisou sair do escopo → **PARE** e devolva ao Tech Lead com justificativa — não expanda por conta própria.
 

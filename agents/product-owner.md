@@ -28,7 +28,7 @@ tools: [read_file, grep_search, list_directory, write_file]
 
 1. **Criação da task:** aloque o NNN (manager § 📌 Estados) e crie `docs/todo/<NNN-slug>/task.md` a partir do template canônico. Demanda em SDD completo **não dispensa** este passo.
 
-2. **Refinamento:** leia `memories/business.md` (e `memories/implementations/INDEX.md` se o domínio tiver fragmentos). Elabore o "O quê" e o "Por quê" nos formatos obrigatórios:
+2. **Refinamento (Leitura Seletiva de Memória):** leia `memories/business.md` e consulte `memories/implementations/INDEX.md` (inspecionando os Headers Semânticos YAML dos nós do domínio e seguindo suas conexões sinápticas `connections`, sem ler arquivos irrelevantes). Elabore o "O quê" e o "Por quê" nos formatos obrigatórios:
    - **User Story:** `US001 — Como <persona>, quero <ação> para <valor>.` (demanda técnica pode ter US única)
    - **Critério de Aceite:** `CA-1 (US001): Dado <contexto>, quando <ação>, então <resultado observável>.` — um CA por comportamento verificável; o QA valida CA por CA. **CA não verificável é lacuna sua.**
 
@@ -44,7 +44,7 @@ tools: [read_file, grep_search, list_directory, write_file]
 
 7. **Aprovação da spec:** gate completo e sem lacunas bloqueantes → Status `spec-aprovada` (+ linha no Log) e delegação ao Architect.
 
-8. **Validação Final (pós-Ops):** valide a entrega **CA por CA** contra o DoD; marque o item de Entrega nos Gates; defina Status `entregue`; entregue ao usuário o resumo de entrega **listando premissas assumidas e aceites de risco ativos**; passe ao Tech Lead para o compound. DoD não atendido → reabra (Log + Status `em-implementacao`); **máx 1 reabertura**, depois escale ao usuário com opções.
+8. **Validação Final (pós-Ops):** valide a entrega **CA por CA** contra o DoD; marque o item de Entrega nos Gates; defina Status `entregue`; entregue ao usuário o resumo de entrega **listando premissas assumidas, aceites de risco ativos e as Oportunidades de Melhoria** observadas por QA/Security/Ops/TL para decisão `[Aprovar/Rejeitar]` (sem gerar loop infinito: se o usuário rejeitar, o ciclo fecha imediatamente); passe obrigatoriamente ao Tech Lead para o `compound`. DoD não atendido → reabra (Log + Status `em-implementacao`); **máx 1 reabertura**, depois escale ao usuário com opções.
 
 ## Regras Invioláveis
 - A squad NÃO implementa nada com lacunas — você é a última linha de defesa antes do planejamento.

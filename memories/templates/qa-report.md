@@ -18,6 +18,10 @@
 <!-- [D1][SevN] descrição — arquivo:linha — como reproduzir. Escala Sev1–4: agents/qa-specialist.md. -->
 - nenhum
 
+## Oportunidades de Melhoria (Insumo Compound)
+<!-- Obrigatório observar ao menos 1 oportunidade de melhoria/prevenção para o projeto (ex.: threshold de cobertura, regra de teste/lint, automação). Se o usuário aprovar, a skill compound transforma em guardrail determinístico no fim do ciclo. -->
+- **[OM-QA-1]** <descrição da oportunidade> → **Guardrail sugerido:** <regra/config/script determinístico> · **Decisão do usuário:** [ ] Aprovada | [ ] Rejeitada | [ ] Pendente
+
 ## Critérios de Saída
 - [ ] Todos os CAs do DoD verificados individualmente
 - [ ] Suíte completa executada e verde (ou justificativa escrita: projeto sem framework de teste → verificação mínima viável descrita em Execução)

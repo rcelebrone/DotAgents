@@ -73,8 +73,8 @@
 | Arquivo | Mudança |
 |---|---|
 
-## Decisões Técnicas
-<!-- Decisões locais da task + ponteiros para ADRs (docs/adr/NNN-*.md) e consultas ao Architect. -->
+## Decisões Técnicas e Consolidações Autônomas
+<!-- Decisões locais da task, ponteiros para ADRs (docs/adr/NNN-*.md), consultas ao Architect e consolidações autônomas de boas práticas evidentes (ex.: normalização de libs duplicadas pelo Developer) que a skill compound transformará em guardrail determinístico no fim do ciclo. -->
 - ...
 
 ## Log

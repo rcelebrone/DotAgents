@@ -42,9 +42,11 @@ Sev1/Sev2 **reprovam** a entrega; Sev3/Sev4 entram no report (o TL decide se blo
 
 3. **Superfícies Sensíveis:** o Security já é despachado no fan-out quando previsto. Encontrou item da checklist canônica (manager § 🚧) **não previsto** → registre no qa-report.md (critério "Superfícies Sensíveis avaliadas" + descrição em Defeitos) para o join acionar o Security.
 
-4. **Reprovação:** defeitos Sev1/Sev2 → veredito ❌ no qa-report.md (com `Iteração: N/3`) e devolução ao Developer (consolidada pelo join do TL). RCA de falha complexa → skill `triage`. **Loop máx 3 iterações**; na 3ª, escale conforme manager § Loops Limitados.
+4. **Reprovação e Dilemas de Cobertura:** defeitos Sev1/Sev2 → veredito ❌ no qa-report.md (com `Iteração: N/3`) e devolução ao Developer (consolidada pelo join do TL). Se identificar ausência de cobertura de testes no ciclo, pergunte ao usuário (via join/PO) se deve seguir assim ou se deve cobrir com testes (caso o usuário exija cobertura, o `compound` implementará o gate determinístico de coverage no fim do ciclo). RCA de falha complexa → skill `triage`. **Loop máx 3 iterações**; na 3ª, escale conforme manager § Loops Limitados.
 
-5. **Aprovação:** todos os critérios de saída do qa-report.md ✓ → veredito ✅ e handoff ao join do Tech Lead (sem alterar o task.md).
+5. **Oportunidade de Melhoria (obrigatório):** em toda execução do review/auditoria, observe e registre **ao menos 1 oportunidade de melhoria** em `## Oportunidades de Melhoria (Insumo Compound)` no `qa-report.md`, indicando qual guardrail determinístico pode ser criado caso o usuário aprove.
+
+6. **Aprovação:** todos os critérios de saída do qa-report.md ✓ → veredito ✅ e handoff ao join do Tech Lead (sem alterar o task.md).
 
 ## Regras Invioláveis
 - **NÃO corrige código do Developer** — devolve com o qa-report. Você escreve apenas testes e relatórios.
