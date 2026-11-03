@@ -29,9 +29,9 @@ A squad vive em `{{AGENTS_ROOT}}/` (após instalação). Referências absolutas 
 | Personas (Agentes) | `{{AGENTS_ROOT}}/agents/<persona>.md` |
 | Skills | `{{AGENTS_ROOT}}/skills/<skill>/SKILL.md` |
 | Workflows (atalhos de entrada) | `{{AGENTS_ROOT}}/commands/dot-agent-*.md` |
-| Memórias vivas | `memories/business.md` · `memories/architecture.md` · `memories/guidelines.md` |
-| Memória fragmentada | `memories/implementations/` (índice: `INDEX.md`) |
-| Templates canônicos | `memories/templates/` (`task.md`, `qa-report.md`, `review.md`) |
+| Memórias vivas (Hubs raiz) | `memories/business.md` · `memories/architecture.md` · `memories/guidelines.md` |
+| Rede Neural de Memórias (Nós Sinápticos) | `memories/implementations/*.md` (índice e grafo: `INDEX.md`, com headers YAML e `connections`) |
+| Templates canônicos | `memories/templates/` (`task.md`, `qa-report.md`, `review.md`, `memory-node.md`) |
 | Task ativa | `docs/todo/<NNN-slug>/task.md` (+ `qa-report.md`, `review.md`, `security-review.md`) |
 | Tasks concluídas | `docs/done/<NNN-slug>/` |
 | ADRs | `docs/adr/NNN-titulo-kebab.md` |
@@ -262,7 +262,7 @@ O detalhe operacional de cada persona vive no arquivo dela (`{{AGENTS_ROOT}}/age
 |---|---|---|
 | 📋 Product Owner | roteamento Feature/Ambíguo · validação final pós-Ops | feature-flow · task-tracker (leitura) · squad-visualizer |
 | 🏛️ Architect | liberação do PO · consulta pontual do TL | guard · refactor · perf-audit · ast-validator |
-| 👑 Tech Lead | triage de bug/hotfix · planejamento pós-Architect · review no fan-out `em-verificacao` · join da verificação · compound pós-entrega | feature-flow · triage · code-review · compound · doc-crafter · task-tracker · linter-enforcer · coverage-gate · ast-validator · dependency-lock · semantic-commit-checker · state-checkpoint |
+| 👑 Tech Lead | triage de bug/hotfix · planejamento pós-Architect · review no fan-out `em-verificacao` · join da verificação · compound pós-entrega | feature-flow · triage · code-review · compound · doc-crafter · task-tracker · squad-visualizer · linter-enforcer · coverage-gate · ast-validator · dependency-lock · semantic-commit-checker · state-checkpoint |
 | 💻 Developer | checklist com Status `planejada` (grupos paralelos → subagentes) | test-scaffold · refactor · doc-crafter · task-tracker (leitura) · linter-enforcer · coverage-gate · ast-validator · state-checkpoint |
 | 🧪 QA Specialist | fan-out de verificação (`em-verificacao`) | triage · test-scaffold · coverage-gate · linter-enforcer |
 | 🔒 Security | fan-out de verificação com Superfície Sensível · threat modeling · demanda direta | security-audit · guard · infrastructure · dependency-lock |
@@ -313,8 +313,9 @@ A squad usa o tom configurado em `memories/guidelines.md § Personalidade e Tom 
 
 ---
 
-## 🧭 Agnosticismo e Memória Viva
+## 🧭 Agnosticismo e Memória Sináptica (Cérebro do Projeto)
 
 - **Personas e Skills são agnósticas**: nenhum arquivo em `{{AGENTS_ROOT}}/agents/` ou `{{AGENTS_ROOT}}/skills/` contém regra específica de produto, linguagem, framework ou modelo de IA.
-- **Regras de domínio** vivem em `memories/business.md`; **decisões de arquitetura e NFRs** em `memories/architecture.md`; **convenções e antipadrões** em `memories/guidelines.md`; detalhes pontuais em `memories/implementations/` (índice em `INDEX.md`).
-- **Memória NÃO é agnóstica**: nasce em branco e a squad a alimenta a cada ciclo (skill `compound`), com entradas datadas e proveniência de task.
+- **Arquitetura de Memória em Grafo (Otimização de Tokens):** para evitar arquivos monolíticos que desperdiçam janela de contexto, `memories/business.md`, `memories/architecture.md` e `memories/guidelines.md` funcionam apenas como **Hubs Raiz enxutos** (~50–100 linhas). Os aprendizados de cada ciclo vivem em **pequenos arquivos interconectados (Nós Atômicos)** dentro de `memories/implementations/<dominio>-<assunto>.md`, cada um com um **Header Semântico YAML** (`summary`, `when_to_read`, `connections`, `harness`) e indexados em `memories/implementations/INDEX.md`.
+- **Leitura Seletiva por Headers e Sinapses:** os agentes consultam primeiro `INDEX.md` e os headers YAML dos arquivos relevantes, lendo apenas os nós do assunto tocado e navegando pelas conexões sinápticas (`connections`) quando necessário.
+- **Memória e Harness NÃO são agnósticos**: nascem em branco e a squad os alimenta a cada ciclo (skill `compound`), gerando guardrails determinísticos executáveis + nós de memória datados e interconectados.

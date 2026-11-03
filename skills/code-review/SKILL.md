@@ -15,10 +15,10 @@ description: Revisão holística pré-commit (estilo PR Review). Valida o diff c
   - Projeto sem suíte → justificativa escrita no qa-report com a verificação mínima viável executada.
   - Superfície sensível tocada → `security-review.md` presente, com Critical/High mitigados ou aceitos pelo procedimento único (manager § 🚧 Aceite de Risco).
 
-## 1. Coleta de Contexto
+## 1. Coleta Seletiva de Contexto (Memória Sináptica)
 - `docs/todo/<NNN-slug>/task.md` (spec, DoD, checklist, decisões, § Evidências do Developer).
-- As 3 memórias: `memories/guidelines.md`, `memories/architecture.md`, `memories/business.md`.
-- `memories/implementations/INDEX.md` → fragmentos do domínio tocado, se houver.
+- As 3 memórias raiz enxutas: `memories/guidelines.md`, `memories/architecture.md`, `memories/business.md`.
+- `memories/implementations/INDEX.md` → identifique os nós de memória do domínio tocado, leia seus **Headers Semânticos YAML** (`when_to_read`, `connections`, `harness`) e carregue apenas os nós pertinentes e suas conexões diretas (evitando leitura desnecessária de toda a pasta).
 
 ## 2. Diff Analysis
 - Analisar as mudanças da branch/ciclo (`git diff`), mapeando os arquivos alterados vs § Arquivos Alterados da task.

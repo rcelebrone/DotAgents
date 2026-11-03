@@ -42,7 +42,7 @@ O instalador é **idempotente**: re-rodar atualiza os artefatos da squad, preser
 | Roteamento raiz | bloco gerido em `AGENTS.md` | bloco gerido em `CLAUDE.md` (com import `@.claude/commands/manager.md`) | bloco gerido em `AGENTS.md` |
 | Subagentes | nativos (`subagent: true`) | nativos (`.claude/agents/`) | Persona Shift (ou nativos com `--cursor-native`) |
 | Enforcement | `.agents/hooks.json` (PreToolUse + PreInvocation) | `.claude/settings.json` (PreToolUse + UserPromptSubmit) | `.cursor/hooks.json` (preToolUse + sessionStart) |
-| Memória viva | `memories/` na raiz do projeto (compartilhada entre ferramentas) | idem | idem |
+| Memória viva (Cérebro Sináptico) | `memories/` na raiz do projeto (hubs raiz enxutos + rede de nós atômicos interconectados em `memories/implementations/` com headers YAML e `connections`) | idem | idem |
 
 O frontmatter dos agentes é **traduzido na instalação** para o formato de cada ferramenta (nomes de tools, valores de `model`) — os arquivos-fonte permanecem agnósticos.
 
@@ -117,8 +117,8 @@ A fundação é o **protocolo por artefatos** (agnóstico): specs, relatórios d
 
 ## 📁 Estrutura pós-instalação
 
-- `<raiz-da-ferramenta>/agents/` — personas · `skills/` — habilidades executáveis (21 skills, com guardrails determinísticos) · `commands/` — Manager e atalhos · `hooks/` — gate de enforcement, lembrete e commit checker (`dotagents-gate.sh`, `dotagents-remind.sh`, `dotagents-commit-check.sh`)
-- `memories/` (raiz do projeto) — memória viva (business, architecture, guidelines, implementations/ + templates canônicos)
+- `<raiz-da-ferramenta>/agents/` — personas · `skills/` — habilidades executáveis (21 skills, incluindo guardrails determinísticos, `compound` de Harness + Memória Sináptica e `squad-visualizer` com o grafo do cérebro de memórias) · `commands/` — Manager e atalhos · `hooks/` — gate de enforcement, lembrete e commit checker (`dotagents-gate.sh`, `dotagents-remind.sh`, `dotagents-commit-check.sh`)
+- `memories/` (raiz do projeto) — **Cérebro Sináptico de Memória Viva**: 3 hubs raiz enxutos (`business.md`, `architecture.md`, `guidelines.md`), Mapa Sináptico (`implementations/INDEX.md`), nós atômicos interconectados com headers semânticos YAML (`implementations/*.md`) + templates canônicos (`task.md`, `qa-report.md`, `review.md`, `memory-node.md`)
 - `docs/todo/` e `docs/done/` — tasks com artefatos de gate · `docs/adr/` — decisões arquiteturais
 
 ## 🔄 Atualização e desinstalação

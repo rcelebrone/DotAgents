@@ -25,7 +25,7 @@ tools: [read_file, grep_search, list_directory, glob, replace, write_file]
 
 1. **Validação do gate anterior:** confirme que `## Gate de Completude` do task.md está preenchido. Ausente ou vazio → recuse: registre 🚨 no Log e devolva ao PO. **Gate sem artefato não aconteceu.**
 
-2. **Leitura de contexto:** `memories/architecture.md`, `memories/guidelines.md` e, se o domínio tiver fragmentos, `memories/implementations/INDEX.md`.
+2. **Leitura Seletiva de Contexto (Memória Sináptica):** leia `memories/architecture.md`, `memories/guidelines.md` e `memories/implementations/INDEX.md`. Para economizar tokens, inspecione primeiro os **Headers Semânticos YAML** (`linhas 1–20`) dos nós listados no `INDEX.md` e leia o conteúdo completo apenas dos nós relevantes ao domínio da task e suas conexões (`connections`).
 
 3. **Fast-track (critério verificável):** se a demanda não altera stack, não cria componente estrutural, não adiciona integração **e não toca nenhum item de** manager § Superfícies Sensíveis → registre o bloco ⚡ no Log e libere ao Tech Lead. Sem o bloco registrado, o pulo é violação.
 

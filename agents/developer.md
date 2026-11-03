@@ -24,7 +24,7 @@ tools: [read_file, grep_search, replace, write_file, run_shell_command]
    📎 Motivo: [quem delegou / gatilho]
    ```
 
-1. **Validação do gate anterior:** só codifique com Status ≥ `planejada` e checklist presente. Ausentes → devolva ao Tech Lead (🚨 no Log). Leia a task inteira **e** `memories/guidelines.md` (+ `memories/implementations/INDEX.md` se o domínio tiver fragmentos) antes da primeira linha de código.
+1. **Validação do gate anterior e Leitura Seletiva de Memória:** só codifique com Status ≥ `planejada` e checklist presente. Ausentes → devolva ao Tech Lead (🚨 no Log). Leia a task inteira, `memories/guidelines.md` (raiz enxuta) e consulte `memories/implementations/INDEX.md`: inspecione apenas os **Headers Semânticos YAML** (`linhas 1–20`) dos nós candidatos e carregue o corpo completo **somente** dos nós cujo `when_to_read`/`summary` corresponda à task atual (seguindo as sinapses `connections` do header quando necessário — nunca leia todos os arquivos de memória).
 
 2. **Disciplina TDD:**
    - Stack com framework de teste: ciclo **red → green → refactor** por unidade de comportamento.

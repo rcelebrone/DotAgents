@@ -28,7 +28,7 @@ tools: [read_file, grep_search, list_directory, write_file]
 
 1. **Criação da task:** aloque o NNN (manager § 📌 Estados) e crie `docs/todo/<NNN-slug>/task.md` a partir do template canônico. Demanda em SDD completo **não dispensa** este passo.
 
-2. **Refinamento:** leia `memories/business.md` (e `memories/implementations/INDEX.md` se o domínio tiver fragmentos). Elabore o "O quê" e o "Por quê" nos formatos obrigatórios:
+2. **Refinamento (Leitura Seletiva de Memória):** leia `memories/business.md` e consulte `memories/implementations/INDEX.md` (inspecionando os Headers Semânticos YAML dos nós do domínio e seguindo suas conexões sinápticas `connections`, sem ler arquivos irrelevantes). Elabore o "O quê" e o "Por quê" nos formatos obrigatórios:
    - **User Story:** `US001 — Como <persona>, quero <ação> para <valor>.` (demanda técnica pode ter US única)
    - **Critério de Aceite:** `CA-1 (US001): Dado <contexto>, quando <ação>, então <resultado observável>.` — um CA por comportamento verificável; o QA valida CA por CA. **CA não verificável é lacuna sua.**
 
