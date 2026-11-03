@@ -30,9 +30,9 @@ description: Revisão holística pré-commit (estilo PR Review). Valida o diff c
 - **Negócio:** regras conforme `business.md`, glossário de domínio respeitado, permissões corretas?
 - **Higiene:** código morto, imports não usados, funções gigantes (complexidade ciclomática), duplicação, código de debug, segredos.
 
-## 4. Veredito (escrito em review.md)
-Preencher o template canônico: tabela de conformidade, veredito **✅ APPROVED | 🔁 CHANGES REQUESTED** e ressalvas/aceites ativos. Como gate paralelo, **não altere o task.md**.
-- **Join (TL, com todos os artefatos do fan-out):** preencher § Join do review.md. Tudo ✅ → Status `aprovada-para-entrega`, checkboxes de Gate e delegação ao Ops. Qualquer ❌ → devolução consolidada ao Developer; na volta, re-despachar em paralelo só os gates cujo escopo o delta tocou (manager § 🔀).
+## 4. Veredito e Oportunidades de Melhoria (escrito em review.md)
+Preencher o template canônico: tabela de conformidade, veredito **✅ APPROVED | 🔁 CHANGES REQUESTED**, ressalvas/aceites ativos e **obrigatoriamente ao menos 1 oportunidade de melhoria** em `## Oportunidades de Melhoria (Insumo Compound)` (indicando qual guardrail determinístico pode preveni-la nos próximos ciclos). Como gate paralelo, **não altere o task.md**.
+- **Join (TL, com todos os artefatos do fan-out):** preencher § Join do review.md e consolidar as oportunidades de melhoria do QA, Security e Review. Tudo ✅ → Status `aprovada-para-entrega`, checkboxes de Gate e delegação ao Ops. Qualquer ❌ → devolução consolidada ao Developer; na volta, re-despachar em paralelo só os gates cujo escopo o delta tocou (manager § 🔀).
 
 ## 5. Loop Limitado
 Máx **3 iterações** TL⇄Developer (campo `Iteração: N/3` no review.md). Na 3ª reprovação: escalar ao usuário via PO — opções do manager § Loops Limitados.

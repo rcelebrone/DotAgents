@@ -154,10 +154,13 @@ Ao receber qualquer solicitação: analise a intenção (texto + contexto da con
       ▼
 🚀 Ops ── [S/N] · changelog + versão + commit · deploy remoto só com condição dupla (§ 🚧)
       ▼
-📋 Product Owner (Validação Final) ── DoD vs entrega · resumo ao usuário (inclui premissas
-      │                               assumidas + aceites de risco) · Status `entregue`
+📋 Product Owner (Validação Final) ── DoD vs entrega · resumo ao usuário (premissas, aceites de risco
+      │                               e oportunidades de melhoria p/ aprovação) · Status `entregue`
       ▼
-👑 Tech Lead ── compound: consolida aprendizados nas memórias
+👑 Tech Lead ── compound (obrigatório): transforma feedbacks do usuário, decisões de QA/cobertura,
+                melhorias aprovadas e consolidações autônomas em guardrails determinísticos (Harness)
+                + memórias vivas (sugestões rejeitadas fecham o ciclo sem loop) · arquiva em docs/done/
+                · garante branch isolada baseada na principal e gera/atualiza o Pull Request (PR)
 ```
 
 ---
@@ -200,8 +203,8 @@ Cada etapa **valida o artefato da etapa anterior antes de agir** e produz o seu:
 | 👑 TL (review, fan-out) | `em-verificacao` + T00x concluídos + § Evidências | **review.md** | join do TL |
 | 👑 TL (join) | todos os artefatos do fan-out | Gates `[x]` + Status `aprovada-para-entrega` OU devolução consolidada | Ops (S/N) + PO (DoD) |
 | 🚀 Ops | Status `aprovada-para-entrega` + review APPROVED | changelog + versão + commit + resumo | PO |
-| 📋 PO (validação final) | entrega do Ops | DoD `[x]` + Status `entregue` + resumo ao usuário | usuário |
-| 👑 TL (compound) | Status `entregue` | memórias atualizadas | — |
+| 📋 PO (validação final) | entrega do Ops | DoD `[x]` + Status `entregue` + resumo ao usuário (+ decisão sobre melhorias) | usuário / TL |
+| 👑 TL (compound) | Status `entregue` | guardrails determinísticos (Harness) + memórias atualizadas + task em `docs/done/` | CLI exit code 0 |
 
 ### Gate de Completude (PO)
 O gate só existe quando as 5 respostas estiverem **ESCRITAS** na seção `## Gate de Completude` do task.md — resposta apenas no chat não conta. O Architect recusa a task (violação no Log) se a seção estiver ausente ou vazia.
@@ -259,7 +262,7 @@ O detalhe operacional de cada persona vive no arquivo dela (`{{AGENTS_ROOT}}/age
 |---|---|---|
 | 📋 Product Owner | roteamento Feature/Ambíguo · validação final pós-Ops | feature-flow · task-tracker (leitura) · squad-visualizer |
 | 🏛️ Architect | liberação do PO · consulta pontual do TL | guard · refactor · perf-audit · ast-validator |
-| 👑 Tech Lead | triage de bug/hotfix · planejamento pós-Architect · review no fan-out `em-verificacao` · join da verificação · compound pós-entrega | feature-flow · triage · code-review · compound · doc-crafter · linter-enforcer · coverage-gate · ast-validator · state-checkpoint |
+| 👑 Tech Lead | triage de bug/hotfix · planejamento pós-Architect · review no fan-out `em-verificacao` · join da verificação · compound pós-entrega | feature-flow · triage · code-review · compound · doc-crafter · task-tracker · linter-enforcer · coverage-gate · ast-validator · dependency-lock · semantic-commit-checker · state-checkpoint |
 | 💻 Developer | checklist com Status `planejada` (grupos paralelos → subagentes) | test-scaffold · refactor · doc-crafter · task-tracker (leitura) · linter-enforcer · coverage-gate · ast-validator · state-checkpoint |
 | 🧪 QA Specialist | fan-out de verificação (`em-verificacao`) | triage · test-scaffold · coverage-gate · linter-enforcer |
 | 🔒 Security | fan-out de verificação com Superfície Sensível · threat modeling · demanda direta | security-audit · guard · infrastructure · dependency-lock |

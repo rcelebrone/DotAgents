@@ -25,6 +25,10 @@
 <!-- Copiar de security-review.md § Aceites de Risco e task.md § Riscos Aceitos, se houver. -->
 - nenhum
 
+## Oportunidades de Melhoria (Insumo Compound)
+<!-- Obrigatório observar ao menos 1 oportunidade de melhoria para o harness do projeto (ex.: regra de linter, consolidação de lib, AST check) + consolidar as oportunidades trazidas por QA/Security. Se aprovadas pelo usuário, a skill compound gera guardrails determinísticos no fim do ciclo. -->
+- **[OM-REV-1]** <descrição da oportunidade> → **Guardrail sugerido:** <regra/config/script determinístico> · **Decisão do usuário:** [ ] Aprovada | [ ] Rejeitada | [ ] Pendente
+
 ## Join da Verificação (preenchido pelo TL ao consolidar)
 <!-- Pré-condição de entrega: sem evidência real de teste é PROIBIDO definir aprovada-para-entrega. -->
 - `qa-report.md` presente com veredito APROVADO: ✅/❌

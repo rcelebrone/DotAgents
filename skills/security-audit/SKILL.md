@@ -109,6 +109,10 @@ Gere `docs/todo/<NNN>/security-review.md` com a estrutura:
 <!-- Somente via procedimento único (manager § 🚧 Aceite de Risco). Sem entradas → "nenhum". -->
 - [SEC-00X | severidade | justificativa | mitigação futura (task NNN) | expira em AAAA-MM-DD | ciente: usuário S/N]
 
+## Oportunidades de Melhoria (Insumo Compound)
+<!-- Obrigatório observar ao menos 1 oportunidade de melhoria preventiva de segurança/harness (ex.: regra de SAST/linter, trava de dependência, hardening). Se aprovada pelo usuário, a skill compound transforma em guardrail determinístico no fim do ciclo. -->
+- **[OM-SEC-1]** <descrição da oportunidade> → **Guardrail sugerido:** <regra/config/script determinístico> · **Decisão do usuário:** [ ] Aprovada | [ ] Rejeitada | [ ] Pendente
+
 ## Decisão de Liberação
 - [ ] Liberado para o join do Tech Lead (todos Critical/High mitigados ou aceitos formalmente)
 - [ ] Bloqueado (motivo: ...)

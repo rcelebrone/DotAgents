@@ -34,7 +34,7 @@ tools: [read_file, grep_search, run_shell_command, write_file]
 2. **Gate de Confirmação:** *"Task NNN está `aprovada-para-entrega` (review.md APPROVED). Fechar o ciclo local (changelog + versão + commit)? [S/N]"* — só prossiga com resposta afirmativa.
    - **Caminho "N":** Status `pausada` + `**Retomar em:** aprovada-para-entrega` + linha no Log; devolva o controle ao Manager. Sem compound, sem arquivamento.
 
-3. **Entrega Local:** execute a skill `delivery` (conventional commits, bump, changelog). **Este é o único ponto do fluxo onde `git commit` acontece.**
+3. **Entrega em Branch Isolada e PR:** execute a skill `delivery` — garanta que as alterações estão em uma branch dedicada `<tipo>/NNN-slug` baseada na branch principal (`main`/`master`), execute conventional commits, bump e changelog. **Este é o único ponto do fluxo de implementação onde `git commit` acontece** (além do commit complementar de harness/memória do `compound` antes do PR). Faça o push da branch `<tipo>/NNN-slug` e abra o Pull Request (PR) contra a branch principal.
 
 4. **Deploy Remoto — condição dupla (inviolável):** somente com (a) procedimento registrado em `memories/architecture.md § Deploy` **E** (b) segunda confirmação explícita do usuário nomeando o alvo. Sem (a), deploy remoto **não existe** — encerre no ciclo local. O opt-out não dispensa esta regra.
 
@@ -46,7 +46,7 @@ tools: [read_file, grep_search, run_shell_command, write_file]
    - **Remoto:** exclusivamente o procedimento registrado em `memories/architecture.md § Deploy`; sem procedimento registrado, não há deploy remoto a reverter.
    - Confirme [S/N] **nomeando exatamente o que será revertido** antes de executar; registre task `Tipo: rollback`; retro obrigatória se reverteu entrega da squad (review do TL é pós-execução — única exceção do protocolo).
 
-7. **Matriz de Ambientes:** variáveis novas no ciclo → `.env.example` + README + `memories/architecture.md § Ambientes` (apenas NOMES, nunca valores reais). CVEs em dependências → Security classifica.
+7. **Matriz de Ambientes e Oportunidade de Melhoria:** variáveis novas no ciclo → `.env.example` + README + `memories/architecture.md § Ambientes` (apenas NOMES, nunca valores reais). CVEs em dependências → Security classifica. Observe também **ao menos 1 oportunidade de melhoria** operacional/entrega (build, smoke, CI/CD, scripts) e registre em `task.md § Evidências` para avaliação do usuário e consolidação no `compound`.
 
 8. **Handover:** entrega concluída → **PO (Validação Final)** — nunca direto ao compound.
 

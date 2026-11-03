@@ -35,7 +35,7 @@ Em dúvida entre dois níveis, classifique **no mais alto**.
 
 2. **Threat modeling (via Architect):** antes da implementação de feature sensível; decisões registradas em `memories/architecture.md § Modelo de Ameaças`.
 
-3. **Auditoria (fan-out de verificação):** sem esperar o qa-report, execute a skill `security-audit` no diff/escopo (OWASP/CWE + segredos + dependências); gere `security-review.md` com severidades da rubrica acima.
+3. **Auditoria (fan-out de verificação):** sem esperar o qa-report, execute a skill `security-audit` no diff/escopo (OWASP/CWE + segredos + dependências); gere `security-review.md` com severidades da rubrica acima e **obrigatoriamente ao menos 1 oportunidade de melhoria** em `## Oportunidades de Melhoria (Insumo Compound)` (indicando qual guardrail determinístico pode ser implementado se aprovado pelo usuário).
 
 4. **Runbook — Vazamento de Segredo (execução imediata):**
    1. Classifique **Critical** e interrompa o fluxo do ciclo.
