@@ -37,12 +37,12 @@ O instalador é **idempotente**: re-rodar atualiza os artefatos da squad, preser
 ### O que é instalado, por ferramenta
 
 | | Antigravity | Claude Code | Cursor | Codex |
-|---|---|---|---|
+|---|---|---|---|---|
 | Artefatos | `.agents/{agents,skills,commands}` | `.claude/{agents,skills,commands}` | `.cursor/{agents,skills,commands}` + regra sempre-ativa em `.cursor/rules/` | `.codex/{agents,commands,hooks}` + skills em `.agents/skills/` |
 | Roteamento raiz | bloco gerido em `AGENTS.md` | bloco gerido em `CLAUDE.md` (com import `@.claude/commands/manager.md`) | bloco gerido em `AGENTS.md` | bloco gerido em `AGENTS.md` |
 | Subagentes | nativos (`subagent: true`) | nativos (`.claude/agents/`) | Persona Shift (ou nativos com `--cursor-native`) | nativos (`.codex/agents/*.toml`) |
 | Enforcement | `.agents/hooks.json` (PreToolUse + PreInvocation) | `.claude/settings.json` (PreToolUse + UserPromptSubmit) | `.cursor/hooks.json` (preToolUse + sessionStart) | `.codex/hooks.json` (PreToolUse + UserPromptSubmit) |
-| Memória viva (Cérebro Sináptico) | `memories/` na raiz do projeto | idem | idem | idem |
+| Memória viva (Cérebro Sináptico) | `memories/` na raiz do projeto (hubs raiz enxutos + rede de nós atômicos interconectados em `memories/implementations/` com headers YAML e `connections`) | idem | idem | idem |
 
 O frontmatter dos agentes é **traduzido na instalação** para o formato de cada ferramenta (nomes de tools, valores de `model`) — os arquivos-fonte permanecem agnósticos.
 
@@ -88,7 +88,7 @@ Demanda → 🧠 Manager (classifica e roteia)
 A fundação é o **protocolo por artefatos** (agnóstico): specs, relatórios de QA, review e security são arquivos verificáveis — o Manager exige cada um no seu gate. Sobre ela, **3 camadas técnicas**:
 
 1. **Bloco raiz gerido no TOPO** do `CLAUDE.md`/`AGENTS.md`, com cláusula explícita de precedência: o protocolo vale **também dentro** de comandos e modos nativos da ferramenta (`/plan` etc.).
-2. **Lembrete por prompt** (`dotagents-remind.sh`): reinjeta o protocolo + o status da task ativa a cada interação — Claude via `UserPromptSubmit`, **Antigravity via `PreInvocation` (antes de CADA chamada ao modelo, inclusive dentro do `/plan`)**, Cursor via `sessionStart` + regra `alwaysApply`.
+2. **Lembrete por prompt** (`dotagents-remind.sh`): reinjeta o protocolo + o status da task ativa a cada interação — Claude e Codex via `UserPromptSubmit`, **Antigravity via `PreInvocation` (antes de CADA chamada ao modelo, inclusive dentro do `/plan`)**, Cursor via `sessionStart` + regra `alwaysApply`.
 3. **Gate de escrita** (`dotagents-gate.sh`, fail-open): nega edição de **código** quando não existe task ativa em `docs/todo/` — docs, memórias e configs da squad nunca são bloqueados.
 4. **Guardrails Determinísticos (Portões Duros Pré-Probabilísticos & Compounding Engineering):** ferramentas de linha de comando e validações rígidas que bloqueiam alterações antes de análises subjetivas de LLM — e são retroalimentadas ao final de cada ciclo pela skill `compound` (construção contínua do **Harness** a partir de feedbacks do usuário, decisões de cobertura, melhorias aprovadas nos reviews e consolidações autônomas):
    - `linter-enforcer`: validação sintática estrita (ESLint/Prettier/Ruff) que barra o diff antes do `code-review`.
@@ -125,7 +125,7 @@ A fundação é o **protocolo por artefatos** (agnóstico): specs, relatórios d
 ## 🔄 Atualização e desinstalação
 
 - **Atualizar:** `git pull` na pasta `DotAgents/` + re-rodar o `install.sh` (idempotente; memórias preservadas).
-- **Desinstalar:** remova o diretório da ferramenta (`.claude/`, `.agents/`, `.cursor/` ou `.codex/`), o bloco entre `<!-- dotagents:begin -->` e `<!-- dotagents:end -->` no arquivo raiz, e — se desejar — `memories/` e `docs/todo|done/`.
+- **Desinstalar:** remova o diretório da ferramenta (`.claude/`, `.agents/`, `.cursor/` ou `.codex/`), as skills `.agents/skills/dotagents-*` no caso do Codex, o bloco entre `<!-- dotagents:begin -->` e `<!-- dotagents:end -->` no arquivo raiz, e — se desejar — `memories/` e `docs/todo|done/`.
 
 ## 📄 Licença
 

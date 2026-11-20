@@ -23,12 +23,39 @@ get_codex_files() {
   if command -v python3 >/dev/null 2>&1; then
     printf '%s' "$IN" | python3 -c 'import json,re,sys
 try:
+ import shlex
  d=json.load(sys.stdin); ti=d.get("tool_input") or {}; cmd=ti.get("command", "")
  if d.get("tool_name") == "apply_patch" or "*** Begin Patch" in cmd:
   for line in cmd.splitlines():
    if line.startswith(("*** Update File: ", "*** Add File: ", "*** Delete File: ", "*** Move to: ")): print(line.split(": ",1)[1])
  else:
-  for value in re.findall(r"(?:^|[ ;|&])(?:tee|touch|rm|truncate)\s+([./~][^ ;|&>]*)", cmd): print(value)
+  lexer=shlex.shlex(cmd, posix=True, punctuation_chars=";&|<>")
+  lexer.whitespace_split=True; lexer.commenters=""
+  tokens=list(lexer); segment=[]
+  def paths(parts):
+   if not parts: return
+   command=parts[0].rsplit("/",1)[-1]
+   args=[]; after_options=False
+   for value in parts[1:]:
+    if value == "--": after_options=True; continue
+    if not after_options and value.startswith("-"): continue
+    args.append(value)
+   if command in ("touch", "rm", "truncate", "tee"):
+    for value in args: print(value)
+   elif command in ("cp", "mv", "install") and args:
+    print(args[-1])
+  index=0
+  while index < len(tokens):
+   token=tokens[index]
+   if token and all(char in ";&|" for char in token):
+    paths(segment); segment=[]
+   elif ">" in token:
+    paths(segment); segment=[]
+    if index + 1 < len(tokens): print(tokens[index + 1]); index += 1
+   else:
+    segment.append(token)
+   index += 1
+  paths(segment)
 except Exception: pass' 2>/dev/null
   fi
 }
@@ -39,10 +66,10 @@ get_ws() {
     printf '%s' "$IN" | sed -n 's/.*"workspacePaths"[[:space:]]*:[[:space:]]*\[[[:space:]]*"\([^"]*\)".*/\1/p' 2>/dev/null
   fi
 }
-FILE=$(get_file) || exit 0
 if [ "$TARGET" = codex ]; then
   FILES=$(get_codex_files)
 else
+  FILE=$(get_file) || exit 0
   [ -z "$FILE" ] && exit 0
   FILES="$FILE"
 fi
@@ -58,12 +85,18 @@ fi
 [ -f "$ROOT/docs/todo/.dotagents-bypass" ] && exit 0
 # Allowlist: infra da squad, docs e memórias nunca bloqueiam
 UNSAFE=0
+OLD_IFS=$IFS
+IFS='
+'
+set -f
 for FILE in $FILES; do
   case "$FILE" in
     *.md|*/docs/*|docs/*|*/memories/*|memories/*|*/.claude/*|.claude/*|*/.agents/*|.agents/*|*/.cursor/*|.cursor/*|*/.codex/*|.codex/*|*CHANGELOG*|*.env.example) continue ;;
     *) UNSAFE=1 ;;
   esac
 done
+set +f
+IFS=$OLD_IFS
 [ "$UNSAFE" -eq 0 ] && exit 0
 # Task ativa (status de trabalho ou compound pós-entrega) => permite
 if grep -lE '^\*\*Status:\*\*.*(planejada|em-implementacao|em-verificacao|em-qa|em-security|em-review|aprovada-para-entrega|entregue)' "$ROOT"/docs/todo/*/task.md >/dev/null 2>&1; then

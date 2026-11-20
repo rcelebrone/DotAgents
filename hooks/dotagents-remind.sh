@@ -19,7 +19,7 @@ if [ -n "$F" ]; then
 fi
 case "$TARGET" in
   codex)
-    printf '{"hookSpecificOutput":{"hookEventName":"UserPromptSubmit","additionalContext":"[DotAgents] Protocolo ativo em %s/commands/manager.md. Classifique e crie/retome task antes de editar código. Estado: %s. Use personas em %s/agents e skills em .agents/skills."}}\n' "$AR" "$TASK" "$AR"
+    printf '{"hookSpecificOutput":{"hookEventName":"UserPromptSubmit","additionalContext":"[DotAgents] Protocolo ativo em %s/commands/manager.md. 1) Classifique, anuncie a persona (📢) e garanta o task.md ANTES de agir. 2) Vale DENTRO de comandos e modos nativos (/plan): planejar = personas produzindo o task.md; ao sair do modo somente-leitura, materialize-o antes de editar código. 3) Nova demanda sem relação com o que esta sessão já tratou? Aplique manager § 🧹 e use /new. 4) Estado: %s. Use personas em %s/agents e skills em .agents/skills."}}\n' "$AR" "$TASK" "$AR"
     ;;
   antigravity)
     # Política: emitir SEMPRE (a chamada de modelo que gera o plano é tardia no loop do /plan).

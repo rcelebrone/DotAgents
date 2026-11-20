@@ -106,10 +106,22 @@ confirm "Instalar em $DEST_DIR?" || die "Instalação cancelada."
 render_file() {
   mkdir -p "$(dirname "$2")"
   if [ "$OPTION" -eq 4 ]; then
-    sed -e "s|{{AGENTS_ROOT}}/skills/|.agents/skills/dotagents-|g" -e "s|{{AGENTS_ROOT}}|$AGENTS_ROOT|g" -e "s|{{DISPATCH_MODE}}|$DISPATCH_MODE|g" -e "s|{{RESET_CMD}}|$RESET_CMD|g" "$1" > "$2"
+    render_codex_file "$1" "$2"
   else
     sed -e "s|{{AGENTS_ROOT}}|$AGENTS_ROOT|g" -e "s|{{DISPATCH_MODE}}|$DISPATCH_MODE|g" -e "s|{{RESET_CMD}}|$RESET_CMD|g" "$1" > "$2"
   fi
+}
+
+render_codex_file() {
+  sed -E \
+    -e "s|\{\{AGENTS_ROOT\}\}/agents/([^/ ]+)\.md|$AGENTS_ROOT/agents/\1.toml|g" \
+    -e 's|\{\{AGENTS_ROOT\}\}/skills/([^/ ]+)/|.agents/skills/dotagents-\1/|g' \
+    -e "s|\{\{AGENTS_ROOT\}\}/agents/|$AGENTS_ROOT/agents/|g" \
+    -e 's|\{\{AGENTS_ROOT\}\}/skills/|.agents/skills/|g' \
+    -e "s|\{\{AGENTS_ROOT\}\}|$AGENTS_ROOT|g" \
+    -e "s|\{\{DISPATCH_MODE\}\}|$DISPATCH_MODE|g" \
+    -e "s|\{\{RESET_CMD\}\}|$RESET_CMD|g" \
+    "$1" > "$2"
 }
 
 render_tree_inplace() {
@@ -120,29 +132,57 @@ render_tree_inplace() {
 
 install_codex_skills() {
   mkdir -p "$DEST_DIR/.agents/skills"
-  local skill
+  local skill target
   for skill in "$SCRIPT_DIR"/skills/*; do
-    mkdir -p "$DEST_DIR/.agents/skills/dotagents-$(basename "$skill")"
-    cp "$skill/SKILL.md" "$DEST_DIR/.agents/skills/dotagents-$(basename "$skill")/SKILL.md"
+    [ -d "$skill" ] || continue
+    target="$DEST_DIR/.agents/skills/dotagents-$(basename "$skill")"
+    rm -rf "$target"
+    mkdir -p "$target"
+    cp -R "$skill/." "$target/"
   done
-  for skill in "$DEST_DIR"/.agents/skills/*/SKILL.md; do
+  for skill in "$DEST_DIR"/.agents/skills/dotagents-*/SKILL.md; do
     [ -f "$skill" ] || continue
-    sed -e "s|{{AGENTS_ROOT}}|$AGENTS_ROOT|g" -e "s|{{SKILLS_ROOT}}|$DEST_DIR/.agents/skills|g" -e "s|{{DISPATCH_MODE}}|$DISPATCH_MODE|g" -e "s|{{RESET_CMD}}|$RESET_CMD|g" "$skill" > "$skill.tmp" && mv "$skill.tmp" "$skill"
+    render_codex_file "$skill" "$skill.tmp" && mv "$skill.tmp" "$skill"
   done
 }
 
 install_codex_agents() {
   mkdir -p "$TARGET_DIR/agents"
-  local f name description instructions
+  local f name description body instructions output
   for f in "$SCRIPT_DIR"/agents/*.md; do
     name=$(awk -F': ' '/^name:/ {print $2; exit}' "$f")
     description=$(awk -F': ' '/^description:/ {sub(/^description: /, ""); print; exit}' "$f")
-    instructions=$(sed '1,/^---$/d; 1,/^---$/d' "$f" | sed -e "s|{{AGENTS_ROOT}}/skills/|.agents/skills/dotagents-|g" -e "s|{{AGENTS_ROOT}}|$AGENTS_ROOT|g" -e "s|{{SKILLS_ROOT}}|$DEST_DIR/.agents/skills|g" -e "s|{{DISPATCH_MODE}}|$DISPATCH_MODE|g" -e "s|{{RESET_CMD}}|$RESET_CMD|g")
-    {
-      printf 'name = "%s"\n' "$name"
-      printf 'description = "%s"\n' "$description"
-      printf 'developer_instructions = """\n%s\n"""\n' "$instructions"
-    } > "$TARGET_DIR/agents/$name.toml"
+    body=$(mktemp)
+    instructions=$(mktemp)
+    output="$TARGET_DIR/agents/$name.toml"
+    awk 'BEGIN { frontmatter = 0 } /^---$/ { frontmatter++; next } frontmatter >= 2 { print }' "$f" > "$body"
+    render_codex_file "$body" "$instructions"
+    if command -v python3 >/dev/null 2>&1; then
+      python3 - "$name" "$description" "$instructions" "$output" <<'PY'
+import json
+import pathlib
+import sys
+
+name, description, instructions_path, output_path = sys.argv[1:]
+instructions = pathlib.Path(instructions_path).read_text(encoding="utf-8")
+with open(output_path, "w", encoding="utf-8") as output:
+    output.write(f"name = {json.dumps(name, ensure_ascii=False)}\n")
+    output.write(f"description = {json.dumps(description, ensure_ascii=False)}\n")
+    output.write(f"developer_instructions = {json.dumps(instructions, ensure_ascii=False)}\n")
+PY
+    else
+      grep -q "'''" "$instructions" && die "Persona $name contém sequência incompatível com fallback TOML; instale python3."
+      name=$(printf '%s' "$name" | sed 's/\\/\\\\/g; s/"/\\"/g')
+      description=$(printf '%s' "$description" | sed 's/\\/\\\\/g; s/"/\\"/g')
+      {
+        printf 'name = "%s"\n' "$name"
+        printf 'description = "%s"\n' "$description"
+        printf "developer_instructions = '''\n"
+        cat "$instructions"
+        printf "'''\n"
+      } > "$output"
+    fi
+    rm -f "$body" "$instructions"
   done
 }
 
@@ -173,10 +213,6 @@ translate_agent() {
     3) awk '
         /^tools:/ {next}
         /^model:[ \t]*"tier:/ {print "model: inherit"; next}
-        {print}' "$1" > "$1.tmp" && mv "$1.tmp" "$1" ;;
-    4) awk '
-        /^tools:/ {next}
-        /^model:[ \t]*"tier:/ {next}
         {print}' "$1" > "$1.tmp" && mv "$1.tmp" "$1" ;;
   esac
 }
@@ -322,6 +358,13 @@ print_cursor_snippet() {
   cat <<EOF
   Adicione em $AGENTS_ROOT/hooks.json:
   {"version":1,"hooks":{"preToolUse":[{"command":"$1"}],"sessionStart":[{"command":"$2"}]}}
+EOF
+}
+
+print_codex_snippet() {
+  cat <<EOF
+  Adicione em $AGENTS_ROOT/hooks.json:
+  {"hooks":{"PreToolUse":[{"matcher":"apply_patch|Bash","hooks":[{"type":"command","command":"$1","timeout":10}]}],"UserPromptSubmit":[{"hooks":[{"type":"command","command":"$2","timeout":5}]}]}}
 EOF
 }
 
@@ -479,31 +522,32 @@ h = data.setdefault("hooks", {})
 for ev in list(h):
     if isinstance(h[ev], list):
         h[ev] = [e for e in h[ev] if "dotagents-" not in json.dumps(e)]
-        if not h[ev]: del h[ev]
+        if not h[ev]:
+            del h[ev]
 h.setdefault("preToolUse", []).append({"command": gate})
 h.setdefault("sessionStart", []).append({"command": remind})
 with open(path, "w") as f:
     json.dump(data, f, indent=2, ensure_ascii=False)
     f.write("\n")
 PY
-    [ "$rc" -eq 0 ] || print_cursor_snippet "$gate" "$remind"
-    return 0
+    if [ "$rc" -eq 0 ]; then
+      info "  ✅ Hooks mesclados em $AGENTS_ROOT/hooks.json (gate + remind)"
+    else
+      info "  ⚠️ Não foi possível mesclar $AGENTS_ROOT/hooks.json (JSON inválido?) — registre manualmente:"
+      print_cursor_snippet "$gate" "$remind"
+    fi
+  else
+    info "  ⚠️ python3 ausente e $AGENTS_ROOT/hooks.json existe — registre manualmente:"
+    print_cursor_snippet "$gate" "$remind"
   fi
-  print_cursor_snippet "$gate" "$remind"
 }
 
 merge_hooks_codex() {
   local hooksfile="$TARGET_DIR/hooks.json"
   local gate="$AGENTS_ROOT/hooks/dotagents-gate.sh codex"
   local remind="$AGENTS_ROOT/hooks/dotagents-remind.sh codex"
-  if [ -f "$hooksfile" ]; then
-    info "  ⚠️ $hooksfile já existe. Mescle manualmente os hooks abaixo para preservar hooks existentes:"
-    cat <<EOF
-  {"hooks":{"PreToolUse":[{"matcher":"apply_patch|Bash","hooks":[{"type":"command","command":"$gate","timeout":10}]}],"UserPromptSubmit":[{"hooks":[{"type":"command","command":"$remind","timeout":5}]}]}}
-EOF
-    return 0
-  fi
-  cat > "$hooksfile" <<EOF
+  if [ ! -f "$hooksfile" ]; then
+    cat > "$hooksfile" <<EOF
 {
   "hooks": {
     "PreToolUse": [{ "matcher": "apply_patch|Bash", "hooks": [{ "type": "command", "command": "$gate", "timeout": 10 }] }],
@@ -511,7 +555,50 @@ EOF
   }
 }
 EOF
-  info "  ✅ Hooks registrados em $AGENTS_ROOT/hooks.json. Revise e confie em /hooks."
+    info "  ✅ Hooks registrados em $AGENTS_ROOT/hooks.json. Revise e confie em /hooks."
+    return 0
+  fi
+  if command -v python3 >/dev/null 2>&1; then
+    local rc=0
+    python3 - "$hooksfile" "$gate" "$remind" <<'PY' || rc=$?
+import json
+import sys
+
+path, gate, remind = sys.argv[1:]
+try:
+    with open(path, encoding="utf-8") as source:
+        data = json.load(source)
+except Exception:
+    sys.exit(3)
+
+hooks = data.setdefault("hooks", {})
+for event in list(hooks):
+    entries = hooks[event]
+    if isinstance(entries, list):
+        hooks[event] = [entry for entry in entries if "dotagents-" not in json.dumps(entry)]
+        if not hooks[event]:
+            del hooks[event]
+hooks.setdefault("PreToolUse", []).append({
+    "matcher": "apply_patch|Bash",
+    "hooks": [{"type": "command", "command": gate, "timeout": 10}],
+})
+hooks.setdefault("UserPromptSubmit", []).append({
+    "hooks": [{"type": "command", "command": remind, "timeout": 5}],
+})
+with open(path, "w", encoding="utf-8") as output:
+    json.dump(data, output, indent=2, ensure_ascii=False)
+    output.write("\n")
+PY
+    if [ "$rc" -eq 0 ]; then
+      info "  ✅ Hooks mesclados em $AGENTS_ROOT/hooks.json (gate + remind)"
+    else
+      info "  ⚠️ Não foi possível mesclar $AGENTS_ROOT/hooks.json (JSON inválido?) — registre manualmente:"
+      print_codex_snippet "$gate" "$remind"
+    fi
+  else
+    info "  ⚠️ python3 ausente e $AGENTS_ROOT/hooks.json existe — registre manualmente:"
+    print_codex_snippet "$gate" "$remind"
+  fi
 }
 install_hook() {
   if [ "$NO_HOOKS" -eq 1 ]; then info "⏭️ Hooks desativados (--no-hooks)."; return 0; fi
