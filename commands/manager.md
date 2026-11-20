@@ -43,7 +43,7 @@ A squad vive em `{{AGENTS_ROOT}}/` (após instalação). Referências absolutas 
 
 **Modo ativo nesta instalação:** {{DISPATCH_MODE}} <!-- valores: subagentes | persona-shift; se o placeholder aparecer cru, opere como persona-shift -->
 
-- **subagentes** (Codex, Claude Code, Antigravity): os gates 🧪 QA, 👑 Review e 🔒 Security **DEVEM** rodar como subagentes nativos com **contexto limpo**, recebendo APENAS: o caminho do `task.md`, os caminhos dos artefatos anteriores e o diff/branch alvo — nunca o histórico do chat — e são despachados **em paralelo** (§ 🔀). Grupos paralelos do checklist também viram subagentes Developer (§ 🔀). Os demais estágios produtores (PO, Architect, TL-planejamento, Developer-join, Ops) podem usar Persona Shift na mesma sessão.
+- **subagentes** (Claude Code, Antigravity, Codex): os gates 🧪 QA, 👑 Review e 🔒 Security **DEVEM** rodar como subagentes nativos com **contexto limpo**, recebendo APENAS: o caminho do `task.md`, os caminhos dos artefatos anteriores e o diff/branch alvo — nunca o histórico do chat — e são despachados **em paralelo** (§ 🔀). Grupos paralelos do checklist também viram subagentes Developer (§ 🔀). Os demais estágios produtores (PO, Architect, TL-planejamento, Developer-join, Ops) podem usar Persona Shift na mesma sessão.
   Prompt de despacho padrão: *"Assuma `{{AGENTS_ROOT}}/agents/<agente>.md` e execute o gate <nome> da task `docs/todo/<NNN-slug>/`: leia o task.md e os artefatos, produza `<artefato>` e devolva o veredito — não altere o task.md (Status/Log são do dono do join, § 🔀)."*
 - **persona-shift** (Cursor / fallback): todas as transições via Persona Shift (adotar o papel do próximo agente na mesma sessão, sem esperar intervenção do usuário) — os gates continuam **obrigados** a produzir seus artefatos.
 

@@ -23,10 +23,10 @@ DotAgents v${DOTAGENTS_VERSION} — instalador da squad multi-agente
 Uso: install.sh --antigravity|--claude|--cursor|--codex [opções]
 
 Alvos:
-  --antigravity      Antigravity (IDE e CLI)  -> .agents/ + AGENTS.md
-  --claude           Claude Code              -> .claude/ + CLAUDE.md
-  --cursor           Cursor AI                -> .cursor/ + AGENTS.md
-  --codex            OpenAI Codex              -> .codex/ + .agents/skills/ + AGENTS.md
+  --antigravity  Antigravity (IDE e CLI)  -> .agents/ + AGENTS.md
+  --claude       Claude Code              -> .claude/ + CLAUDE.md
+  --cursor       Cursor AI                -> .cursor/ + AGENTS.md
+  --codex        OpenAI Codex             -> .codex/ + .agents/skills/ + AGENTS.md
 
 Opções:
   --dest <dir>       Diretório do projeto destino (default: diretório atual)
