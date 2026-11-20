@@ -4,8 +4,9 @@
 # Cursor: sessionStart (additional_context). FAIL-OPEN: qualquer erro => exit 0 sem output.
 TARGET="${1:-claude}"
 IN=$(cat 2>/dev/null) || IN=""
-case "$TARGET" in antigravity) AR=".agents" ;; cursor) AR=".cursor" ;; *) AR=".claude" ;; esac
+case "$TARGET" in antigravity) AR=".agents" ;; cursor) AR=".cursor" ;; codex) AR=".codex" ;; *) AR=".claude" ;; esac
 ROOT="${CLAUDE_PROJECT_DIR:-}"
+if [ "$TARGET" = codex ]; then ROOT=$(printf '%s' "$IN" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("cwd", ""))' 2>/dev/null); fi
 if [ -z "$ROOT" ]; then
   WS=$(printf '%s' "$IN" | sed -n 's/.*"workspacePaths"[[:space:]]*:[[:space:]]*\[[[:space:]]*"\([^"]*\)".*/\1/p' 2>/dev/null)
   if [ -n "$WS" ] && [ -d "$WS" ]; then ROOT="$WS"; else ROOT="$PWD"; fi
@@ -17,6 +18,9 @@ if [ -n "$F" ]; then
   TASK="task ativa: $(basename "$(dirname "$F")") ($S) — retome pelo manager (§ Estados)"
 fi
 case "$TARGET" in
+  codex)
+    printf '{"hookSpecificOutput":{"hookEventName":"UserPromptSubmit","additionalContext":"[DotAgents] Protocolo ativo em %s/commands/manager.md. Classifique e crie/retome task antes de editar código. Estado: %s. Use personas em %s/agents e skills em .agents/skills."}}\n' "$AR" "$TASK" "$AR"
+    ;;
   antigravity)
     # Política: emitir SEMPRE (a chamada de modelo que gera o plano é tardia no loop do /plan).
     # Para emitir só na 1ª invocação, descomente a linha abaixo:

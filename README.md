@@ -2,7 +2,7 @@
 
 Framework agnóstico para instalar uma **squad multi-agente** (PO, Architect, Tech Lead, Developer, QA, Security, Ops) em qualquer projeto, de qualquer linguagem. A squad é regida por um **Manager central** com roteamento automático, **gates por artefato verificável** (nenhuma etapa "aconteceu" sem o arquivo que a prova), estados de task auditáveis e uma **memória viva** específica do projeto.
 
-**Versão:** 2.2.0 · **Ferramentas suportadas:** Antigravity (IDE e CLI) · Claude Code · Cursor AI
+**Versão:** 2.2.0 · **Ferramentas suportadas:** Antigravity (IDE e CLI) · Claude Code · Cursor AI · OpenAI Codex
 
 ---
 
@@ -20,12 +20,12 @@ Rode o instalador **a partir da raiz do seu projeto** (ou aponte com `--dest`):
 
 ```bash
 cd meu-projeto
-bash DotAgents/install.sh --claude          # ou --antigravity, ou --cursor
+bash DotAgents/install.sh --claude          # ou --antigravity, --cursor ou --codex
 ```
 
 | Flag | Efeito |
 |---|---|
-| `--antigravity` / `--claude` / `--cursor` | Escolhe a ferramenta (sem flag: menu interativo) |
+| `--antigravity` / `--claude` / `--cursor` / `--codex` | Escolhe a ferramenta (sem flag: menu interativo) |
 | `--dest <dir>` | Projeto destino (default: diretório atual) |
 | `--yes` | Sem confirmações (CI/automação) |
 | `--no-hooks` | Não instala o hook de enforcement |
@@ -36,13 +36,13 @@ O instalador é **idempotente**: re-rodar atualiza os artefatos da squad, preser
 
 ### O que é instalado, por ferramenta
 
-| | Antigravity | Claude Code | Cursor |
+| | Antigravity | Claude Code | Cursor | Codex |
 |---|---|---|---|
-| Artefatos | `.agents/{agents,skills,commands}` | `.claude/{agents,skills,commands}` | `.cursor/{agents,skills,commands}` + regra sempre-ativa em `.cursor/rules/` |
-| Roteamento raiz | bloco gerido em `AGENTS.md` | bloco gerido em `CLAUDE.md` (com import `@.claude/commands/manager.md`) | bloco gerido em `AGENTS.md` |
-| Subagentes | nativos (`subagent: true`) | nativos (`.claude/agents/`) | Persona Shift (ou nativos com `--cursor-native`) |
-| Enforcement | `.agents/hooks.json` (PreToolUse + PreInvocation) | `.claude/settings.json` (PreToolUse + UserPromptSubmit) | `.cursor/hooks.json` (preToolUse + sessionStart) |
-| Memória viva (Cérebro Sináptico) | `memories/` na raiz do projeto (hubs raiz enxutos + rede de nós atômicos interconectados em `memories/implementations/` com headers YAML e `connections`) | idem | idem |
+| Artefatos | `.agents/{agents,skills,commands}` | `.claude/{agents,skills,commands}` | `.cursor/{agents,skills,commands}` + regra sempre-ativa em `.cursor/rules/` | `.codex/{agents,commands,hooks}` + skills em `.agents/skills/` |
+| Roteamento raiz | bloco gerido em `AGENTS.md` | bloco gerido em `CLAUDE.md` (com import `@.claude/commands/manager.md`) | bloco gerido em `AGENTS.md` | bloco gerido em `AGENTS.md` |
+| Subagentes | nativos (`subagent: true`) | nativos (`.claude/agents/`) | Persona Shift (ou nativos com `--cursor-native`) | nativos (`.codex/agents/*.toml`) |
+| Enforcement | `.agents/hooks.json` (PreToolUse + PreInvocation) | `.claude/settings.json` (PreToolUse + UserPromptSubmit) | `.cursor/hooks.json` (preToolUse + sessionStart) | `.codex/hooks.json` (PreToolUse + UserPromptSubmit) |
+| Memória viva (Cérebro Sináptico) | `memories/` na raiz do projeto | idem | idem | idem |
 
 O frontmatter dos agentes é **traduzido na instalação** para o formato de cada ferramenta (nomes de tools, valores de `model`) — os arquivos-fonte permanecem agnósticos.
 
@@ -53,6 +53,7 @@ O frontmatter dos agentes é **traduzido na instalação** para o formato de cad
 - **Claude Code:** rode `/dot-agent-bootstrap`
 - **Antigravity:** peça — *"Execute as instruções de `.agents/commands/dot-agent-bootstrap.md`"*
 - **Cursor:** peça — *"Execute as instruções de `.cursor/commands/dot-agent-bootstrap.md`"*
+- **Codex:** peça — *"Execute as instruções de `.codex/commands/dot-agent-bootstrap.md`"* e revise os hooks em `/hooks`.
 
 O bootstrap varre o projeto e popula as memórias (`memories/business.md`, `architecture.md`, `guidelines.md`). A partir daí, **qualquer demanda** é classificada e roteada automaticamente pelo Manager — você não precisa escolher agente nem fluxo.
 
@@ -79,7 +80,7 @@ Demanda → 🧠 Manager (classifica e roteia)
 - **Estados auditáveis:** a task vive em `docs/todo/<NNN-slug>/task.md` com `Status` normativo e Log de transições; concluídas vão para `docs/done/`.
 - **Rotas dedicadas:** Pergunta (sem task), Docs-only, **Hotfix** (expresso, com retro obrigatória), **Rollback** (git revert, nunca reset --hard) — além de Feature/Bug/Refactor/Security/Deploy.
 - **Paralelismo por padrão (fan-out/join):** uma etapa só espera outra se consome o artefato dela. QA, Security e Review rodam juntos sobre o mesmo diff; grupos de itens com arquivos disjuntos viram subagentes Developer paralelos. Subagentes nunca escrevem no `task.md` — o dono do join consolida (no Cursor/persona-shift, a execução é sequencial com o mesmo join).
-- **Higiene de contexto:** demanda nova sem relação com o que a sessão já tratou → o PO salva o estado (task ativa `pausada`, nova task criada), para e pede o reset da sessão — `/clear` no Claude Code e no Antigravity CLI, *New Chat* no Cursor — para não arrastar tokens de outra task. Responder "seguir aqui" mantém a sessão (no modo subagentes, o refinamento vai para um subagente limpo).
+- **Higiene de contexto:** demanda nova sem relação com o que a sessão já tratou → o PO salva o estado (task ativa `pausada`, nova task criada), para e pede o reset da sessão — `/clear` no Claude Code e no Antigravity CLI, `/new` no Codex, *New Chat* no Cursor — para não arrastar tokens de outra task. Responder "seguir aqui" mantém a sessão (no modo subagentes, o refinamento vai para um subagente limpo).
 - **Comandos-atalho:** `/dot-agent-new-feature`, `/dot-agent-fix-bug`, `/dot-agent-architecture-review`, `/dot-agent-deploy` — todos entram no mesmo pipeline (nenhum pula gates).
 
 ## 🔒 Enforcement
@@ -124,7 +125,7 @@ A fundação é o **protocolo por artefatos** (agnóstico): specs, relatórios d
 ## 🔄 Atualização e desinstalação
 
 - **Atualizar:** `git pull` na pasta `DotAgents/` + re-rodar o `install.sh` (idempotente; memórias preservadas).
-- **Desinstalar:** remova o diretório da ferramenta (`.claude/`, `.agents/` ou `.cursor/`), o bloco entre `<!-- dotagents:begin -->` e `<!-- dotagents:end -->` no arquivo raiz, e — se desejar — `memories/` e `docs/todo|done/`.
+- **Desinstalar:** remova o diretório da ferramenta (`.claude/`, `.agents/`, `.cursor/` ou `.codex/`), o bloco entre `<!-- dotagents:begin -->` e `<!-- dotagents:end -->` no arquivo raiz, e — se desejar — `memories/` e `docs/todo|done/`.
 
 ## 📄 Licença
 

@@ -19,6 +19,19 @@ except Exception:
     pass' 2>/dev/null
   fi
 }
+get_codex_files() {
+  if command -v python3 >/dev/null 2>&1; then
+    printf '%s' "$IN" | python3 -c 'import json,re,sys
+try:
+ d=json.load(sys.stdin); ti=d.get("tool_input") or {}; cmd=ti.get("command", "")
+ if d.get("tool_name") == "apply_patch" or "*** Begin Patch" in cmd:
+  for line in cmd.splitlines():
+   if line.startswith(("*** Update File: ", "*** Add File: ", "*** Delete File: ", "*** Move to: ")): print(line.split(": ",1)[1])
+ else:
+  for value in re.findall(r"(?:^|[ ;|&])(?:tee|touch|rm|truncate)\s+([./~][^ ;|&>]*)", cmd): print(value)
+except Exception: pass' 2>/dev/null
+  fi
+}
 get_ws() {
   if command -v jq >/dev/null 2>&1; then
     printf '%s' "$IN" | jq -r '.workspacePaths[0] // empty' 2>/dev/null
@@ -27,17 +40,31 @@ get_ws() {
   fi
 }
 FILE=$(get_file) || exit 0
-[ -z "$FILE" ] && exit 0
+if [ "$TARGET" = codex ]; then
+  FILES=$(get_codex_files)
+else
+  [ -z "$FILE" ] && exit 0
+  FILES="$FILE"
+fi
+[ -z "$FILES" ] && exit 0
 ROOT="${CLAUDE_PROJECT_DIR:-}"
+if [ "$TARGET" = codex ]; then
+  ROOT=$(printf '%s' "$IN" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("cwd", ""))' 2>/dev/null)
+fi
 if [ -z "$ROOT" ]; then
   WS=$(get_ws) || WS=""
   if [ -n "$WS" ] && [ -d "$WS" ]; then ROOT="$WS"; else ROOT="$PWD"; fi
 fi
 [ -f "$ROOT/docs/todo/.dotagents-bypass" ] && exit 0
 # Allowlist: infra da squad, docs e memórias nunca bloqueiam
-case "$FILE" in
-  *.md|*/docs/*|docs/*|*/memories/*|memories/*|*/.claude/*|.claude/*|*/.agents/*|.agents/*|*/.cursor/*|.cursor/*|*CHANGELOG*|*.env.example) exit 0 ;;
-esac
+UNSAFE=0
+for FILE in $FILES; do
+  case "$FILE" in
+    *.md|*/docs/*|docs/*|*/memories/*|memories/*|*/.claude/*|.claude/*|*/.agents/*|.agents/*|*/.cursor/*|.cursor/*|*/.codex/*|.codex/*|*CHANGELOG*|*.env.example) continue ;;
+    *) UNSAFE=1 ;;
+  esac
+done
+[ "$UNSAFE" -eq 0 ] && exit 0
 # Task ativa (status de trabalho ou compound pós-entrega) => permite
 if grep -lE '^\*\*Status:\*\*.*(planejada|em-implementacao|em-verificacao|em-qa|em-security|em-review|aprovada-para-entrega|entregue)' "$ROOT"/docs/todo/*/task.md >/dev/null 2>&1; then
   exit 0
@@ -47,6 +74,7 @@ case "$TARGET" in
   claude)      printf '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"%s"}}\n' "$REASON" ;;
   antigravity) printf '{"decision":"deny","reason":"%s"}\n' "$REASON" ;;
   cursor)      printf '{"permission":"deny","user_message":"%s"}\n' "$REASON" ;;
+  codex)       printf '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"%s"}}\n' "$REASON" ;;
   *)           exit 0 ;;
 esac
 exit 0

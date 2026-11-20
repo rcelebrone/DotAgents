@@ -43,7 +43,7 @@ A squad vive em `{{AGENTS_ROOT}}/` (após instalação). Referências absolutas 
 
 **Modo ativo nesta instalação:** {{DISPATCH_MODE}} <!-- valores: subagentes | persona-shift; se o placeholder aparecer cru, opere como persona-shift -->
 
-- **subagentes** (Claude Code, Antigravity): os gates 🧪 QA, 👑 Review e 🔒 Security **DEVEM** rodar como subagentes nativos com **contexto limpo**, recebendo APENAS: o caminho do `task.md`, os caminhos dos artefatos anteriores e o diff/branch alvo — nunca o histórico do chat — e são despachados **em paralelo** (§ 🔀). Grupos paralelos do checklist também viram subagentes Developer (§ 🔀). Os demais estágios produtores (PO, Architect, TL-planejamento, Developer-join, Ops) podem usar Persona Shift na mesma sessão.
+- **subagentes** (Codex, Claude Code, Antigravity): os gates 🧪 QA, 👑 Review e 🔒 Security **DEVEM** rodar como subagentes nativos com **contexto limpo**, recebendo APENAS: o caminho do `task.md`, os caminhos dos artefatos anteriores e o diff/branch alvo — nunca o histórico do chat — e são despachados **em paralelo** (§ 🔀). Grupos paralelos do checklist também viram subagentes Developer (§ 🔀). Os demais estágios produtores (PO, Architect, TL-planejamento, Developer-join, Ops) podem usar Persona Shift na mesma sessão.
   Prompt de despacho padrão: *"Assuma `{{AGENTS_ROOT}}/agents/<agente>.md` e execute o gate <nome> da task `docs/todo/<NNN-slug>/`: leia o task.md e os artefatos, produza `<artefato>` e devolva o veredito — não altere o task.md (Status/Log são do dono do join, § 🔀)."*
 - **persona-shift** (Cursor / fallback): todas as transições via Persona Shift (adotar o papel do próximo agente na mesma sessão, sem esperar intervenção do usuário) — os gates continuam **obrigados** a produzir seus artefatos.
 
@@ -56,7 +56,7 @@ A squad vive em `{{AGENTS_ROOT}}/` (após instalação). Referências absolutas 
 > **Regra Inviolável (Paralelismo por padrão):** uma etapa só espera outra se **consome o artefato dela**. Etapas que leem o mesmo insumo e produzem artefatos distintos rodam juntas (**fan-out**) e se encontram num ponto de consolidação (**join**) com um único dono. Serializar o que é independente é desperdício — registre no Log como violação.
 
 - **Linear por dependência real:** PO → Architect → TL (planejamento) → Developer → *verificação* → Ops → PO (validação final) → compound.
-- **Modo `subagentes`:** todos os despachos de um fan-out saem **na mesma mensagem** (várias chamadas de subagente simultâneas). **Modo `persona-shift`:** executa em sequência, com a **mesma semântica de join** (artefatos independentes, consolidação só no fim).
+- **Modo `subagentes`:** todos os despachos de um fan-out saem **na mesma mensagem** (várias chamadas de subagente simultâneas). **Modo `persona-shift`:** executa em sequência, com a **mesma semântica de join** (artefatos independentes, consolidação só no fim). No Codex, despache via subagentes personalizados em `.codex/agents/`.
 - **Subagente paralelo nunca escreve no `task.md`** nem altera Status/Log — ele produz o próprio artefato (ou devolve o resultado) e o **dono do join** consolida. Isso elimina escrita concorrente no único arquivo compartilhado.
 
 ### Fan-out de Implementação (Developer)
