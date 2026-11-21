@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # DotAgents v2 — Instalador Unificado da Squad Multi-Agente
-# Alvos: Antigravity (IDE & CLI), Claude Code, Cursor AI
+# Alvos: Antigravity (IDE & CLI), Claude Code, Cursor AI, Codex
 # Idempotente: re-rodar atualiza os artefatos da squad sem tocar na memória viva.
 
 set -euo pipefail
@@ -20,12 +20,13 @@ usage() {
   cat <<EOF
 DotAgents v${DOTAGENTS_VERSION} — instalador da squad multi-agente
 
-Uso: install.sh --antigravity|--claude|--cursor [opções]
+Uso: install.sh --antigravity|--claude|--cursor|--codex [opções]
 
 Alvos:
-  --antigravity      Antigravity (IDE e CLI)  -> .agents/ + AGENTS.md
-  --claude           Claude Code              -> .claude/ + CLAUDE.md
-  --cursor           Cursor AI                -> .cursor/ + AGENTS.md
+  --antigravity  Antigravity (IDE e CLI)  -> .agents/ + AGENTS.md
+  --claude       Claude Code              -> .claude/ + CLAUDE.md
+  --cursor       Cursor AI                -> .cursor/ + AGENTS.md
+  --codex        OpenAI Codex             -> .codex/ + .agents/skills/ + AGENTS.md
 
 Opções:
   --dest <dir>       Diretório do projeto destino (default: diretório atual)
@@ -45,6 +46,7 @@ while [ $# -gt 0 ]; do
     --antigravity) OPTION=1 ;;
     --claude)      OPTION=2 ;;
     --cursor)      OPTION=3 ;;
+    --codex)       OPTION=4 ;;
     --dest)        shift; [ $# -gt 0 ] || die "--dest exige um diretório"; DEST_DIR="$1" ;;
     --yes)         ASSUME_YES=1 ;;
     --purge)       PURGE=1 ;;
@@ -62,10 +64,11 @@ if [ -z "$OPTION" ]; then
     echo "  1) Antigravity (IDE e CLI)"
     echo "  2) Claude Code"
     echo "  3) Cursor AI"
-    read -r -p "Digite a opção [1-3]: " OPTION
-    case "$OPTION" in 1|2|3) ;; *) die "Opção inválida." ;; esac
+    echo "  4) OpenAI Codex"
+    read -r -p "Digite a opção [1-4]: " OPTION
+    case "$OPTION" in 1|2|3|4) ;; *) die "Opção inválida." ;; esac
   else
-    die "Nenhum alvo informado. Use --antigravity, --claude ou --cursor (--help para ajuda)."
+    die "Nenhum alvo informado. Use --antigravity, --claude, --cursor ou --codex (--help para ajuda)."
   fi
 fi
 
@@ -85,6 +88,7 @@ case "$OPTION" in
   2) TOOL_NAME="Claude Code"; AGENTS_ROOT=".claude"; ROOT_FILE="CLAUDE.md"; DISPATCH_MODE="subagentes";    HOOK_TARGET="claude";      RESET_CMD="/clear" ;;
   3) TOOL_NAME="Cursor AI";   AGENTS_ROOT=".cursor"; ROOT_FILE="AGENTS.md"; DISPATCH_MODE="persona-shift"; HOOK_TARGET="cursor";      RESET_CMD="New Chat (Ctrl/Cmd+N no painel do Agent)"
      [ "$CURSOR_NATIVE" -eq 1 ] && DISPATCH_MODE="subagentes" ;;
+  4) TOOL_NAME="OpenAI Codex"; AGENTS_ROOT=".codex"; ROOT_FILE="AGENTS.md"; DISPATCH_MODE="subagentes"; HOOK_TARGET="codex"; RESET_CMD="/new" ;;
 esac
 TARGET_DIR="$DEST_DIR/$AGENTS_ROOT"
 
@@ -101,12 +105,84 @@ confirm "Instalar em $DEST_DIR?" || die "Instalação cancelada."
 # Copia src -> dst substituindo os placeholders (portável BSD/GNU: nunca sed -i)
 render_file() {
   mkdir -p "$(dirname "$2")"
-  sed -e "s|{{AGENTS_ROOT}}|$AGENTS_ROOT|g" -e "s|{{DISPATCH_MODE}}|$DISPATCH_MODE|g" -e "s|{{RESET_CMD}}|$RESET_CMD|g" "$1" > "$2"
+  if [ "$OPTION" -eq 4 ]; then
+    render_codex_file "$1" "$2"
+  else
+    sed -e "s|{{AGENTS_ROOT}}|$AGENTS_ROOT|g" -e "s|{{DISPATCH_MODE}}|$DISPATCH_MODE|g" -e "s|{{RESET_CMD}}|$RESET_CMD|g" "$1" > "$2"
+  fi
+}
+
+render_codex_file() {
+  sed -E \
+    -e "s|\{\{AGENTS_ROOT\}\}/agents/([^/ ]+)\.md|$AGENTS_ROOT/agents/\1.toml|g" \
+    -e 's|\{\{AGENTS_ROOT\}\}/skills/([^/ ]+)/|.agents/skills/dotagents-\1/|g' \
+    -e "s|\{\{AGENTS_ROOT\}\}/agents/|$AGENTS_ROOT/agents/|g" \
+    -e 's|\{\{AGENTS_ROOT\}\}/skills/|.agents/skills/|g' \
+    -e "s|\{\{AGENTS_ROOT\}\}|$AGENTS_ROOT|g" \
+    -e "s|\{\{DISPATCH_MODE\}\}|$DISPATCH_MODE|g" \
+    -e "s|\{\{RESET_CMD\}\}|$RESET_CMD|g" \
+    "$1" > "$2"
 }
 
 render_tree_inplace() {
   find "$1" -type f -name "*.md" | while IFS= read -r f; do
     sed -e "s|{{AGENTS_ROOT}}|$AGENTS_ROOT|g" -e "s|{{DISPATCH_MODE}}|$DISPATCH_MODE|g" -e "s|{{RESET_CMD}}|$RESET_CMD|g" "$f" > "$f.tmp" && mv "$f.tmp" "$f"
+  done
+}
+
+install_codex_skills() {
+  mkdir -p "$DEST_DIR/.agents/skills"
+  local skill target
+  for skill in "$SCRIPT_DIR"/skills/*; do
+    [ -d "$skill" ] || continue
+    target="$DEST_DIR/.agents/skills/dotagents-$(basename "$skill")"
+    rm -rf "$target"
+    mkdir -p "$target"
+    cp -R "$skill/." "$target/"
+  done
+  for skill in "$DEST_DIR"/.agents/skills/dotagents-*/SKILL.md; do
+    [ -f "$skill" ] || continue
+    render_codex_file "$skill" "$skill.tmp" && mv "$skill.tmp" "$skill"
+  done
+}
+
+install_codex_agents() {
+  mkdir -p "$TARGET_DIR/agents"
+  local f name description body instructions output
+  for f in "$SCRIPT_DIR"/agents/*.md; do
+    name=$(awk -F': ' '/^name:/ {print $2; exit}' "$f")
+    description=$(awk -F': ' '/^description:/ {sub(/^description: /, ""); print; exit}' "$f")
+    body=$(mktemp)
+    instructions=$(mktemp)
+    output="$TARGET_DIR/agents/$name.toml"
+    awk 'BEGIN { frontmatter = 0 } /^---$/ { frontmatter++; next } frontmatter >= 2 { print }' "$f" > "$body"
+    render_codex_file "$body" "$instructions"
+    if command -v python3 >/dev/null 2>&1; then
+      python3 - "$name" "$description" "$instructions" "$output" <<'PY'
+import json
+import pathlib
+import sys
+
+name, description, instructions_path, output_path = sys.argv[1:]
+instructions = pathlib.Path(instructions_path).read_text(encoding="utf-8")
+with open(output_path, "w", encoding="utf-8") as output:
+    output.write(f"name = {json.dumps(name, ensure_ascii=False)}\n")
+    output.write(f"description = {json.dumps(description, ensure_ascii=False)}\n")
+    output.write(f"developer_instructions = {json.dumps(instructions, ensure_ascii=False)}\n")
+PY
+    else
+      grep -q "'''" "$instructions" && die "Persona $name contém sequência incompatível com fallback TOML; instale python3."
+      name=$(printf '%s' "$name" | sed 's/\\/\\\\/g; s/"/\\"/g')
+      description=$(printf '%s' "$description" | sed 's/\\/\\\\/g; s/"/\\"/g')
+      {
+        printf 'name = "%s"\n' "$name"
+        printf 'description = "%s"\n' "$description"
+        printf "developer_instructions = '''\n"
+        cat "$instructions"
+        printf "'''\n"
+      } > "$output"
+    fi
+    rm -f "$body" "$instructions"
   done
 }
 
@@ -169,6 +245,14 @@ install_memories() {
 
 install_squad_files() {
   info "📦 Instalando agents, skills e commands em $AGENTS_ROOT/..."
+  if [ "$OPTION" -eq 4 ]; then
+    mkdir -p "$TARGET_DIR/commands"
+    for f in "$SCRIPT_DIR/commands"/*.md; do render_file "$f" "$TARGET_DIR/commands/$(basename "$f")"; done
+    install_codex_agents
+    install_codex_skills
+    info "  ✅ Personas TOML, 21 skills e 6 commands instalados para Codex"
+    return 0
+  fi
   mkdir -p "$TARGET_DIR/agents" "$TARGET_DIR/skills" "$TARGET_DIR/commands"
   local f dst
   for f in "$SCRIPT_DIR"/agents/*.md; do
@@ -213,6 +297,7 @@ inject_root_block() {
   {
     echo "<!-- dotagents:begin v${DOTAGENTS_VERSION} — bloco gerido pelo DotAgents; NÃO edite manualmente. Atualize re-rodando o install.sh -->"
     [ "$OPTION" -eq 2 ] && echo "@.claude/commands/manager.md"
+      [ "$OPTION" -eq 4 ] && echo "Para toda demanda, leia e siga \`.codex/commands/manager.md\` antes de agir. Consulte as personas em \`.codex/agents/\` e as skills em \`.agents/skills/\`. Use subagentes nativos nos fan-outs quando disponíveis; o Tech Lead consolida os artefatos."
     echo "## 🤖 DotAgents — Squad Multi-Agente ativa"
     echo "Toda demanda neste repositório é regida pelo protocolo da squad em \`$AGENTS_ROOT/commands/manager.md\`."
     echo "Antes de responder qualquer solicitação: classifique, anuncie (📢) e garanta a task — na ordem do Manager."
@@ -273,6 +358,13 @@ print_cursor_snippet() {
   cat <<EOF
   Adicione em $AGENTS_ROOT/hooks.json:
   {"version":1,"hooks":{"preToolUse":[{"command":"$1"}],"sessionStart":[{"command":"$2"}]}}
+EOF
+}
+
+print_codex_snippet() {
+  cat <<EOF
+  Adicione em $AGENTS_ROOT/hooks.json:
+  {"hooks":{"PreToolUse":[{"matcher":"apply_patch|Bash","hooks":[{"type":"command","command":"$1","timeout":10}]}],"UserPromptSubmit":[{"hooks":[{"type":"command","command":"$2","timeout":5}]}]}}
 EOF
 }
 
@@ -450,6 +542,64 @@ PY
   fi
 }
 
+merge_hooks_codex() {
+  local hooksfile="$TARGET_DIR/hooks.json"
+  local gate="$AGENTS_ROOT/hooks/dotagents-gate.sh codex"
+  local remind="$AGENTS_ROOT/hooks/dotagents-remind.sh codex"
+  if [ ! -f "$hooksfile" ]; then
+    cat > "$hooksfile" <<EOF
+{
+  "hooks": {
+    "PreToolUse": [{ "matcher": "apply_patch|Bash", "hooks": [{ "type": "command", "command": "$gate", "timeout": 10 }] }],
+    "UserPromptSubmit": [{ "hooks": [{ "type": "command", "command": "$remind", "timeout": 5 }] }]
+  }
+}
+EOF
+    info "  ✅ Hooks registrados em $AGENTS_ROOT/hooks.json. Revise e confie em /hooks."
+    return 0
+  fi
+  if command -v python3 >/dev/null 2>&1; then
+    local rc=0
+    python3 - "$hooksfile" "$gate" "$remind" <<'PY' || rc=$?
+import json
+import sys
+
+path, gate, remind = sys.argv[1:]
+try:
+    with open(path, encoding="utf-8") as source:
+        data = json.load(source)
+except Exception:
+    sys.exit(3)
+
+hooks = data.setdefault("hooks", {})
+for event in list(hooks):
+    entries = hooks[event]
+    if isinstance(entries, list):
+        hooks[event] = [entry for entry in entries if "dotagents-" not in json.dumps(entry)]
+        if not hooks[event]:
+            del hooks[event]
+hooks.setdefault("PreToolUse", []).append({
+    "matcher": "apply_patch|Bash",
+    "hooks": [{"type": "command", "command": gate, "timeout": 10}],
+})
+hooks.setdefault("UserPromptSubmit", []).append({
+    "hooks": [{"type": "command", "command": remind, "timeout": 5}],
+})
+with open(path, "w", encoding="utf-8") as output:
+    json.dump(data, output, indent=2, ensure_ascii=False)
+    output.write("\n")
+PY
+    if [ "$rc" -eq 0 ]; then
+      info "  ✅ Hooks mesclados em $AGENTS_ROOT/hooks.json (gate + remind)"
+    else
+      info "  ⚠️ Não foi possível mesclar $AGENTS_ROOT/hooks.json (JSON inválido?) — registre manualmente:"
+      print_codex_snippet "$gate" "$remind"
+    fi
+  else
+    info "  ⚠️ python3 ausente e $AGENTS_ROOT/hooks.json existe — registre manualmente:"
+    print_codex_snippet "$gate" "$remind"
+  fi
+}
 install_hook() {
   if [ "$NO_HOOKS" -eq 1 ]; then info "⏭️ Hooks desativados (--no-hooks)."; return 0; fi
   info "🔒 Instalando hooks de enforcement (fail-open): gate de escrita + lembrete por prompt..."
@@ -464,6 +614,7 @@ install_hook() {
     1) merge_hooks_antigravity ;;
     2) merge_hooks_claude ;;
     3) merge_hooks_cursor ;;
+    4) merge_hooks_codex ;;
   esac
 }
 
@@ -520,5 +671,6 @@ case "$OPTION" in
   1) echo "Próximo passo: abra o Antigravity ('agy') e peça: \"Execute as instruções de .agents/commands/dot-agent-bootstrap.md\"" ;;
   2) echo "Próximo passo: abra o Claude Code e rode: /dot-agent-bootstrap" ;;
   3) echo "Próximo passo: abra o Cursor e peça: \"Execute as instruções de .cursor/commands/dot-agent-bootstrap.md\"" ;;
+  4) echo "Próximo passo: abra o Codex, revise/confie os hooks com /hooks e peça: \"Execute .codex/commands/dot-agent-bootstrap.md\"" ;;
 esac
 echo "-----------------------------------------------------------------"
